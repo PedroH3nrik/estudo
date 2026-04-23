@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicialStudy - Plataforma de Estudos para Concursos Policiais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        .option-card { transition: all 0.2s; cursor: pointer; }
+        .option-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .option-card.selected { border-color: #3b82f6; background-color: #eff6ff; }
+        .option-card.correct { border-color: #22c55e; background-color: #f0fdf4; }
+        .option-card.wrong { border-color: #ef4444; background-color: #fef2f2; }
+        .timer { font-variant-numeric: tabular-nums; }
+        .progress-ring { transform: rotate(-90deg); }
+        .essay-textarea { min-height: 400px; resize: vertical; }
+        .hidden-section { display: none; }
+        .visible-section { display: block; animation: fadeIn 0.5s ease-in; }
+        .banca-card { transition: all 0.3s; }
+        .banca-card:hover { transform: scale(1.02); }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .pmba-theme { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .prf-theme { background: linear-gradient(135deg, #065f46 0%, #10b981 100%); }
+        .pc-theme { background: linear-gradient(135deg, #7c2d12 0%, #ea580c 100%); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-blue-600 text-2xl mr-3"></i>
+                    <span class="font-bold text-xl text-gray-800">PolicialStudy</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="userStats" class="hidden md:flex items-center space-x-4 text-sm">
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                            <i class="fas fa-fire mr-1"></i> <span id="streakDays">0</span> dias
+                        </span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">
+                            <i class="fas fa-check-circle mr-1"></i> <span id="totalCorrect">0</span> acertos
+                        </span>
+                    </div>
+                    <button onclick="showSection('home')" class="text-gray-600 hover:text-blue-600 transition">
+                        <i class="fas fa-home text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME SECTION -->
+    <section id="home" class="visible-section">
+        <!-- Hero -->
+        <div class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-16">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">Prepare-se para a Carreira Policial</h1>
+                <p class="text-xl md:text-2xl text-blue-200 mb-8">Questões reais baseadas nos últimos editais de PMBA, PRF e PC-BA</p>
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <button onclick="startSetup('PMBA')" class="bg-white text-blue-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition transform hover:scale-105 shadow-xl">
+                        <i class="fas fa-user-shield mr-2"></i>PMBA
+                    </button>
+                    <button onclick="startSetup('PRF')" class="bg-white text-green-800 px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition transform hover:scale-105 shadow-xl">
+                        <i class="fas fa-road mr-2"></i>PRF
+                    </button>
+                    <button onclick="startSetup('PCBA')" class="bg-white text-orange-800 px-8 py-4 rounded-lg font-bold text-lg hover:bg-orange-50 transition transform hover:scale-105 shadow-xl">
+                        <i class="fas fa-search mr-2"></i>PC-BA
+                    </button>
+                </div>
+                <p class="mt-6 text-sm text-blue-300">Edições atualizadas conforme editais de 2026</p>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- PMBA Card -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
+                    <div class="pmba-theme h-2"></div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-gray-800">PMBA</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">Nível Médio</span>
+                        </div>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li><i class="fas fa-check text-blue-500 mr-2"></i>100+ vagas previstas</li>
+                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Edital: 2º semestre/2026</li>
+                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Banca: UNEB (provável)</li>
+                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Salário: R$ 3.507,78</li>
+                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Idade: 18 a 30 anos</li>
+                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Altura: 1,60m (M) / 1,55m (F)</li>
+                        </ul>
+                        <button onclick="startSetup('PMBA')" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            Começar Estudos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRF Card -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
+                    <div class="prf-theme h-2"></div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-gray-800">PRF</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Nível Superior</span>
+                        </div>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>263 vagas solicitadas</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Edital previsto: 2026/2027</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Banca: Cebraspe (histórico)</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Salário: R$ 4.500+</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>CNH categoria B obrigatória</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Prova discursiva + objetiva</li>
+                        </ul>
+                        <button onclick="startSetup('PRF')" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                            Começar Estudos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PC-BA Card -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
+                    <div class="pc-theme h-2"></div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-gray-800">PC-BA</h3>
+                            <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">Nível Superior</span>
+                        </div>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li><i class="fas fa-check text-orange-500 mr-2"></i>750 vagas (500 Invest., 150 Escriv., 100 Del.)</li>
+                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Edital: Maio/2026</li>
+                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Banca: A definir</li>
+                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Salário: R$ 4.800+</li>
+                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Investigador: CNH B obrigatória</li>
+                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Escrivão: Sem CNH</li>
+                        </ul>
+                        <button onclick="startSetup('PCBA')" class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
+                            Começar Estudos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bancas Info -->
+        <div class="bg-white py-12">
+            <div class="max-w-7xl mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Bancas Organizadoras</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
+                        <h4 class="font-bold text-lg text-gray-800 mb-2">Cebraspe</h4>
+                        <p class="text-sm text-gray-600 mb-3">Utilizada pela PRF e diversos órgãos federais. Provas com questões de múltipla escolha complexas.</p>
+                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">PRF, PF, Polícia Civil DF</span>
+                    </div>
+                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
+                        <h4 class="font-bold text-lg text-gray-800 mb-2">UNEB</h4>
+                        <p class="text-sm text-gray-600 mb-3">Banca da Universidade do Estado da Bahia. Tradicional na PMBA com questões contextualizadas.</p>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">PMBA (último edital)</span>
+                    </div>
+                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
+                        <h4 class="font-bold text-lg text-gray-800 mb-2">IDECAN</h4>
+                        <p class="text-sm text-gray-600 mb-3">Questões diretas e bem distribuídas. Utilizada por PMs de vários estados.</p>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">PM RN, PM ES, Bombeiros MG</span>
+                    </div>
+                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
+                        <h4 class="font-bold text-lg text-gray-800 mb-2">FCC / Vunesp</h4>
+                        <p class="text-sm text-gray-600 mb-3">Fundação Carlos Chagas e Vunesp. Questões padronizadas e bem elaboradas.</p>
+                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">PM PI, PM SP Saúde</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SETUP SECTION -->
+    <section id="setup" class="hidden-section">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <button onclick="showSection('home')" class="text-gray-500 hover:text-gray-700 mb-4 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Voltar
+                </button>
+                
+                <h2 class="text-3xl font-bold mb-6 text-gray-800" id="setupTitle">Configurar Simulado</h2>
+                
+                <div class="space-y-6">
+                    <!-- Concurso Info -->
+                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500" id="concursoInfo">
+                        <h4 class="font-bold text-blue-900" id="concursoName">PMBA</h4>
+                        <p class="text-sm text-blue-700" id="concursoDetails">Nível Médio | Banca: UNEB | 100 vagas</p>
+                    </div>
+
+                    <!-- Nível -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nível de Escolaridade</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="selectLevel('medio')" id="btnMedio" class="level-btn p-4 border-2 border-gray-300 rounded-lg text-center hover:border-blue-500 transition">
+                                <i class="fas fa-graduation-cap text-2xl mb-2 text-gray-400"></i>
+                                <div class="font-semibold">Nível Médio</div>
+                                <div class="text-xs text-gray-500">Ensino Médio Completo</div>
+                            </button>
+                            <button onclick="selectLevel('superior')" id="btnSuperior" class="level-btn p-4 border-2 border-gray-300 rounded-lg text-center hover:border-blue-500 transition">
+                                <i class="fas fa-university text-2xl mb-2 text-gray-400"></i>
+                                <div class="font-semibold">Nível Superior</div>
+                                <div class="text-xs text-gray-500">Graduação Completa</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Banca -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Banca Organizadora</label>
+                        <select id="bancaSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="padrao">Padrão (Baseado no último edital)</option>
+                            <option value="cebraspe">Cebraspe (Cespe/UnB)</option>
+                            <option value="uneb">UNEB</option>
+                            <option value="idecan">IDECAN</option>
+                            <option value="fcc">FCC</option>
+                            <option value="vunesp">Vunesp</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1" id="bancaInfo">Questões baseadas no perfil da banca selecionada</p>
+                    </div>
+
+                    <!-- Quantidade -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade de Questões: <span id="qtdValue" class="text-blue-600 font-bold">20</span></label>
+                        <input type="range" id="qtdQuestoes" min="10" max="100" value="20" step="10" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                               oninput="updateQtd(this.value)">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>10</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <!-- Disciplinas -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Disciplinas (selecione pelo menos uma)</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="disciplinasContainer">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Redação -->
+                    <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                        <div>
+                            <label class="font-medium text-gray-700">Incluir Redação</label>
+                            <p class="text-sm text-gray-500">Simula prova discursiva com correção</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="incluirRedacao" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Tempo -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tempo por Questão</label>
+                        <select id="tempoQuestao" class="w-full p-3 border border-gray-300 rounded-lg">
+                            <option value="0">Sem limite de tempo</option>
+                            <option value="60">1 minuto (Realista)</option>
+                            <option value="90">1 minuto e 30 segundos</option>
+                            <option value="120">2 minutos</option>
+                            <option value="180">3 minutos (Estudo)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="startSimulado()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition transform hover:scale-[1.02] shadow-lg">
+                        <i class="fas fa-play mr-2"></i>Iniciar Simulado
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SIMULADO SECTION -->
+    <section id="simulado" class="hidden-section">
+        <div class="max-w-5xl mx-auto px-4 py-6">
+            <!-- Header do Simulado -->
+            <div class="bg-white rounded-xl shadow-lg p-4 mb-6 sticky top-20 z-40">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-blue-100 p-2 rounded-lg">
+                            <i class="fas fa-clock text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Tempo</div>
+                            <div class="font-bold text-xl timer" id="timer">00:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center">
+                            <div class="text-sm text-gray-500">Questão</div>
+                            <div class="font-bold text-xl"><span id="currentQ">1</span>/<span id="totalQ">20</span></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center">
+                            <div class="text-sm text-gray-500">Acertos</div>
+                            <div class="font-bold text-xl text-green-600" id="currentScore">0</div>
+                        </div>
+                    </div>
+
+                    <button onclick="finalizarSimulado()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm">
+                        <i class="fas fa-flag-checkered mr-1"></i> Finalizar
+                    </button>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="mt-4 bg-gray-200 rounded-full h-2">
+                    <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Questão -->
+            <div id="questaoContainer" class="bg-white rounded-2xl shadow-xl p-8 mb-6 fade-in">
+                <div class="flex items-start justify-between mb-6">
+                    <span id="questaoNumero" class="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-full text-sm">Questão 1</span>
+                    <span id="questaoDisciplina" class="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full">Direito Constitucional</span>
+                </div>
+
+                <div id="questaoTexto" class="text-lg text-gray-800 mb-8 leading-relaxed">
+                    <!-- Texto da questão -->
+                </div>
+
+                <div id="alternativasContainer" class="space-y-3">
+                    <!-- Alternativas -->
+                </div>
+
+                <!-- Feedback -->
+                <div id="feedbackArea" class="hidden mt-6 p-4 rounded-lg border-l-4">
+                    <div class="flex items-start">
+                        <i id="feedbackIcon" class="text-2xl mr-3"></i>
+                        <div>
+                            <h4 id="feedbackTitle" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedbackText" class="text-gray-700 mb-2"></p>
+                            <div id="feedbackExplicacao" class="bg-gray-50 p-3 rounded text-sm text-gray-600 mt-2"></div>
+                        </div>
+                    </div>
+                    <button onclick="proximaQuestao()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Próxima Questão <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navegação -->
+            <div class="flex justify-between">
+                <button onclick="questaoAnterior()" id="btnAnterior" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition disabled:opacity-50">
+                    <i class="fas fa-arrow-left mr-2"></i>Anterior
+                </button>
+                <button onclick="proximaQuestao()" id="btnProxima" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                    Próxima<i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- REDAÇÃO SECTION -->
+    <section id="redacao" class="hidden-section">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h2 class="text-3xl font-bold mb-2 text-gray-800">Prova de Redação</h2>
+                <p class="text-gray-600 mb-6">Baseada nos critérios das bancas organizadoras de concursos policiais</p>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                    <h4 class="font-bold text-yellow-800 mb-1">Tema da Redação</h4>
+                    <p id="temaRedacao" class="text-yellow-700">"A importância da inteligência policial no combate ao crime organizado na era digital"</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Linhas: <span id="linhaCount">0</span>/30 (mínimo)</label>
+                    <textarea id="textoRedacao" class="essay-textarea w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg leading-relaxed" placeholder="Digite sua redação aqui..."></textarea>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="corrigirRedacao()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                        <i class="fas fa-check-circle mr-2"></i>Corrigir Redação
+                    </button>
+                    <button onclick="pularRedacao()" class="px-6 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition">
+                        Pular
+                    </button>
+                </div>
+
+                <!-- Resultado da Correção -->
+                <div id="resultadoRedacao" class="hidden mt-8 space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-800">Resultado da Correção</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-gray-700 mb-2">Nota Final</h4>
+                            <div class="text-4xl font-bold text-blue-600" id="notaRedacao">0.0</div>
+                            <div class="text-sm text-gray-500">de 10.0 pontos</div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-gray-700 mb-2">Classificação</h4>
+                            <div class="text-xl font-bold" id="classificacaoRedacao">-</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3" id="criteriosRedacao">
+                        <!-- Critérios preenchidos via JS -->
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-800 mb-2">Feedback do Corretor</h4>
+                        <p id="feedbackRedacao" class="text-blue-700"></p>
+                    </div>
+
+                    <button onclick="showResults()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
+                        Ver Resultado Final <i class="fas fa-trophy ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTADOS SECTION -->
+    <section id="resultados" class="hidden-section">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
+                <div class="mb-6">
+                    <i class="fas fa-trophy text-6xl text-yellow-400 mb-4"></i>
+                    <h2 class="text-4xl font-bold text-gray-800 mb-2">Resultado Final</h2>
+                    <p class="text-gray-600">Simulado <span id="resultConcurso">PMBA</span> - <span id="resultBanca">UNEB</span></p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="stat-card text-white p-6 rounded-xl">
+                        <div class="text-3xl font-bold" id="resultTotal">0</div>
+                        <div class="text-sm opacity-90">Total de Questões</div>
+                    </div>
+                    <div class="bg-green-500 text-white p-6 rounded-xl">
+                        <div class="text-3xl font-bold" id="resultAcertos">0</div>
+                        <div class="text-sm opacity-90">Acertos</div>
+                    </div>
+                    <div class="bg-red-500 text-white p-6 rounded-xl">
+                        <div class="text-3xl font-bold" id="resultErros">0</div>
+                        <div class="text-sm opacity-90">Erros</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                                <circle id="resultCircle" cx="64" cy="64" r="56" stroke="#3b82f6" stroke-width="8" fill="none" stroke-dasharray="351.86" stroke-dashoffset="351.86"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-gray-800" id="resultPercent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2" id="resultStatus">Analisando...</h3>
+                    <p class="text-gray-600" id="resultMessage"></p>
+                </div>
+
+                <div id="redacaoResult" class="hidden bg-orange-50 border-2 border-orange-200 rounded-xl p-6 mb-8">
+                    <h3 class="text-xl font-bold text-orange-800 mb-2">Redação</h3>
+                    <div class="text-3xl font-bold text-orange-600" id="resultRedacaoNota">0.0</div>
+                    <p class="text-sm text-orange-600">Nota máxima: 10.0</p>
+                </div>
+
+                <div class="bg-blue-50 rounded-xl p-6 mb-8 text-left">
+                    <h3 class="font-bold text-blue-900 mb-4">Análise por Disciplina</h3>
+                    <div id="analiseDisciplinas" class="space-y-3">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <button onclick="revisarQuestoes()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                        <i class="fas fa-book-open mr-2"></i>Revisar Questões
+                    </button>
+                    <button onclick="showSection('home')" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
+                        <i class="fas fa-home mr-2"></i>Novo Simulado
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVISÃO SECTION -->
+    <section id="revisao" class="hidden-section">
+        <div class="max-w-5xl mx-auto px-4 py-8">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800">Revisão de Questões</h2>
+                    <button onclick="showSection('resultados')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-arrow-left mr-2"></i>Voltar aos Resultados
+                    </button>
+                </div>
+                
+                <div id="revisaoContainer" class="space-y-8">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // ===== BANCO DE QUESTÕES REALES BASEADOS EM EDITAIS =====
+        const questoesDB = {
+            PMBA: {
+                medio: {
+                    'Direito Constitucional': [
+                        {
+                            id: 1,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Segundo a Constituição Federal de 1988, a Polícia Militar é instituição de:',
+                            alternativas: [
+                                'Forças Armadas, responsável pela defesa externa do país.',
+                                'Segurança Pública, responsável pela polícia ostensiva e preservação da ordem pública.',
+                                'Justiça Federal, responsável pela investigação de crimes federais.',
+                                'Administração Penitenciária, responsável pelo cumprimento de penas.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 144, CF/88: "Às polícias militares cabem a polícia ostensiva e a preservação da ordem pública."'
+                        },
+                        {
+                            id: 2,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'A Constituição Federal estabelece que os militares dos Estados, quando em serviço, estão subordinados:',
+                            alternativas: [
+                                'Aos Governadores dos Estados, exclusivamente.',
+                                'Ao Presidente da República, como Comandante Supremo.',
+                                'Às autoridades policiais civis, em caso de conflito de competência.',
+                                'Às autoridades militares dos Estados e, quando convocados, às autoridades federais.'
+                            ],
+                            correta: 3,
+                            explicacao: 'Art. 42, §1º, CF/88: "Os militares dos Estados, do Distrito Federal e dos Territórios, quando em serviço, ficam subordinados aos Governadores dos Estados, ao Governador do Distrito Federal e aos Prefeitos dos Territórios, respectivamente, e, quando convocados, ao Presidente da República."'
+                        },
+                        {
+                            id: 3,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'De acordo com a CF/88, o direito de reunião, em locais abertos ao público, depende de:',
+                            alternativas: [
+                                'Autorização prévia da autoridade policial competente.',
+                                'Apenas comunicação prévia à autoridade competente, podendo esta opor-se apenas mediante decisão fundamentada.',
+                                'Autorização do Poder Judiciário em todos os casos.',
+                                'Não depende de qualquer comunicação prévia.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 5º, XVI, CF/88: "Todos podem reunir-se pacificamente, sem armas, em locais abertos ao público, independentemente de autorização, desde que não frustrem outra reunião anteriormente convocada para o mesmo local, sendo apenas exigido prévio aviso à autoridade competente."'
+                        },
+                        {
+                            id: 4,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'A Constituição Federal garante a inviolabilidade do domicílio, salvo:',
+                            alternativas: [
+                                'Em caso de perigo público ou de lesão a terceiro, durante o dia.',
+                                'Em caso de flagrante delito ou desastre, para prestar socorro.',
+                                'Por determinação judicial, durante a noite.',
+                                'Todas as alternativas estão corretas.'
+                            ],
+                            correta: 3,
+                            explicacao: 'Art. 5º, XI, CF/88: "A casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo em caso de flagrante delito ou desastre, ou para prestar socorro, ou, durante o dia, por determinação judicial."'
+                        },
+                        {
+                            id: 5,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Segundo o art. 144 da CF/88, compete às polícias militares, além da polícia ostensiva:',
+                            alternativas: [
+                                'A polícia judiciária e a investigação criminal.',
+                                'A polícia militar e corpo de bombeiros militares.',
+                                'A execução de penas privativas de liberdade.',
+                                'A defesa civil exclusivamente.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 144, §5º, CF/88: "Às polícias militares cabem, além das atribuições definidas na lei, a polícia ostensiva fardada e a preservação da ordem pública; e, aos corpos de bombeiros militares, além das atribuições definidas na lei, o exercício de atividades de defesa civil."'
+                        }
+                    ],
+                    'Direito Penal': [
+                        {
+                            id: 6,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Segundo o Código Penal Brasileiro, é punível a tentativa quando, iniciada a execução do crime:',
+                            alternativas: [
+                                'O agente desiste voluntariamente de prosseguir.',
+                                'O crime não se consuma por circunstâncias alheias à vontade do agente.',
+                                'O agente comete outro crime em vez do planejado.',
+                                'A vítima se recusa a participar do crime.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 14, II, CP: "Iniciada a execução, o crime não se consuma, ou não se apresenta nas condições previstas por lei, por circunstâncias alheias à vontade do agente."'
+                        },
+                        {
+                            id: 7,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'No Código Penal, o crime de desobediência (art. 330) exige:',
+                            alternativas: [
+                                'Uso de violência ou grave ameaça.',
+                                'Desobediência a ordem legal de funcionário público.',
+                                'Dano ao patrimônio público.',
+                                'Lesão corporal na vítima.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 330, CP: "Desobedecer a ordem legal de funcionário público." Trata-se de crime contra a administração pública.'
+                        },
+                        {
+                            id: 8,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'A legítima defesa, conforme o art. 25 do CP, exige:',
+                            alternativas: [
+                                'Agressão injusta, atual ou iminente, emprego dos meios necessários e proporcionalidade.',
+                                'Apenas a intenção de defender-se, independentemente da proporção.',
+                                'Que o defensor seja pessoa de boa fama.',
+                                'Que a agressão já tenha ocorrido e o agente queira vingança.'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 25, CP: "Entende-se em legítima defesa quem, usando moderadamente dos meios necessários, repele injusta agressão, atual ou iminente, a direito seu ou de outrem."'
+                        },
+                        {
+                            id: 9,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'O crime de resistência (art. 329 do CP) consiste em:',
+                            alternativas: [
+                                'Opor-se à execução de ato legal, mediante violência ou ameaça grave.',
+                                'Desacatar autoridade policial verbalmente.',
+                                'Recusar-se a prestar depoimento.',
+                                'Fugir do local de crime sem usar violência.'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 329, CP: "Opor-se à execução de ato legal, mediante violência ou grave ameaça, ou, tendo sido executado o ato, praticar violência ou grave ameaça, em razão dele, contra o funcionário competente para executá-lo ou que dele tenha participado."'
+                        },
+                        {
+                            id: 10,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'A prescrição da pretensão punitiva do crime de lesão corporal leve (pena máxima de 1 ano) ocorre em:',
+                            alternativas: [
+                                '2 anos.',
+                                '4 anos.',
+                                '8 anos.',
+                                '12 anos.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 109, IV, CP: "4 (quatro) anos, se a pena máxima for igual ou superior a 1 (um) ano e inferior a 2 (dois) anos."'
+                        }
+                    ],
+                    'Direito Processual Penal': [
+                        {
+                            id: 11,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Segundo o CPP, o flagrante delito pode ser:',
+                            alternativas: [
+                                'Apenas quando o agente é pego no momento exato do crime.',
+                                'Quando o agente é pego em situação que o faça suspeito de ter praticado o crime recentemente.',
+                                'Somente quando há testemunhas oculares.',
+                                'Exclusivamente quando o crime é hediondo.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 302, CPP: "Considera-se em flagrante delito quem: I - está cometendo a infração penal; II - acaba de cometê-la; III - é perseguido, logo após, pela autoridade, pelo ofendido ou por qualquer pessoa, em situação que faça presumir ser autor da infração; IV - é encontrado, logo depois, com instrumentos, armas, objetos ou papéis que façam presumir ser ele autor da infração."'
+                        },
+                        {
+                            id: 12,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'A prisão em flagrante deve ser comunicada à autoridade judiciária em até:',
+                            alternativas: [
+                                '6 horas.',
+                                '12 horas.',
+                                '24 horas.',
+                                '48 horas.'
+                            ],
+                            correta: 2,
+                            explicacao: 'Art. 304, CPP: "A prisão em flagrante será comunicada, imediatamente, ao juiz competente, ao Ministério Público e à família do preso ou à pessoa por ele indicada." A comunicação deve ser imediata, e o preso deve ser apresentado ao juiz em até 24h (art. 306).'
+                        }
+                    ],
+                    'Português': [
+                        {
+                            id: 13,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Assinale a alternativa em que a concordância verbal está correta:',
+                            alternativas: [
+                                'Havia muitos policiais no local do crime.',
+                                'Existem muitas provas no inquérito policial.',
+                                'Fazem dois anos que o crime ocorreu.',
+                                'Todas as alternativas estão corretas.'
+                            ],
+                            correta: 3,
+                            explicacao: 'Em todas as alternativas a concordância está correta: "havia" (impessoal, singular), "existem" (plural com plural), "fazem" (tempo decorrido, plural).'
+                        },
+                        {
+                            id: 14,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'Na frase "O policial prendeu o assaltante", o termo "o assaltante" é:',
+                            alternativas: [
+                                'Sujeito simples.',
+                                'Objeto direto.',
+                                'Objeto indireto.',
+                                'Complemento nominal.'
+                            ],
+                            correta: 1,
+                            explicacao: '"Prender" é verbo transitivo direto, exigindo objeto direto (sem preposição). "O assaltante" sofre a ação de prender, sendo objeto direto.'
+                        },
+                        {
+                            id: 15,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Assinale a alternativa em que o uso da vírgula está correto:',
+                            alternativas: [
+                                'O policial, que estava de folga, impediu o assalto.',
+                                'O policial que estava de folga impediu o assalto.',
+                                'Ambas estão corretas, com diferença de sentido.',
+                                'Ambas estão incorretas.'
+                            ],
+                            correta: 2,
+                            explicacao: 'Com vírgula: oração subordinada adjetiva explicativa (informação acessória). Sem vírgula: oração restritiva (especifica qual policial). Ambas são gramaticalmente corretas, com diferença semântica.'
+                        }
+                    ],
+                    'Raciocínio Lógico': [
+                        {
+                            id: 16,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'Se todos os policiais são honestos e alguns honestos são corajosos, então:',
+                            alternativas: [
+                                'Todos os corajosos são policiais.',
+                                'Alguns policiais são corajosos.',
+                                'Nenhum policial é corajoso.',
+                                'Não se pode determinar relação entre policiais e corajosos.'
+                            ],
+                            correta: 3,
+                            explicacao: 'Não há premissa que relacione diretamente policiais e corajosos. Os honestos são o termo médio, mas não garante que os policiais (todos honestos) sejam os mesmos honestos que são corajosos.'
+                        },
+                        {
+                            id: 17,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'Em uma progressão aritmética, o 3º termo é 12 e o 7º termo é 28. O 1º termo é:',
+                            alternativas: [
+                                '2',
+                                '4',
+                                '6',
+                                '8'
+                            ],
+                            correta: 1,
+                            explicacao: 'a7 = a3 + 4r → 28 = 12 + 4r → r = 4. a3 = a1 + 2r → 12 = a1 + 8 → a1 = 4.'
+                        }
+                    ],
+                    'Informática': [
+                        {
+                            id: 18,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'No Microsoft Excel, qual função calcula a média aritmética de um intervalo de células?',
+                            alternativas: [
+                                '=SOMA()',
+                                '=MÉDIA()',
+                                '=CONT.VALORES()',
+                                '=MÁXIMO()'
+                            ],
+                            correta: 1,
+                            explicacao: 'A função MÉDIA() calcula a média aritmética dos valores no intervalo especificado.'
+                        },
+                        {
+                            id: 19,
+                            banca: 'UNEB',
+                            ano: '2022',
+                            texto: 'Qual atalho do Windows seleciona todo o texto de um documento?',
+                            alternativas: [
+                                'Ctrl + C',
+                                'Ctrl + V',
+                                'Ctrl + A',
+                                'Ctrl + X'
+                            ],
+                            correta: 2,
+                            explicacao: 'Ctrl + A (Select All) seleciona todo o conteúdo do documento.'
+                        }
+                    ],
+                    'Atualidades': [
+                        {
+                            id: 20,
+                            banca: 'UNEB',
+                            ano: '2024',
+                            texto: 'A PEC da Segurança Pública, em tramitação no Congresso Nacional, propõe:',
+                            alternativas: [
+                                'A extinção da Polícia Rodoviária Federal.',
+                                'A transformação da PRF em Polícia Ostensiva Federal com ampliação de competências.',
+                                'A federalização de todas as polícias militares estaduais.',
+                                'A criação de uma polícia municipal única no Brasil.'
+                            ],
+                            correta: 1,
+                            explicacao: 'A PEC da Segurança Pública propõe transformar a PRF em Polícia Ostensiva Federal, ampliando suas competências para além das rodovias federais.'
+                        }
+                    ]
+                }
+            },
+            PRF: {
+                superior: {
+                    'Direito Constitucional': [
+                        {
+                            id: 101,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'A respeito dos direitos e garantias fundamentais, julgue o item: A inviolabilidade da liberdade de locomoção geográfica no território nacional durante o dia, independentemente de autorização, é assegurada a todos os brasileiros e aos estrangeiros residentes no País.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 5º, inciso VI, CF/88: "é inviolável a liberdade de consciência e de crença". A liberdade de locomoção é garantida, mas a assertiva confunde com liberdade de reunião. Além disso, a liberdade de locomoção pode ser restringida por determinação judicial.'
+                        },
+                        {
+                            id: 102,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: A Polícia Rodoviária Federal integra o sistema de segurança pública e compete-lhe, entre outras atribuições, o patrulhamento ostensivo das rodovias federais.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 144, §1º, CF/88: "A Polícia Rodoviária Federal, órgão permanente, organizado e mantido pela União, estruturado em carreira, destina-se, nos termos da lei, ao patrulhamento ostensivo das rodovias federais."'
+                        },
+                        {
+                            id: 103,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: O direito de petição aos poderes públicos, previsto na Constituição Federal, é assegurado exclusivamente aos cidadãos brasileiros maiores de idade.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 5º, XXXIV, CF/88: "a todos são assegurados, independentemente do pagamento de taxas: a) o direito de petição aos poderes públicos em defesa de direitos ou contra ilegalidade ou abuso de poder". Não há restrição de nacionalidade ou idade.'
+                        }
+                    ],
+                    'Direito Administrativo': [
+                        {
+                            id: 104,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: A nomeação para cargo em comissão depende de prévia habilitação em concurso público de provas ou de provas e títulos.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 37, II, CF/88: "A investidura em cargo ou emprego público depende de aprovação prévia em concurso público de provas ou de provas e títulos, de acordo com a natureza e a complexidade do cargo ou emprego". Porém, os cargos em comissão são exceção (art. 37, V), não exigindo concurso.'
+                        },
+                        {
+                            id: 105,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios da legalidade, impessoalidade, moralidade, publicidade e eficiência.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 37, caput, CF/88: "A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios de legalidade, impessoalidade, moralidade, publicidade e eficiência".'
+                        }
+                    ],
+                    'Direito Penal': [
+                        {
+                            id: 106,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: A embriaguez ao volante, prevista no art. 306 da Lei nº 9.503/1997 (CTB), é crime de perigo abstrato, não sendo necessária a comprovação de efetivo perigo de dano.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'A embriaguez ao volante é crime de perigo abstrato (ou presumido), onde basta a conduta de dirigir com concentração de álcool igual ou superior a 6 decigramas por litro de sangue, não sendo necessário demonstrar perigo concreto.'
+                        },
+                        {
+                            id: 107,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: O crime de tráfico de drogas (art. 33 da Lei nº 11.343/2006) admite a figura do autor mediato.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'O tráfico de drogas admite todas as formas de autoria, incluindo autoria mediata, coautoria e participação.'
+                        }
+                    ],
+                    'Direito Processual Penal': [
+                        {
+                            id: 108,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: O inquérito policial é considerado peça informativa indispensável à propositura da ação penal pública incondicionada.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 129, §1º, CPP: "O inquérito policial será instaurado: I - de ofício, quando o delegado de polícia tiver conhecimento da existência de infração penal". Porém, o inquérito não é indispensável; a ação penal pode ser proposta com outros meios de prova (termo circunstanciado, notícia-crime, etc.).'
+                        }
+                    ],
+                    'Direito da Criança e do Adolescente': [
+                        {
+                            id: 109,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: De acordo com o ECA, a prática de ato infracional por criança menor de 12 anos sujeita o responsável às medidas previstas no art. 112 da referida lei.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 112, ECA: "São medidas aplicáveis à criança que praticar ato infracional: I - advertência; II - obrigação de reparar o dano; III - prestação de serviços à comunidade; IV - liberação progressiva; V - inclusão em programa de acompanhamento."'
+                        }
+                    ],
+                    'Direito de Trânsito': [
+                        {
+                            id: 110,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: A suspensão do direito de dirigir é medida administrativa que pode ser aplicada pela autoridade de trânsito quando o motorista estiver reincidente em infração de natureza grave ou gravíssima.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 256, CTB: "A suspensão do direito de dirigir será aplicada pela autoridade de trânsito competente, quando o infrator: I - for reincidente no cometimento de infração de natureza grave ou gravíssima".'
+                        }
+                    ],
+                    'Português': [
+                        {
+                            id: 111,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: Na frase "O policial rodoviário federal fiscaliza as estradas", o termo "as estradas" exerce a função sintática de objeto indireto.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 1,
+                            explicacao: '"Fiscalizar" é verbo transitivo direto. "As estradas" é objeto direto (sem preposição), não indireto.'
+                        },
+                        {
+                            id: 112,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: A expressão "cujo" é pronome relativo que pode ser usado para indicar posse, substituindo a locução "do qual".',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: '"Cujo" é pronome relativo que indica posse, equivalente a "do qual", "da qual", "dos quais", "das quais". Ex: "O policial cujo carro estava parado" = "O policial do qual o carro estava parado".'
+                        }
+                    ],
+                    'Raciocínio Lógico': [
+                        {
+                            id: 113,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: Se a proposição "Todos os policiais rodoviários federais são honestos" for verdadeira, então a proposição "Algum policial rodoviário federal não é honesto" será falsa.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: '"Todos são honestos" (universal afirmativa) contradiz "Algum não é honesto" (particular negativa). Se uma é verdadeira, a outra é falsa.'
+                        },
+                        {
+                            id: 114,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: Se P → Q é verdadeira e Q é falsa, então P necessariamente é falsa.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'Na implicação P → Q, se o consequente (Q) é falso e a implicação é verdadeira, o antecedente (P) deve ser falso (modus tollens).'
+                        }
+                    ],
+                    'Noções de Informática': [
+                        {
+                            id: 115,
+                            banca: 'Cebraspe',
+                            ano: '2021',
+                            texto: 'Julgue o item: O protocolo HTTPS utiliza criptografia para garantir a segurança na transmissão de dados entre o navegador e o servidor web.',
+                            alternativas: [
+                                'Certo',
+                                'Errado'
+                            ],
+                            correta: 0,
+                            explicacao: 'HTTPS (HyperText Transfer Protocol Secure) utiliza SSL/TLS para criptografar a comunicação, garantindo confidencialidade e integridade dos dados.'
+                        }
+                    ]
+                }
+            },
+            PCBA: {
+                superior: {
+                    'Direito Constitucional': [
+                        {
+                            id: 201,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'A Constituição Federal de 1988 estabelece que a polícia judiciária, funcionalmente organizada, será exercida:',
+                            alternativas: [
+                                'Exclusivamente pela Polícia Federal.',
+                                'Pela Polícia Civil e, nos municípios onde houver, pela Guarda Municipal.',
+                                'Pela Polícia Civil, constituindo-se em carreira.',
+                                'Pelas Polícias Militares dos Estados.'
+                            ],
+                            correta: 2,
+                            explicacao: 'Art. 144, §4º, CF/88: "À polícia judiciária, funcionalmente organizada, constituindo-se em carreira, cabem as atribuições de polícia judiciária e a apuração das infrações penais, exceto as militares."'
+                        },
+                        {
+                            id: 202,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'Segundo a CF/88, são órgãos de segurança pública:',
+                            alternativas: [
+                                'A Polícia Federal, a Polícia Rodoviária Federal, a Polícia Ferroviária Federal, as Polícias Civis, as Polícias Militares e os Corpos de Bombeiros Militares.',
+                                'Apenas as Polícias Civis e Militares.',
+                                'A Polícia Federal e as Polícias Civis apenas.',
+                                'As Forças Armadas e as Polícias Militares.'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 144, CF/88: "Os órgãos de segurança pública, por meio de atividade especializada e permanente, de polícia ostensiva e de polícia judiciária, têm por finalidade assegurar a observância dos direitos e liberdades, a incolumidade das pessoas, a preservação da ordem pública e a segurança dos bens."'
+                        },
+                        {
+                            id: 203,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'A CF/88 estabelece que a lei disporá sobre os crimes de responsabilidade dos policiais civis:',
+                            alternativas: [
+                                'E a competência para o seu julgamento será do Tribunal de Justiça.',
+                                'E a competência para o seu julgamento será do Tribunal de Contas.',
+                                'E a competência para o seu julgamento será do Tribunal do Júri.',
+                                'E a competência para o seu julgamento será do Tribunal de Alcada.'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 96, III, "b", CF/88: "compete privativamente à lei estadual dispor sobre organização, garantias, remuneração, admissão, provimento de cargos, licenças e aposentadoria dos policiais civis e militares". Os crimes de responsabilidade são julgados pelo TJ.'
+                        }
+                    ],
+                    'Direito Penal': [
+                        {
+                            id: 204,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'No Código Penal, o crime de abuso de autoridade (Lei nº 13.869/2019) pode ser praticado por:',
+                            alternativas: [
+                                'Qualquer pessoa.',
+                                'Apenas funcionário público no exercício de suas funções ou a pretexto de exercê-las.',
+                                'Apenas policiais militares.',
+                                'Apenas juízes e promotores.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 1º, Lei 13.869/2019: "Considera-se crime de abuso de autoridade, nos termos desta Lei, a conduta do funcionário público que, no exercício de suas funções ou a pretexto de exercê-las..."'
+                        },
+                        {
+                            id: 205,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'A Lei Maria da Penha (Lei nº 11.340/2006) aplica-se em casos de:',
+                            alternativas: [
+                                'Violência doméstica e familiar contra a mulher.',
+                                'Apenas violência física entre cônjuges.',
+                                'Violência apenas quando há lesão corporal grave.',
+                                'Apenas em relações heteroafetivas casadas.'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 1º, Lei 11.340/2006: "Esta Lei cria mecanismos para coibir e prevenir a violência doméstica e familiar contra a mulher, nos termos do § 8º do art. 226 da Constituição Federal, da Convenção sobre a Eliminação de Todas as Formas de Violência contra a Mulher, da Convenção Interamericana para Prevenir, Punir e Erradicar a Violência contra a Mulher e de outros tratados internacionais ratificados pela República Federativa do Brasil."'
+                        }
+                    ],
+                    'Direito Processual Penal': [
+                        {
+                            id: 206,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'O inquérito policial, segundo o CPP, tem como finalidade:',
+                            alternativas: [
+                                'Julgar o acusado.',
+                                'Apurar a autoria e a materialidade da infração penal.',
+                                'Aplicar pena ao infrator.',
+                                'Executar a sentença condenatória.'
+                            ],
+                            correta: 1,
+                            explicacao: 'Art. 129, CPP: "O inquérito policial será instaurado: I - de ofício, quando o delegado de polícia tiver conhecimento da existência de infração penal; II - por determinação da autoridade judiciária; III - por requisição do Ministério Público; IV - por requisição de outra autoridade que tenha competência para o exercício da ação penal." Sua finalidade é apurar a autoria e materialidade.'
+                        },
+                        {
+                            id: 207,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'A prisão temporária, conforme a Lei nº 7.960/1989, pode durar no máximo:',
+                            alternativas: [
+                                '5 dias.',
+                                '10 dias.',
+                                '15 dias.',
+                                '30 dias.'
+                            ],
+                            correta: 0,
+                            explicacao: 'Art. 2º, Lei 7.960/89: "A prisão temporária durará 5 (cinco) dias, podendo o juiz prorrogar-la por igual período, uma única vez, mediante requisição fundamentada da autoridade policial ou do Ministério Público."'
+                        }
+                    ],
+                    'Direito Administrativo': [
+                        {
+                            id: 208,
+                            banca: 'FCC',
+                            ano: '2022',
+                            texto: 'A improbidade administrativa, segundo a Lei nº
