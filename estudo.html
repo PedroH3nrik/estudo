@@ -3,1124 +3,1653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PolicialStudy - Plataforma de Estudos para Concursos Policiais</title>
+    <title>Delta Questões - Simulador Policial Inteligente</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .slide-in { animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-        .option-card { transition: all 0.2s; cursor: pointer; }
-        .option-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .option-card.selected { border-color: #3b82f6; background-color: #eff6ff; }
-        .option-card.correct { border-color: #22c55e; background-color: #f0fdf4; }
-        .option-card.wrong { border-color: #ef4444; background-color: #fef2f2; }
-        .timer { font-variant-numeric: tabular-nums; }
-        .progress-ring { transform: rotate(-90deg); }
-        .essay-textarea { min-height: 400px; resize: vertical; }
-        .hidden-section { display: none; }
-        .visible-section { display: block; animation: fadeIn 0.5s ease-in; }
-        .banca-card { transition: all 0.3s; }
-        .banca-card:hover { transform: scale(1.02); }
-        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .pmba-theme { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-        .prf-theme { background: linear-gradient(135deg, #065f46 0%, #10b981 100%); }
-        .pc-theme { background: linear-gradient(135deg, #7c2d12 0%, #ea580c 100%); }
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes progress {
+            from { width: 0%; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        .animate-count {
+            animation: countUp 0.6s ease-out forwards;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-strong {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Custom Radio/Checkbox */
+        .option-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-card:hover {
+            transform: translateX(8px);
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .option-card.selected {
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+        .option-card.correct {
+            border-color: #10B981;
+            background: rgba(16, 185, 129, 0.15);
+        }
+        .option-card.wrong {
+            border-color: #EF4444;
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        /* Timer */
+        .timer-circle {
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3B82F6;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3B82F6;
+        }
+
+        /* Level Badge */
+        .level-badge {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #3B82F6;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Focus Mode Overlay */
+        .focus-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(15, 23, 42, 0.95) 100%);
+        }
+
+        /* Smooth transitions */
+        .page-transition {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .page-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            position: absolute;
+            width: 100%;
+        }
+        .page-active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+            position: relative;
+        }
+
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Neon text effect for important items */
+        .neon-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Card hover lift */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Progress ring */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Streak fire animation */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        .streak-fire {
+            animation: flicker 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-[#0B1120] text-[#F1F5F9] min-h-screen overflow-x-hidden">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <i class="fas fa-shield-alt text-blue-600 text-2xl mr-3"></i>
-                    <span class="font-bold text-xl text-gray-800">PolicialStudy</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div id="userStats" class="hidden md:flex items-center space-x-4 text-sm">
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                            <i class="fas fa-fire mr-1"></i> <span id="streakDays">0</span> dias
-                        </span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                            <i class="fas fa-check-circle mr-1"></i> <span id="totalCorrect">0</span> acertos
-                        </span>
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
                     </div>
-                    <button onclick="showSection('home')" class="text-gray-600 hover:text-blue-600 transition">
-                        <i class="fas fa-home text-xl"></i>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões</h1>
+                        <p class="text-xs text-slate-400 font-medium">Simulador Policial Inteligente</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="flex items-center space-x-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50">
+                        <span class="text-amber-400 text-lg streak-fire">🔥</span>
+                        <span class="text-sm font-semibold text-amber-400">12 dias</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="text-sm font-mono" id="sessionTimer">00:00</span>
+                    </div>
+                    <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Modo Foco">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
                     </button>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all">
+                        V
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- HOME SECTION -->
-    <section id="home" class="visible-section">
-        <!-- Hero -->
-        <div class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-16">
-            <div class="max-w-7xl mx-auto px-4 text-center">
-                <h1 class="text-4xl md:text-6xl font-bold mb-4">Prepare-se para a Carreira Policial</h1>
-                <p class="text-xl md:text-2xl text-blue-200 mb-8">Questões reais baseadas nos últimos editais de PMBA, PRF e PC-BA</p>
-                <div class="flex justify-center gap-4 flex-wrap">
-                    <button onclick="startSetup('PMBA')" class="bg-white text-blue-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition transform hover:scale-105 shadow-xl">
-                        <i class="fas fa-user-shield mr-2"></i>PMBA
-                    </button>
-                    <button onclick="startSetup('PRF')" class="bg-white text-green-800 px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition transform hover:scale-105 shadow-xl">
-                        <i class="fas fa-road mr-2"></i>PRF
-                    </button>
-                    <button onclick="startSetup('PCBA')" class="bg-white text-orange-800 px-8 py-4 rounded-lg font-bold text-lg hover:bg-orange-50 transition transform hover:scale-105 shadow-xl">
-                        <i class="fas fa-search mr-2"></i>PC-BA
-                    </button>
-                </div>
-                <p class="mt-6 text-sm text-blue-300">Edições atualizadas conforme editais de 2026</p>
+    <!-- Main Content -->
+    <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+
+        <!-- PAGE 1: CONFIGURATION -->
+        <div id="page-config" class="page-transition page-active">
+            <!-- Hero Section -->
+            <div class="text-center mb-12 animate-slide-in">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+                    Prepare-se como um <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 neon-text">Nível Acima</span>
+                </h2>
+                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                    Simulador inteligente para concursos policiais. Questões filtradas por temporalidade, banca e nível de dificuldade superior ao edital.
+                </p>
             </div>
-        </div>
 
-        <!-- Info Cards -->
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- PMBA Card -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
-                    <div class="pmba-theme h-2"></div>
-                    <div class="p-6">
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Configuration Panel -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Career Selection -->
+                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-2xl font-bold text-gray-800">PMBA</h3>
-                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">Nível Médio</span>
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                1. Escolha sua Carreira
+                            </h3>
+                            <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-medium">Obrigatório</span>
                         </div>
-                        <ul class="space-y-2 text-gray-600 mb-6">
-                            <li><i class="fas fa-check text-blue-500 mr-2"></i>100+ vagas previstas</li>
-                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Edital: 2º semestre/2026</li>
-                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Banca: UNEB (provável)</li>
-                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Salário: R$ 3.507,78</li>
-                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Idade: 18 a 30 anos</li>
-                            <li><i class="fas fa-check text-blue-500 mr-2"></i>Altura: 1,60m (M) / 1,55m (F)</li>
-                        </ul>
-                        <button onclick="startSetup('PMBA')" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-                            Começar Estudos
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PRF Card -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
-                    <div class="prf-theme h-2"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-2xl font-bold text-gray-800">PRF</h3>
-                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Nível Superior</span>
-                        </div>
-                        <ul class="space-y-2 text-gray-600 mb-6">
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>263 vagas solicitadas</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Edital previsto: 2026/2027</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Banca: Cebraspe (histórico)</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Salário: R$ 4.500+</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>CNH categoria B obrigatória</li>
-                            <li><i class="fas fa-check text-green-500 mr-2"></i>Prova discursiva + objetiva</li>
-                        </ul>
-                        <button onclick="startSetup('PRF')" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-                            Começar Estudos
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PC-BA Card -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
-                    <div class="pc-theme h-2"></div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-2xl font-bold text-gray-800">PC-BA</h3>
-                            <span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">Nível Superior</span>
-                        </div>
-                        <ul class="space-y-2 text-gray-600 mb-6">
-                            <li><i class="fas fa-check text-orange-500 mr-2"></i>750 vagas (500 Invest., 150 Escriv., 100 Del.)</li>
-                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Edital: Maio/2026</li>
-                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Banca: A definir</li>
-                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Salário: R$ 4.800+</li>
-                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Investigador: CNH B obrigatória</li>
-                            <li><i class="fas fa-check text-orange-500 mr-2"></i>Escrivão: Sem CNH</li>
-                        </ul>
-                        <button onclick="startSetup('PCBA')" class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
-                            Começar Estudos
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bancas Info -->
-        <div class="bg-white py-12">
-            <div class="max-w-7xl mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Bancas Organizadoras</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
-                        <h4 class="font-bold text-lg text-gray-800 mb-2">Cebraspe</h4>
-                        <p class="text-sm text-gray-600 mb-3">Utilizada pela PRF e diversos órgãos federais. Provas com questões de múltipla escolha complexas.</p>
-                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">PRF, PF, Polícia Civil DF</span>
-                    </div>
-                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
-                        <h4 class="font-bold text-lg text-gray-800 mb-2">UNEB</h4>
-                        <p class="text-sm text-gray-600 mb-3">Banca da Universidade do Estado da Bahia. Tradicional na PMBA com questões contextualizadas.</p>
-                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">PMBA (último edital)</span>
-                    </div>
-                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
-                        <h4 class="font-bold text-lg text-gray-800 mb-2">IDECAN</h4>
-                        <p class="text-sm text-gray-600 mb-3">Questões diretas e bem distribuídas. Utilizada por PMs de vários estados.</p>
-                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">PM RN, PM ES, Bombeiros MG</span>
-                    </div>
-                    <div class="banca-card bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
-                        <h4 class="font-bold text-lg text-gray-800 mb-2">FCC / Vunesp</h4>
-                        <p class="text-sm text-gray-600 mb-3">Fundação Carlos Chagas e Vunesp. Questões padronizadas e bem elaboradas.</p>
-                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">PM PI, PM SP Saúde</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SETUP SECTION -->
-    <section id="setup" class="hidden-section">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <div class="bg-white rounded-2xl shadow-xl p-8">
-                <button onclick="showSection('home')" class="text-gray-500 hover:text-gray-700 mb-4 flex items-center">
-                    <i class="fas fa-arrow-left mr-2"></i> Voltar
-                </button>
-                
-                <h2 class="text-3xl font-bold mb-6 text-gray-800" id="setupTitle">Configurar Simulado</h2>
-                
-                <div class="space-y-6">
-                    <!-- Concurso Info -->
-                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500" id="concursoInfo">
-                        <h4 class="font-bold text-blue-900" id="concursoName">PMBA</h4>
-                        <p class="text-sm text-blue-700" id="concursoDetails">Nível Médio | Banca: UNEB | 100 vagas</p>
-                    </div>
-
-                    <!-- Nível -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nível de Escolaridade</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="selectLevel('medio')" id="btnMedio" class="level-btn p-4 border-2 border-gray-300 rounded-lg text-center hover:border-blue-500 transition">
-                                <i class="fas fa-graduation-cap text-2xl mb-2 text-gray-400"></i>
-                                <div class="font-semibold">Nível Médio</div>
-                                <div class="text-xs text-gray-500">Ensino Médio Completo</div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="careerGrid">
+                            <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
+                                <div class="text-2xl mb-2">🚔</div>
+                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
+                                <div class="text-xs text-slate-400 mt-1">Polícia Militar BA</div>
+                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                                </div>
                             </button>
-                            <button onclick="selectLevel('superior')" id="btnSuperior" class="level-btn p-4 border-2 border-gray-300 rounded-lg text-center hover:border-blue-500 transition">
-                                <i class="fas fa-university text-2xl mb-2 text-gray-400"></i>
-                                <div class="font-semibold">Nível Superior</div>
-                                <div class="text-xs text-gray-500">Graduação Completa</div>
+                            <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="prf">
+                                <div class="text-2xl mb-2">🛣️</div>
+                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PRF</div>
+                                <div class="text-xs text-slate-400 mt-1">Polícia Rodoviária</div>
+                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                                </div>
+                            </button>
+                            <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pf">
+                                <div class="text-2xl mb-2">🕵️</div>
+                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PF</div>
+                                <div class="text-xs text-slate-400 mt-1">Polícia Federal</div>
+                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                                </div>
+                            </button>
+                            <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pc">
+                                <div class="text-2xl mb-2">🔍</div>
+                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PC</div>
+                                <div class="text-xs text-slate-400 mt-1">Polícia Civil</div>
+                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                                </div>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Banca -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Banca Organizadora</label>
-                        <select id="bancaSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="padrao">Padrão (Baseado no último edital)</option>
-                            <option value="cebraspe">Cebraspe (Cespe/UnB)</option>
-                            <option value="uneb">UNEB</option>
-                            <option value="idecan">IDECAN</option>
-                            <option value="fcc">FCC</option>
-                            <option value="vunesp">Vunesp</option>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-1" id="bancaInfo">Questões baseadas no perfil da banca selecionada</p>
-                    </div>
-
-                    <!-- Quantidade -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade de Questões: <span id="qtdValue" class="text-blue-600 font-bold">20</span></label>
-                        <input type="range" id="qtdQuestoes" min="10" max="100" value="20" step="10" 
-                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                               oninput="updateQtd(this.value)">
-                        <div class="flex justify-between text-xs text-gray-500 mt-1">
-                            <span>10</span>
-                            <span>50</span>
-                            <span>100</span>
-                        </div>
-                    </div>
-
-                    <!-- Disciplinas -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Disciplinas (selecione pelo menos uma)</label>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="disciplinasContainer">
-                            <!-- Preenchido via JS -->
-                        </div>
-                    </div>
-
-                    <!-- Redação -->
-                    <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
-                        <div>
-                            <label class="font-medium text-gray-700">Incluir Redação</label>
-                            <p class="text-sm text-gray-500">Simula prova discursiva com correção</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="incluirRedacao" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
-                    </div>
-
-                    <!-- Tempo -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tempo por Questão</label>
-                        <select id="tempoQuestao" class="w-full p-3 border border-gray-300 rounded-lg">
-                            <option value="0">Sem limite de tempo</option>
-                            <option value="60">1 minuto (Realista)</option>
-                            <option value="90">1 minuto e 30 segundos</option>
-                            <option value="120">2 minutos</option>
-                            <option value="180">3 minutos (Estudo)</option>
-                        </select>
-                    </div>
-
-                    <button onclick="startSimulado()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition transform hover:scale-[1.02] shadow-lg">
-                        <i class="fas fa-play mr-2"></i>Iniciar Simulado
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SIMULADO SECTION -->
-    <section id="simulado" class="hidden-section">
-        <div class="max-w-5xl mx-auto px-4 py-6">
-            <!-- Header do Simulado -->
-            <div class="bg-white rounded-xl shadow-lg p-4 mb-6 sticky top-20 z-40">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-blue-100 p-2 rounded-lg">
-                            <i class="fas fa-clock text-blue-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm text-gray-500">Tempo</div>
-                            <div class="font-bold text-xl timer" id="timer">00:00</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-4">
-                        <div class="text-center">
-                            <div class="text-sm text-gray-500">Questão</div>
-                            <div class="font-bold text-xl"><span id="currentQ">1</span>/<span id="totalQ">20</span></div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center space-x-4">
-                        <div class="text-center">
-                            <div class="text-sm text-gray-500">Acertos</div>
-                            <div class="font-bold text-xl text-green-600" id="currentScore">0</div>
-                        </div>
-                    </div>
-
-                    <button onclick="finalizarSimulado()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition text-sm">
-                        <i class="fas fa-flag-checkered mr-1"></i> Finalizar
-                    </button>
-                </div>
-                
-                <!-- Progress Bar -->
-                <div class="mt-4 bg-gray-200 rounded-full h-2">
-                    <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Questão -->
-            <div id="questaoContainer" class="bg-white rounded-2xl shadow-xl p-8 mb-6 fade-in">
-                <div class="flex items-start justify-between mb-6">
-                    <span id="questaoNumero" class="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-full text-sm">Questão 1</span>
-                    <span id="questaoDisciplina" class="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full">Direito Constitucional</span>
-                </div>
-
-                <div id="questaoTexto" class="text-lg text-gray-800 mb-8 leading-relaxed">
-                    <!-- Texto da questão -->
-                </div>
-
-                <div id="alternativasContainer" class="space-y-3">
-                    <!-- Alternativas -->
-                </div>
-
-                <!-- Feedback -->
-                <div id="feedbackArea" class="hidden mt-6 p-4 rounded-lg border-l-4">
-                    <div class="flex items-start">
-                        <i id="feedbackIcon" class="text-2xl mr-3"></i>
-                        <div>
-                            <h4 id="feedbackTitle" class="font-bold text-lg mb-1"></h4>
-                            <p id="feedbackText" class="text-gray-700 mb-2"></p>
-                            <div id="feedbackExplicacao" class="bg-gray-50 p-3 rounded text-sm text-gray-600 mt-2"></div>
-                        </div>
-                    </div>
-                    <button onclick="proximaQuestao()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-                        Próxima Questão <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Navegação -->
-            <div class="flex justify-between">
-                <button onclick="questaoAnterior()" id="btnAnterior" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition disabled:opacity-50">
-                    <i class="fas fa-arrow-left mr-2"></i>Anterior
-                </button>
-                <button onclick="proximaQuestao()" id="btnProxima" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
-                    Próxima<i class="fas fa-arrow-right ml-2"></i>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- REDAÇÃO SECTION -->
-    <section id="redacao" class="hidden-section">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <div class="bg-white rounded-2xl shadow-xl p-8">
-                <h2 class="text-3xl font-bold mb-2 text-gray-800">Prova de Redação</h2>
-                <p class="text-gray-600 mb-6">Baseada nos critérios das bancas organizadoras de concursos policiais</p>
-
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                    <h4 class="font-bold text-yellow-800 mb-1">Tema da Redação</h4>
-                    <p id="temaRedacao" class="text-yellow-700">"A importância da inteligência policial no combate ao crime organizado na era digital"</p>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Linhas: <span id="linhaCount">0</span>/30 (mínimo)</label>
-                    <textarea id="textoRedacao" class="essay-textarea w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg leading-relaxed" placeholder="Digite sua redação aqui..."></textarea>
-                </div>
-
-                <div class="flex gap-4">
-                    <button onclick="corrigirRedacao()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
-                        <i class="fas fa-check-circle mr-2"></i>Corrigir Redação
-                    </button>
-                    <button onclick="pularRedacao()" class="px-6 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition">
-                        Pular
-                    </button>
-                </div>
-
-                <!-- Resultado da Correção -->
-                <div id="resultadoRedacao" class="hidden mt-8 space-y-4">
-                    <h3 class="text-2xl font-bold text-gray-800">Resultado da Correção</h3>
-                    
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-bold text-gray-700 mb-2">Nota Final</h4>
-                            <div class="text-4xl font-bold text-blue-600" id="notaRedacao">0.0</div>
-                            <div class="text-sm text-gray-500">de 10.0 pontos</div>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-bold text-gray-700 mb-2">Classificação</h4>
-                            <div class="text-xl font-bold" id="classificacaoRedacao">-</div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3" id="criteriosRedacao">
-                        <!-- Critérios preenchidos via JS -->
-                    </div>
-
-                    <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-blue-800 mb-2">Feedback do Corretor</h4>
-                        <p id="feedbackRedacao" class="text-blue-700"></p>
-                    </div>
-
-                    <button onclick="showResults()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
-                        Ver Resultado Final <i class="fas fa-trophy ml-2"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- RESULTADOS SECTION -->
-    <section id="resultados" class="hidden-section">
-        <div class="max-w-4xl mx-auto px-4 py-8">
-            <div class="bg-white rounded-2xl shadow-xl p-8 text-center">
-                <div class="mb-6">
-                    <i class="fas fa-trophy text-6xl text-yellow-400 mb-4"></i>
-                    <h2 class="text-4xl font-bold text-gray-800 mb-2">Resultado Final</h2>
-                    <p class="text-gray-600">Simulado <span id="resultConcurso">PMBA</span> - <span id="resultBanca">UNEB</span></p>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-6 mb-8">
-                    <div class="stat-card text-white p-6 rounded-xl">
-                        <div class="text-3xl font-bold" id="resultTotal">0</div>
-                        <div class="text-sm opacity-90">Total de Questões</div>
-                    </div>
-                    <div class="bg-green-500 text-white p-6 rounded-xl">
-                        <div class="text-3xl font-bold" id="resultAcertos">0</div>
-                        <div class="text-sm opacity-90">Acertos</div>
-                    </div>
-                    <div class="bg-red-500 text-white p-6 rounded-xl">
-                        <div class="text-3xl font-bold" id="resultErros">0</div>
-                        <div class="text-sm opacity-90">Erros</div>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 rounded-xl p-6 mb-8">
-                    <div class="flex items-center justify-center mb-4">
-                        <div class="relative w-32 h-32">
-                            <svg class="w-32 h-32 transform -rotate-90">
-                                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="8" fill="none"/>
-                                <circle id="resultCircle" cx="64" cy="64" r="56" stroke="#3b82f6" stroke-width="8" fill="none" stroke-dasharray="351.86" stroke-dashoffset="351.86"/>
+                    <!-- Banca & Level -->
+                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="text-2xl font-bold text-gray-800" id="resultPercent">0%</span>
+                            2. Banca Examinadora & Nível de Dificuldade
+                        </h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Banca</label>
+                                <select id="bancaSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                                    <option value="">Selecione a banca...</option>
+                                    <option value="fcc">FCC - Fundação Carlos Chagas</option>
+                                    <option value="cebraspe">CEBRASPE (CESPE)</option>
+                                    <option value="fgv">FGV - Fundação Getúlio Vargas</option>
+                                    <option value="ibfc">IBFC - Instituto Brasileiro de Formação</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">
+                                    Nível de Dificuldade
+                                    <span class="has-tooltip inline-block ml-1">
+                                        <svg class="w-4 h-4 text-slate-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <span class="tooltip absolute bg-slate-800 text-xs text-slate-300 p-2 rounded-lg border border-slate-700 w-48 -mt-12 ml-2 z-50">
+                                            Sempre um nível acima do edital para garantir sua aprovação!
+                                        </span>
+                                    </span>
+                                </label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="setLevel('normal')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-level="normal">
+                                        Padrão
+                                    </button>
+                                    <button onclick="setLevel('hard')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all level-active bg-amber-500/10 border-amber-500 text-amber-400" data-level="hard">
+                                        +1 Nível 🔥
+                                    </button>
+                                    <button onclick="setLevel('expert')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-red-500 hover:text-red-400 transition-all" data-level="expert">
+                                        Expert ⚡
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level Info Card -->
+                        <div id="levelInfo" class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">🎯</span>
+                                <div>
+                                    <h4 class="font-semibold text-amber-400 mb-1">Modo: Um Nível Acima</h4>
+                                    <p class="text-sm text-slate-400">Questões 20% mais difíceis que o padrão da <span id="bancaName">banca selecionada</span>. Inclui pegadinhas avançadas e interpretações complexas.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2" id="resultStatus">Analisando...</h3>
-                    <p class="text-gray-600" id="resultMessage"></p>
+
+                    <!-- Filters -->
+                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.3s">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            3. Filtros Inteligentes
+                        </h3>
+
+                        <div class="space-y-4">
+                            <!-- Temporal Filter -->
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Temporalidade</div>
+                                        <div class="text-xs text-slate-400">Filtrar por ano das questões</div>
+                                    </div>
+                                </div>
+                                <select id="temporalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                                    <option value="2">Últimos 2 anos</option>
+                                    <option value="5" selected>Últimos 5 anos</option>
+                                    <option value="all">Todos os anos</option>
+                                </select>
+                            </div>
+
+                            <!-- Anti-Mofo Filter -->
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Filtro Anti-Mofo</div>
+                                        <div class="text-xs text-slate-400">Remover leis revogadas e questões anuladas</div>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="antiMofo" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                </label>
+                            </div>
+
+                            <!-- Remove Annulled -->
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Remover Anuladas</div>
+                                        <div class="text-xs text-slate-400">Excluir questões anuladas após recursos</div>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="removeAnnulled" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Essay Module -->
+                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.4s">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                4. Módulo de Redação (Opcional)
+                            </h3>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="essayToggle" class="sr-only peer" onchange="toggleEssay()">
+                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                            </label>
+                        </div>
+                        
+                        <div id="essayConfig" class="hidden space-y-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">📝</span>
+                                <div>
+                                    <p class="text-sm text-purple-300">Tema será baseado em editais reais da banca selecionada</p>
+                                    <p class="text-xs text-slate-400 mt-1">Tempo adicional: <span class="font-mono text-purple-400">1h 30min</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Start Button -->
+                    <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.5s">
+                        <span>Iniciar Simulação</span>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
                 </div>
 
-                <div id="redacaoResult" class="hidden bg-orange-50 border-2 border-orange-200 rounded-xl p-6 mb-8">
-                    <h3 class="text-xl font-bold text-orange-800 mb-2">Redação</h3>
-                    <div class="text-3xl font-bold text-orange-600" id="resultRedacaoNota">0.0</div>
-                    <p class="text-sm text-orange-600">Nota máxima: 10.0</p>
-                </div>
+                <!-- Sidebar Stats -->
+                <div class="space-y-6">
+                    <!-- Quick Stats -->
+                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
+                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Desempenho</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Questões Respondidas</span>
+                                <span class="font-mono text-xl font-bold text-white">1.247</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 68%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-slate-400">Taxa de Acerto</span>
+                                <span class="font-mono text-xl font-bold text-green-400">72%</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                            </div>
 
-                <div class="bg-blue-50 rounded-xl p-6 mb-8 text-left">
-                    <h3 class="font-bold text-blue-900 mb-4">Análise por Disciplina</h3>
-                    <div id="analiseDisciplinas" class="space-y-3">
-                        <!-- Preenchido via JS -->
+                            <div class="pt-4 border-t border-slate-700/50">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400">Nota de Corte PRF</span>
+                                    <span class="font-mono text-sm font-bold text-amber-400">73 pts (60%)</span>
+                                </div>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-slate-400">Sua Média</span>
+                                    <span class="font-mono text-sm font-bold text-green-400">86.4 pts</span>
+                                </div>
+                                <div class="mt-2 text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-lg inline-block">
+                                    ✅ Você estaria APROVADO
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Study Streak -->
+                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
+                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sequência de Estudos</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-white">12</div>
+                                <div class="text-xs text-slate-400">dias seguidos</div>
+                            </div>
+                            <div class="flex gap-1">
+                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">S</div>
+                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">T</div>
+                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">Q</div>
+                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">Q</div>
+                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">S</div>
+                                <div class="w-8 h-8 rounded bg-slate-700/50 flex items-center justify-center text-xs text-slate-500">S</div>
+                                <div class="w-8 h-8 rounded bg-blue-500/30 flex items-center justify-center text-xs text-blue-400 border border-blue-500/50">D</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weak Areas -->
+                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.4s">
+                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Pontos Fracos Detectados</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+                                <span class="text-sm text-red-300">Direito Constitucional</span>
+                                <span class="text-xs font-mono text-red-400">45%</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                                <span class="text-sm text-amber-300">Raciocínio Lógico</span>
+                                <span class="text-xs font-mono text-amber-400">58%</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                                <span class="text-sm text-blue-300">Direito Penal</span>
+                                <span class="text-xs font-mono text-blue-400">62%</span>
+                            </div>
+                        </div>
+                        <button class="w-full mt-4 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all">
+                            Ver Detalhes Completos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: SIMULATION INTERFACE -->
+        <div id="page-sim" class="page-transition page-hidden">
+            <!-- Top Bar -->
+            <div class="glass rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
+                        <span class="font-semibold text-white" id="simCareer">PMBA</span>
+                    </div>
+                    <div class="h-6 w-px bg-slate-700"></div>
+                    <div class="flex items-center gap-2 text-slate-400 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span id="simBanca">FCC</span>
+                    </div>
+                    <div class="level-badge px-3 py-1 rounded-full text-xs font-bold text-white">
+                        NÍVEL +1
                     </div>
                 </div>
 
-                <div class="flex gap-4 justify-center">
-                    <button onclick="revisarQuestoes()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition">
-                        <i class="fas fa-book-open mr-2"></i>Revisar Questões
-                    </button>
-                    <button onclick="showSection('home')" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
-                        <i class="fas fa-home mr-2"></i>Novo Simulado
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+                <div class="flex items-center gap-6">
+                    <!-- Progress -->
+                    <div class="hidden sm:flex items-center gap-3">
+                        <span class="text-sm text-slate-400">Questão</span>
+                        <span class="font-mono text-lg font-bold text-white"><span id="currentQ">1</span>/<span id="totalQ">50</span></span>
+                        <div class="w-32 bg-slate-800 rounded-full h-2">
+                            <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 2%"></div>
+                        </div>
+                    </div>
 
-    <!-- REVISÃO SECTION -->
-    <section id="revisao" class="hidden-section">
-        <div class="max-w-5xl mx-auto px-4 py-8">
-            <div class="bg-white rounded-2xl shadow-xl p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-3xl font-bold text-gray-800">Revisão de Questões</h2>
-                    <button onclick="showSection('resultados')" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-arrow-left mr-2"></i>Voltar aos Resultados
+                    <!-- Timer -->
+                    <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl px-4 py-2 border border-slate-700/50">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span id="mainTimer" class="font-mono text-xl font-bold text-white">02:00:00</span>
+                    </div>
+
+                    <button onclick="finishSimulation()" class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all text-sm font-medium border border-red-500/30">
+                        Finalizar
                     </button>
                 </div>
-                
-                <div id="revisaoContainer" class="space-y-8">
-                    <!-- Preenchido via JS -->
+            </div>
+
+            <div class="grid lg:grid-cols-4 gap-6">
+                <!-- Question Area -->
+                <div class="lg:col-span-3 space-y-6">
+                    <!-- Question Card -->
+                    <div class="glass rounded-2xl p-6 md:p-8">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <span id="qNumber" class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">1</span>
+                                <div>
+                                    <span id="qSubject" class="text-sm text-blue-400 font-medium">Direito Constitucional</span>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Banca: FCC 2024</span>
+                                        <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">Nível: Difícil</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="markDoubt()" id="doubtBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Dúvida
+                            </button>
+                        </div>
+
+                        <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8">
+                            Com base na Constituição Federal de 1988 e na jurisprudência consolidada do STF, analise as seguintes assertivas sobre o direito de reunião:
+                            <br><br>
+                            I. O direito de reunião, mesmo em templos ou locais de educação, é absoluto e não admite restrições de qualquer natureza.
+                            <br><br>
+                            II. A autoridade competente pode, mediante requerimento, exigir que a reunião se realize em local diverso do inicialmente pretendido, desde que haja justificativa fundamentada de ordem pública.
+                            <br><br>
+                            III. A necessidade de prévio aviso à autoridade competente para a realização de reunião em logradouro público não configura cerceamento ao direito constitucional, desde que não se exija autorização que possa ser arbitrariamente negada.
+                            <br><br>
+                            Está correto o que se afirma em:
+                        </div>
+
+                        <!-- Options -->
+                        <div class="space-y-3" id="optionsContainer">
+                            <button onclick="selectOption(0)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
+                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">A</span>
+                                <span class="text-slate-300 group-hover:text-white transition-colors">Apenas I</span>
+                            </button>
+                            <button onclick="selectOption(1)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
+                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">B</span>
+                                <span class="text-slate-300 group-hover:text-white transition-colors">Apenas II</span>
+                            </button>
+                            <button onclick="selectOption(2)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
+                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">C</span>
+                                <span class="text-slate-300 group-hover:text-white transition-colors">I e III</span>
+                            </button>
+                            <button onclick="selectOption(3)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
+                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">D</span>
+                                <span class="text-slate-300 group-hover:text-white transition-colors">II e III</span>
+                            </button>
+                            <button onclick="selectOption(4)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
+                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">E</span>
+                                <span class="text-slate-300 group-hover:text-white transition-colors">I, II e III</span>
+                            </button>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
+                            <button onclick="previousQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-50" id="prevBtn">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                                Anterior
+                            </button>
+                            
+                            <div class="flex gap-3">
+                                <button onclick="skipQuestion()" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white transition-all text-sm">
+                                    Pular
+                                </button>
+                                <button onclick="confirmAnswer()" id="confirmBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                                    Confirmar
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Commentary (Hidden initially) -->
+                    <div id="commentaryBox" class="hidden glass rounded-2xl p-6 border-l-4 border-green-500">
+                        <h4 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Gabarito Comentado
+                        </h4>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Resposta correta: Letra D (II e III)</strong>
+                        </p>
+                        <div class="space-y-3 text-sm text-slate-400">
+                            <p><span class="text-red-400 font-semibold">I - INCORRETA:</span> O direito de reunião <strong class="text-slate-300">NÃO é absoluto</strong>. O art. 5º, XVI, da CF/88 estabelece que a reunião em templos ou locais de educação <strong class="text-slate-300">só pode ocorrer no término das atividades</strong>, o que demonstra uma restrição constitucionalmente prevista.</p>
+                            <p><span class="text-green-400 font-semibold">II - CORRETA:</span> Conforme entendimento do STF (ADI 4.146-MC), a autoridade pode determinar alteração de local desde que haja justificativa fundamentada de ordem pública, não se tratando de censura prévia.</p>
+                            <p><span class="text-green-400 font-semibold">III - CORRETA:</span> O prévio aviso (comunicação) é exigência constitucionalmente legítima (art. 5º, XVI), desde que não se transforme em autorização sujeita a arbítrio da autoridade.</p>
+                        </div>
+                        <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                            <p class="text-xs text-blue-400 font-medium">📚 Fundamentação Legal: Art. 5º, XVI, CF/88 | Súmula Vinculante 14, STF</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Navigator -->
+                <div class="lg:col-span-1">
+                    <div class="glass rounded-2xl p-4 sticky top-24">
+                        <h4 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Navegador</h4>
+                        <div class="grid grid-cols-5 gap-2 mb-4" id="questionGrid">
+                            <!-- Generated by JS -->
+                        </div>
+                        
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded bg-blue-500"></div>
+                                <span class="text-slate-400">Respondida</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded bg-amber-500"></div>
+                                <span class="text-slate-400">Dúvida</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
+                                <span class="text-slate-400">Pendente</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini Stats -->
+                        <div class="mt-6 pt-4 border-t border-slate-700/50">
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div class="p-2 rounded-lg bg-green-500/10">
+                                    <div class="text-lg font-bold text-green-400" id="miniCorrect">0</div>
+                                    <div class="text-[10px] text-slate-500">Acertos</div>
+                                </div>
+                                <div class="p-2 rounded-lg bg-red-500/10">
+                                    <div class="text-lg font-bold text-red-400" id="miniWrong">0</div>
+                                    <div class="text-[10px] text-slate-500">Erros</div>
+                                </div>
+                                <div class="p-2 rounded-lg bg-slate-700/30">
+                                    <div class="text-lg font-bold text-slate-400" id="miniBlank">50</div>
+                                    <div class="text-[10px] text-slate-500">Brancas</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- PAGE 3: RESULTS & DIAGNOSTIC -->
+        <div id="page-result" class="page-transition page-hidden">
+            <!-- Header Result -->
+            <div class="text-center mb-8 animate-slide-in">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 font-semibold mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Simulação Concluída
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Aprovação</h2>
+                <p class="text-slate-400">Análise completa do seu desempenho comparada ao último concurso</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <!-- Main Score Card -->
+                <div class="lg:col-span-1 glass rounded-2xl p-6 text-center animate-slide-in" style="animation-delay: 0.1s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sua Performance</h3>
+                    
+                    <div class="relative w-48 h-48 mx-auto mb-4">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="96" cy="96" r="88" stroke="#1e293b" stroke-width="12" fill="none"/>
+                            <circle id="scoreCircle" cx="96" cy="96" r="88" stroke="#10B981" stroke-width="12" fill="none" 
+                                stroke-dasharray="553" stroke-dashoffset="138" stroke-linecap="round" class="transition-all duration-1000"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-4xl font-bold text-white" id="finalScore">75%</span>
+                            <span class="text-sm text-slate-400 mt-1">de acerto</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Acertos</span>
+                            <span class="font-bold text-green-400" id="finalCorrect">38</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Erros</span>
+                            <span class="font-bold text-red-400" id="finalWrong">8</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-400">Brancas</span>
+                            <span class="font-bold text-slate-400" id="finalBlank">4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approval Probability -->
+                <div class="lg:col-span-2 glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Probabilidade de Aprovação</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-green-400 font-semibold">Sua Média</span>
+                                    <span class="text-2xl font-bold text-green-400" id="yourAverage">86.4 pts</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-3">
+                                    <div class="bg-green-500 h-3 rounded-full" style="width: 86%"></div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-slate-400 font-semibold">Nota de Corte Histórica</span>
+                                    <span class="text-2xl font-bold text-slate-400" id="cutoffScore">72.0 pts</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-3">
+                                    <div class="bg-slate-600 h-3 rounded-full" style="width: 72%"></div>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Baseado no último concurso PRF 2022/2024</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-2xl">🎯</div>
+                                    <div>
+                                        <div class="text-lg font-bold text-blue-400">Você estaria APROVADO!</div>
+                                        <div class="text-sm text-slate-400">14.4 pts acima da nota de corte</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Radar Chart -->
+                        <div class="chart-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.3s">
+                <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    Análise por Matéria
+                </h3>
+
+                <div class="space-y-4" id="subjectAnalysis">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.4s">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Plano de Ação Inteligente
+                </h3>
+                
+                <div class="grid md:grid-cols-3 gap-4" id="actionPlan">
+                    <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                        <div class="text-red-400 font-semibold mb-2">🔥 Prioridade Máxima</div>
+                        <p class="text-sm text-slate-400">Direito Constitucional - Art. 5º (Direitos Fundamentais). Sua taxa de acerto está 15% abaixo da média de aprovação.</p>
+                        <button class="mt-3 w-full py-2 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
+                            Iniciar Revisão Agora
+                        </button>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                        <div class="text-amber-400 font-semibold mb-2">⚡ Reforço Necessário</div>
+                        <p class="text-sm text-slate-400">Raciocínio Lógico - Diagramas e argumentação. Questões de nível +1 estão te desafiando mais que o normal.</p>
+                        <button class="mt-3 w-full py-2 rounded-lg bg-amber-500/20 text-amber-400 text-sm hover:bg-amber-500/30 transition-all">
+                            Ver Questões Similares
+                        </button>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                        <div class="text-green-400 font-semibold mb-2">✅ Manter Desempenho</div>
+                        <p class="text-sm text-slate-400">Direito Penal - Parte Geral. Você está 8% acima da média. Continue resolvendo 10 questões/dia para manter.</p>
+                        <button class="mt-3 w-full py-2 rounded-lg bg-green-500/20 text-green-400 text-sm hover:bg-green-500/30 transition-all">
+                            Praticar Mais
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wrong Questions Review -->
+            <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.5s">
+                <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros</h3>
+                <div class="space-y-3" id="wrongQuestionsList">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-4 justify-center animate-slide-in" style="animation-delay: 0.6s">
+                <button onclick="newSimulation()" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Novo Simulado
+                </button>
+                <button onclick="reviewErrors()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-all flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    Revisar Apenas Erros
+                </button>
+                <button onclick="shareResult()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-green-500 hover:text-green-400 transition-all flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                    </svg>
+                    Compartilhar
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Focus Mode Overlay -->
+    <div id="focusOverlay" class="fixed inset-0 z-[100] focus-overlay hidden flex items-center justify-center">
+        <div class="text-center">
+            <div class="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+                <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Modo Foco Ativado</h3>
+            <p class="text-slate-400 mb-6">Distrações bloqueadas. Foque apenas na questão.</p>
+            <div class="font-mono text-4xl font-bold text-blue-400 mb-6" id="focusTimer">25:00</div>
+            <button onclick="toggleFocusMode()" class="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-all">
+                Sair do Modo Foco
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-blue-500">
+            <div id="toastIcon">ℹ️</div>
+            <div>
+                <div id="toastTitle" class="font-semibold text-white">Notificação</div>
+                <div id="toastMessage" class="text-sm text-slate-400">Mensagem aqui</div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // ===== BANCO DE QUESTÕES REALES BASEADOS EM EDITAIS =====
-        const questoesDB = {
-            PMBA: {
-                medio: {
-                    'Direito Constitucional': [
-                        {
-                            id: 1,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Segundo a Constituição Federal de 1988, a Polícia Militar é instituição de:',
-                            alternativas: [
-                                'Forças Armadas, responsável pela defesa externa do país.',
-                                'Segurança Pública, responsável pela polícia ostensiva e preservação da ordem pública.',
-                                'Justiça Federal, responsável pela investigação de crimes federais.',
-                                'Administração Penitenciária, responsável pelo cumprimento de penas.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 144, CF/88: "Às polícias militares cabem a polícia ostensiva e a preservação da ordem pública."'
-                        },
-                        {
-                            id: 2,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'A Constituição Federal estabelece que os militares dos Estados, quando em serviço, estão subordinados:',
-                            alternativas: [
-                                'Aos Governadores dos Estados, exclusivamente.',
-                                'Ao Presidente da República, como Comandante Supremo.',
-                                'Às autoridades policiais civis, em caso de conflito de competência.',
-                                'Às autoridades militares dos Estados e, quando convocados, às autoridades federais.'
-                            ],
-                            correta: 3,
-                            explicacao: 'Art. 42, §1º, CF/88: "Os militares dos Estados, do Distrito Federal e dos Territórios, quando em serviço, ficam subordinados aos Governadores dos Estados, ao Governador do Distrito Federal e aos Prefeitos dos Territórios, respectivamente, e, quando convocados, ao Presidente da República."'
-                        },
-                        {
-                            id: 3,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'De acordo com a CF/88, o direito de reunião, em locais abertos ao público, depende de:',
-                            alternativas: [
-                                'Autorização prévia da autoridade policial competente.',
-                                'Apenas comunicação prévia à autoridade competente, podendo esta opor-se apenas mediante decisão fundamentada.',
-                                'Autorização do Poder Judiciário em todos os casos.',
-                                'Não depende de qualquer comunicação prévia.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 5º, XVI, CF/88: "Todos podem reunir-se pacificamente, sem armas, em locais abertos ao público, independentemente de autorização, desde que não frustrem outra reunião anteriormente convocada para o mesmo local, sendo apenas exigido prévio aviso à autoridade competente."'
-                        },
-                        {
-                            id: 4,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'A Constituição Federal garante a inviolabilidade do domicílio, salvo:',
-                            alternativas: [
-                                'Em caso de perigo público ou de lesão a terceiro, durante o dia.',
-                                'Em caso de flagrante delito ou desastre, para prestar socorro.',
-                                'Por determinação judicial, durante a noite.',
-                                'Todas as alternativas estão corretas.'
-                            ],
-                            correta: 3,
-                            explicacao: 'Art. 5º, XI, CF/88: "A casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo em caso de flagrante delito ou desastre, ou para prestar socorro, ou, durante o dia, por determinação judicial."'
-                        },
-                        {
-                            id: 5,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Segundo o art. 144 da CF/88, compete às polícias militares, além da polícia ostensiva:',
-                            alternativas: [
-                                'A polícia judiciária e a investigação criminal.',
-                                'A polícia militar e corpo de bombeiros militares.',
-                                'A execução de penas privativas de liberdade.',
-                                'A defesa civil exclusivamente.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 144, §5º, CF/88: "Às polícias militares cabem, além das atribuições definidas na lei, a polícia ostensiva fardada e a preservação da ordem pública; e, aos corpos de bombeiros militares, além das atribuições definidas na lei, o exercício de atividades de defesa civil."'
-                        }
-                    ],
-                    'Direito Penal': [
-                        {
-                            id: 6,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Segundo o Código Penal Brasileiro, é punível a tentativa quando, iniciada a execução do crime:',
-                            alternativas: [
-                                'O agente desiste voluntariamente de prosseguir.',
-                                'O crime não se consuma por circunstâncias alheias à vontade do agente.',
-                                'O agente comete outro crime em vez do planejado.',
-                                'A vítima se recusa a participar do crime.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 14, II, CP: "Iniciada a execução, o crime não se consuma, ou não se apresenta nas condições previstas por lei, por circunstâncias alheias à vontade do agente."'
-                        },
-                        {
-                            id: 7,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'No Código Penal, o crime de desobediência (art. 330) exige:',
-                            alternativas: [
-                                'Uso de violência ou grave ameaça.',
-                                'Desobediência a ordem legal de funcionário público.',
-                                'Dano ao patrimônio público.',
-                                'Lesão corporal na vítima.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 330, CP: "Desobedecer a ordem legal de funcionário público." Trata-se de crime contra a administração pública.'
-                        },
-                        {
-                            id: 8,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'A legítima defesa, conforme o art. 25 do CP, exige:',
-                            alternativas: [
-                                'Agressão injusta, atual ou iminente, emprego dos meios necessários e proporcionalidade.',
-                                'Apenas a intenção de defender-se, independentemente da proporção.',
-                                'Que o defensor seja pessoa de boa fama.',
-                                'Que a agressão já tenha ocorrido e o agente queira vingança.'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 25, CP: "Entende-se em legítima defesa quem, usando moderadamente dos meios necessários, repele injusta agressão, atual ou iminente, a direito seu ou de outrem."'
-                        },
-                        {
-                            id: 9,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'O crime de resistência (art. 329 do CP) consiste em:',
-                            alternativas: [
-                                'Opor-se à execução de ato legal, mediante violência ou ameaça grave.',
-                                'Desacatar autoridade policial verbalmente.',
-                                'Recusar-se a prestar depoimento.',
-                                'Fugir do local de crime sem usar violência.'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 329, CP: "Opor-se à execução de ato legal, mediante violência ou grave ameaça, ou, tendo sido executado o ato, praticar violência ou grave ameaça, em razão dele, contra o funcionário competente para executá-lo ou que dele tenha participado."'
-                        },
-                        {
-                            id: 10,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'A prescrição da pretensão punitiva do crime de lesão corporal leve (pena máxima de 1 ano) ocorre em:',
-                            alternativas: [
-                                '2 anos.',
-                                '4 anos.',
-                                '8 anos.',
-                                '12 anos.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 109, IV, CP: "4 (quatro) anos, se a pena máxima for igual ou superior a 1 (um) ano e inferior a 2 (dois) anos."'
-                        }
-                    ],
-                    'Direito Processual Penal': [
-                        {
-                            id: 11,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Segundo o CPP, o flagrante delito pode ser:',
-                            alternativas: [
-                                'Apenas quando o agente é pego no momento exato do crime.',
-                                'Quando o agente é pego em situação que o faça suspeito de ter praticado o crime recentemente.',
-                                'Somente quando há testemunhas oculares.',
-                                'Exclusivamente quando o crime é hediondo.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 302, CPP: "Considera-se em flagrante delito quem: I - está cometendo a infração penal; II - acaba de cometê-la; III - é perseguido, logo após, pela autoridade, pelo ofendido ou por qualquer pessoa, em situação que faça presumir ser autor da infração; IV - é encontrado, logo depois, com instrumentos, armas, objetos ou papéis que façam presumir ser ele autor da infração."'
-                        },
-                        {
-                            id: 12,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'A prisão em flagrante deve ser comunicada à autoridade judiciária em até:',
-                            alternativas: [
-                                '6 horas.',
-                                '12 horas.',
-                                '24 horas.',
-                                '48 horas.'
-                            ],
-                            correta: 2,
-                            explicacao: 'Art. 304, CPP: "A prisão em flagrante será comunicada, imediatamente, ao juiz competente, ao Ministério Público e à família do preso ou à pessoa por ele indicada." A comunicação deve ser imediata, e o preso deve ser apresentado ao juiz em até 24h (art. 306).'
-                        }
-                    ],
-                    'Português': [
-                        {
-                            id: 13,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Assinale a alternativa em que a concordância verbal está correta:',
-                            alternativas: [
-                                'Havia muitos policiais no local do crime.',
-                                'Existem muitas provas no inquérito policial.',
-                                'Fazem dois anos que o crime ocorreu.',
-                                'Todas as alternativas estão corretas.'
-                            ],
-                            correta: 3,
-                            explicacao: 'Em todas as alternativas a concordância está correta: "havia" (impessoal, singular), "existem" (plural com plural), "fazem" (tempo decorrido, plural).'
-                        },
-                        {
-                            id: 14,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'Na frase "O policial prendeu o assaltante", o termo "o assaltante" é:',
-                            alternativas: [
-                                'Sujeito simples.',
-                                'Objeto direto.',
-                                'Objeto indireto.',
-                                'Complemento nominal.'
-                            ],
-                            correta: 1,
-                            explicacao: '"Prender" é verbo transitivo direto, exigindo objeto direto (sem preposição). "O assaltante" sofre a ação de prender, sendo objeto direto.'
-                        },
-                        {
-                            id: 15,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Assinale a alternativa em que o uso da vírgula está correto:',
-                            alternativas: [
-                                'O policial, que estava de folga, impediu o assalto.',
-                                'O policial que estava de folga impediu o assalto.',
-                                'Ambas estão corretas, com diferença de sentido.',
-                                'Ambas estão incorretas.'
-                            ],
-                            correta: 2,
-                            explicacao: 'Com vírgula: oração subordinada adjetiva explicativa (informação acessória). Sem vírgula: oração restritiva (especifica qual policial). Ambas são gramaticalmente corretas, com diferença semântica.'
-                        }
-                    ],
-                    'Raciocínio Lógico': [
-                        {
-                            id: 16,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'Se todos os policiais são honestos e alguns honestos são corajosos, então:',
-                            alternativas: [
-                                'Todos os corajosos são policiais.',
-                                'Alguns policiais são corajosos.',
-                                'Nenhum policial é corajoso.',
-                                'Não se pode determinar relação entre policiais e corajosos.'
-                            ],
-                            correta: 3,
-                            explicacao: 'Não há premissa que relacione diretamente policiais e corajosos. Os honestos são o termo médio, mas não garante que os policiais (todos honestos) sejam os mesmos honestos que são corajosos.'
-                        },
-                        {
-                            id: 17,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'Em uma progressão aritmética, o 3º termo é 12 e o 7º termo é 28. O 1º termo é:',
-                            alternativas: [
-                                '2',
-                                '4',
-                                '6',
-                                '8'
-                            ],
-                            correta: 1,
-                            explicacao: 'a7 = a3 + 4r → 28 = 12 + 4r → r = 4. a3 = a1 + 2r → 12 = a1 + 8 → a1 = 4.'
-                        }
-                    ],
-                    'Informática': [
-                        {
-                            id: 18,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'No Microsoft Excel, qual função calcula a média aritmética de um intervalo de células?',
-                            alternativas: [
-                                '=SOMA()',
-                                '=MÉDIA()',
-                                '=CONT.VALORES()',
-                                '=MÁXIMO()'
-                            ],
-                            correta: 1,
-                            explicacao: 'A função MÉDIA() calcula a média aritmética dos valores no intervalo especificado.'
-                        },
-                        {
-                            id: 19,
-                            banca: 'UNEB',
-                            ano: '2022',
-                            texto: 'Qual atalho do Windows seleciona todo o texto de um documento?',
-                            alternativas: [
-                                'Ctrl + C',
-                                'Ctrl + V',
-                                'Ctrl + A',
-                                'Ctrl + X'
-                            ],
-                            correta: 2,
-                            explicacao: 'Ctrl + A (Select All) seleciona todo o conteúdo do documento.'
-                        }
-                    ],
-                    'Atualidades': [
-                        {
-                            id: 20,
-                            banca: 'UNEB',
-                            ano: '2024',
-                            texto: 'A PEC da Segurança Pública, em tramitação no Congresso Nacional, propõe:',
-                            alternativas: [
-                                'A extinção da Polícia Rodoviária Federal.',
-                                'A transformação da PRF em Polícia Ostensiva Federal com ampliação de competências.',
-                                'A federalização de todas as polícias militares estaduais.',
-                                'A criação de uma polícia municipal única no Brasil.'
-                            ],
-                            correta: 1,
-                            explicacao: 'A PEC da Segurança Pública propõe transformar a PRF em Polícia Ostensiva Federal, ampliando suas competências para além das rodovias federais.'
-                        }
-                    ]
-                }
+        // ===== STATE MANAGEMENT =====
+        const state = {
+            career: null,
+            banca: '',
+            level: 'hard',
+            temporalFilter: '5',
+            antiMofo: true,
+            removeAnnulled: true,
+            includeEssay: false,
+            currentQuestion: 0,
+            totalQuestions: 50,
+            answers: {},
+            doubts: new Set(),
+            timer: null,
+            timeRemaining: 7200, // 2 hours in seconds
+            focusMode: false,
+            focusTimer: null,
+            focusTimeRemaining: 1500 // 25 minutes
+        };
+
+        // Mock Questions Database
+        const questionsDB = [
+            {
+                id: 1,
+                subject: 'Direito Constitucional',
+                banca: 'FCC',
+                year: 2024,
+                text: 'Com base na Constituição Federal de 1988 e na jurisprudência consolidada do STF, analise as seguintes assertivas sobre o direito de reunião:\n\nI. O direito de reunião, mesmo em templos ou locais de educação, é absoluto e não admite restrições de qualquer natureza.\n\nII. A autoridade competente pode, mediante requerimento, exigir que a reunião se realize em local diverso do inicialmente pretendido, desde que haja justificativa fundamentada de ordem pública.\n\nIII. A necessidade de prévio aviso à autoridade competente para a realização de reunião em logradouro público não configura cerceamento ao direito constitucional, desde que não se exija autorização que possa ser arbitrariamente negada.\n\nEstá correto o que se afirma em:',
+                options: ['Apenas I', 'Apenas II', 'I e III', 'II e III', 'I, II e III'],
+                correct: 3,
+                commentary: 'I - INCORRETA: O direito de reunião NÃO é absoluto. O art. 5º, XVI, da CF/88 estabelece restrições. II - CORRETA: STF (ADI 4.146-MC). III - CORRETA: Prévio aviso é exigência legítima desde que não se transforme em autorização arbitrária.',
+                law: 'Art. 5º, XVI, CF/88 | Súmula Vinculante 14, STF',
+                difficulty: 'hard'
             },
-            PRF: {
-                superior: {
-                    'Direito Constitucional': [
-                        {
-                            id: 101,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'A respeito dos direitos e garantias fundamentais, julgue o item: A inviolabilidade da liberdade de locomoção geográfica no território nacional durante o dia, independentemente de autorização, é assegurada a todos os brasileiros e aos estrangeiros residentes no País.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 5º, inciso VI, CF/88: "é inviolável a liberdade de consciência e de crença". A liberdade de locomoção é garantida, mas a assertiva confunde com liberdade de reunião. Além disso, a liberdade de locomoção pode ser restringida por determinação judicial.'
-                        },
-                        {
-                            id: 102,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: A Polícia Rodoviária Federal integra o sistema de segurança pública e compete-lhe, entre outras atribuições, o patrulhamento ostensivo das rodovias federais.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 144, §1º, CF/88: "A Polícia Rodoviária Federal, órgão permanente, organizado e mantido pela União, estruturado em carreira, destina-se, nos termos da lei, ao patrulhamento ostensivo das rodovias federais."'
-                        },
-                        {
-                            id: 103,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: O direito de petição aos poderes públicos, previsto na Constituição Federal, é assegurado exclusivamente aos cidadãos brasileiros maiores de idade.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 5º, XXXIV, CF/88: "a todos são assegurados, independentemente do pagamento de taxas: a) o direito de petição aos poderes públicos em defesa de direitos ou contra ilegalidade ou abuso de poder". Não há restrição de nacionalidade ou idade.'
-                        }
-                    ],
-                    'Direito Administrativo': [
-                        {
-                            id: 104,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: A nomeação para cargo em comissão depende de prévia habilitação em concurso público de provas ou de provas e títulos.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 37, II, CF/88: "A investidura em cargo ou emprego público depende de aprovação prévia em concurso público de provas ou de provas e títulos, de acordo com a natureza e a complexidade do cargo ou emprego". Porém, os cargos em comissão são exceção (art. 37, V), não exigindo concurso.'
-                        },
-                        {
-                            id: 105,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios da legalidade, impessoalidade, moralidade, publicidade e eficiência.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 37, caput, CF/88: "A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios de legalidade, impessoalidade, moralidade, publicidade e eficiência".'
-                        }
-                    ],
-                    'Direito Penal': [
-                        {
-                            id: 106,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: A embriaguez ao volante, prevista no art. 306 da Lei nº 9.503/1997 (CTB), é crime de perigo abstrato, não sendo necessária a comprovação de efetivo perigo de dano.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'A embriaguez ao volante é crime de perigo abstrato (ou presumido), onde basta a conduta de dirigir com concentração de álcool igual ou superior a 6 decigramas por litro de sangue, não sendo necessário demonstrar perigo concreto.'
-                        },
-                        {
-                            id: 107,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: O crime de tráfico de drogas (art. 33 da Lei nº 11.343/2006) admite a figura do autor mediato.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'O tráfico de drogas admite todas as formas de autoria, incluindo autoria mediata, coautoria e participação.'
-                        }
-                    ],
-                    'Direito Processual Penal': [
-                        {
-                            id: 108,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: O inquérito policial é considerado peça informativa indispensável à propositura da ação penal pública incondicionada.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 129, §1º, CPP: "O inquérito policial será instaurado: I - de ofício, quando o delegado de polícia tiver conhecimento da existência de infração penal". Porém, o inquérito não é indispensável; a ação penal pode ser proposta com outros meios de prova (termo circunstanciado, notícia-crime, etc.).'
-                        }
-                    ],
-                    'Direito da Criança e do Adolescente': [
-                        {
-                            id: 109,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: De acordo com o ECA, a prática de ato infracional por criança menor de 12 anos sujeita o responsável às medidas previstas no art. 112 da referida lei.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 112, ECA: "São medidas aplicáveis à criança que praticar ato infracional: I - advertência; II - obrigação de reparar o dano; III - prestação de serviços à comunidade; IV - liberação progressiva; V - inclusão em programa de acompanhamento."'
-                        }
-                    ],
-                    'Direito de Trânsito': [
-                        {
-                            id: 110,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: A suspensão do direito de dirigir é medida administrativa que pode ser aplicada pela autoridade de trânsito quando o motorista estiver reincidente em infração de natureza grave ou gravíssima.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 256, CTB: "A suspensão do direito de dirigir será aplicada pela autoridade de trânsito competente, quando o infrator: I - for reincidente no cometimento de infração de natureza grave ou gravíssima".'
-                        }
-                    ],
-                    'Português': [
-                        {
-                            id: 111,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: Na frase "O policial rodoviário federal fiscaliza as estradas", o termo "as estradas" exerce a função sintática de objeto indireto.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 1,
-                            explicacao: '"Fiscalizar" é verbo transitivo direto. "As estradas" é objeto direto (sem preposição), não indireto.'
-                        },
-                        {
-                            id: 112,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: A expressão "cujo" é pronome relativo que pode ser usado para indicar posse, substituindo a locução "do qual".',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: '"Cujo" é pronome relativo que indica posse, equivalente a "do qual", "da qual", "dos quais", "das quais". Ex: "O policial cujo carro estava parado" = "O policial do qual o carro estava parado".'
-                        }
-                    ],
-                    'Raciocínio Lógico': [
-                        {
-                            id: 113,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: Se a proposição "Todos os policiais rodoviários federais são honestos" for verdadeira, então a proposição "Algum policial rodoviário federal não é honesto" será falsa.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: '"Todos são honestos" (universal afirmativa) contradiz "Algum não é honesto" (particular negativa). Se uma é verdadeira, a outra é falsa.'
-                        },
-                        {
-                            id: 114,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: Se P → Q é verdadeira e Q é falsa, então P necessariamente é falsa.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'Na implicação P → Q, se o consequente (Q) é falso e a implicação é verdadeira, o antecedente (P) deve ser falso (modus tollens).'
-                        }
-                    ],
-                    'Noções de Informática': [
-                        {
-                            id: 115,
-                            banca: 'Cebraspe',
-                            ano: '2021',
-                            texto: 'Julgue o item: O protocolo HTTPS utiliza criptografia para garantir a segurança na transmissão de dados entre o navegador e o servidor web.',
-                            alternativas: [
-                                'Certo',
-                                'Errado'
-                            ],
-                            correta: 0,
-                            explicacao: 'HTTPS (HyperText Transfer Protocol Secure) utiliza SSL/TLS para criptografar a comunicação, garantindo confidencialidade e integridade dos dados.'
-                        }
-                    ]
-                }
+            {
+                id: 2,
+                subject: 'Direito Penal',
+                banca: 'CEBRASPE',
+                year: 2025,
+                text: 'Sobre o crime de peculato (art. 312, CP), assinale a alternativa correta:',
+                options: [
+                    'Apropriação de dinheiro público por funcionário particular contratado pela administração configura peculato-furto.',
+                    'O agente público que desvia dinheiro público para fins pessoais pratica peculato-apropriação, desde que haja dolo específico de enriquecimento ilícito.',
+                    'O funcionário que destrói documento público para ocultar desvio de verbas pratica crime de peculato-culposo.',
+                    'O particular que induz o agente público a desviar recursos é partícipe de peculato-furto.',
+                    'O agente que se apropria de dinheiro público por erro de máquina de contagem pratica peculato-apropriação.'
+                ],
+                correct: 1,
+                commentary: 'O peculato-apropriação exige dolo específico de enriquecimento ilícito (Súmula 83, STJ). Apropriação por particular é peculato-furto (art. 312, §1º, CP). Não existe peculato-culposo.',
+                law: 'Art. 312, CP | Súmula 83, STJ',
+                difficulty: 'hard'
             },
-            PCBA: {
-                superior: {
-                    'Direito Constitucional': [
-                        {
-                            id: 201,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'A Constituição Federal de 1988 estabelece que a polícia judiciária, funcionalmente organizada, será exercida:',
-                            alternativas: [
-                                'Exclusivamente pela Polícia Federal.',
-                                'Pela Polícia Civil e, nos municípios onde houver, pela Guarda Municipal.',
-                                'Pela Polícia Civil, constituindo-se em carreira.',
-                                'Pelas Polícias Militares dos Estados.'
-                            ],
-                            correta: 2,
-                            explicacao: 'Art. 144, §4º, CF/88: "À polícia judiciária, funcionalmente organizada, constituindo-se em carreira, cabem as atribuições de polícia judiciária e a apuração das infrações penais, exceto as militares."'
-                        },
-                        {
-                            id: 202,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'Segundo a CF/88, são órgãos de segurança pública:',
-                            alternativas: [
-                                'A Polícia Federal, a Polícia Rodoviária Federal, a Polícia Ferroviária Federal, as Polícias Civis, as Polícias Militares e os Corpos de Bombeiros Militares.',
-                                'Apenas as Polícias Civis e Militares.',
-                                'A Polícia Federal e as Polícias Civis apenas.',
-                                'As Forças Armadas e as Polícias Militares.'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 144, CF/88: "Os órgãos de segurança pública, por meio de atividade especializada e permanente, de polícia ostensiva e de polícia judiciária, têm por finalidade assegurar a observância dos direitos e liberdades, a incolumidade das pessoas, a preservação da ordem pública e a segurança dos bens."'
-                        },
-                        {
-                            id: 203,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'A CF/88 estabelece que a lei disporá sobre os crimes de responsabilidade dos policiais civis:',
-                            alternativas: [
-                                'E a competência para o seu julgamento será do Tribunal de Justiça.',
-                                'E a competência para o seu julgamento será do Tribunal de Contas.',
-                                'E a competência para o seu julgamento será do Tribunal do Júri.',
-                                'E a competência para o seu julgamento será do Tribunal de Alcada.'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 96, III, "b", CF/88: "compete privativamente à lei estadual dispor sobre organização, garantias, remuneração, admissão, provimento de cargos, licenças e aposentadoria dos policiais civis e militares". Os crimes de responsabilidade são julgados pelo TJ.'
+            {
+                id: 3,
+                subject: 'Direito Processual Penal',
+                banca: 'FGV',
+                year: 2024,
+                text: 'No que tange à prisão preventiva, conforme entendimento atual do STF e STJ, é correto afirmar:',
+                options: [
+                    'A prisão preventiva pode ser decretada exclusivamente com base na gravidade abstrata do crime, sem necessidade de demonstração concreta dos requisitos legais.',
+                    'A falta de fixedade do réu (domicílio e profissão) configura, por si só, garantia da ordem pública suficiente para a decretação da preventiva.',
+                    'A prisão preventiva deve ser revista a cada 90 dias, sendo obrigatória a substituição por medidas cautelares diversas após esse prazo.',
+                    'O periculum libertatis deve ser avaliado caso a caso, considerando as circunstâncias concretas do fato e do agente.',
+                    'A reincidência específica é fator absolutamente proibido de ser considerado na análise do periculum libertatis.'
+                ],
+                correct: 3,
+                commentary: 'O STF (HC 126.292) e STJ firmaram entendimento de que a prisão preventiva exige análise concreta e individualizada do periculum libertatis, não podendo ser decretada de forma automática ou abstrata.',
+                law: 'Art. 312 e 313, CPP | HC 126.292, STF',
+                difficulty: 'expert'
+            },
+            {
+                id: 4,
+                subject: 'Raciocínio Lógico',
+                banca: 'FCC',
+                year: 2025,
+                text: 'Se "Todo policial é honesto" é falso, então necessariamente é verdadeiro que:',
+                options: [
+                    'Nenhum policial é honesto.',
+                    'Algum policial não é honesto.',
+                    'Algum policial é honesto.',
+                    'Todo honesto é policial.',
+                    'Nenhum honesto é policial.'
+                ],
+                correct: 1,
+                commentary: 'A negação de "Todo A é B" é "Algum A não é B" (particular negativa). Não se pode afirmar que "nenhum é", pois pode haver policiais honestos e desonestos.',
+                law: 'Lógica Proposicional - Negação de Proposições Categóricas',
+                difficulty: 'normal'
+            },
+            {
+                id: 5,
+                subject: 'Direito Administrativo',
+                banca: 'IBFC',
+                year: 2024,
+                text: 'Sobre o princípio da vinculação ao edital nos concursos públicos, é correto afirmar:',
+                options: [
+                    'O edital pode ser alterado a qualquer tempo, desde que haja interesse da administração pública.',
+                    'A vinculação ao edital é relativa, permitindo-se alterações unilaterais em caso de necessidade administrativa.',
+                    'O edital constitui lei específica do concurso, vinculando a administração e os candidatos, não admitindo alterações que prejudiquem os direitos adquiridos.',
+                    'O candidato aprovado dentro do número de vagas não possui direito subjetivo à nomeação, sendo este mero interesse jurídico.',
+                    'A anulação do concurso pode ocorrer livremente pela administração, sem necessidade de motivação específica.'
+                ],
+                correct: 2,
+                commentary: 'O edital é lei específica do concurso (Súmula 473, STF). A vinculação é absoluta, não admitindo alterações que prejudiquem direitos adquiridos dos candidatos.',
+                law: 'Súmula 473, STF | Lei 9.784/99',
+                difficulty: 'hard'
+            }
+        ];
+
+        // Generate more mock questions
+        for(let i = 6; i <= 50; i++) {
+            const subjects = ['Direito Constitucional', 'Direito Penal', 'Direito Processual Penal', 'Direito Administrativo', 'Raciocínio Lógico', 'Português', 'Informática', 'Noções de Direitos Humanos'];
+            const bancas = ['FCC', 'CEBRASPE', 'FGV', 'IBFC'];
+            const difficulties = ['normal', 'hard', 'expert'];
+            
+            questionsDB.push({
+                id: i,
+                subject: subjects[Math.floor(Math.random() * subjects.length)],
+                banca: bancas[Math.floor(Math.random() * bancas.length)],
+                year: 2022 + Math.floor(Math.random() * 4),
+                text: `[Questão ${i}] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
+                options: ['Alternativa A', 'Alternativa B', 'Alternativa C', 'Alternativa D', 'Alternativa E'],
+                correct: Math.floor(Math.random() * 5),
+                commentary: `Comentário detalhado da questão ${i} com fundamentação legal completa.`,
+                law: 'Art. 5º, CF/88',
+                difficulty: difficulties[Math.floor(Math.random() * difficulties.length)]
+            });
+        }
+
+        // ===== FUNCTIONS =====
+
+        function selectCareer(career) {
+            state.career = career;
+            document.querySelectorAll('.career-btn').forEach(btn => {
+                const isSelected = btn.dataset.career === career;
+                btn.classList.toggle('border-blue-500', isSelected);
+                btn.classList.toggle('bg-blue-500/10', isSelected);
+                btn.querySelector('.check-indicator div').classList.toggle('opacity-100', isSelected);
+            });
+            showToast('Carreira selecionada', getCareerName(career));
+        }
+
+        function getCareerName(career) {
+            const names = { pmba: 'PMBA', prf: 'PRF', pf: 'PF', pc: 'PC' };
+            return names[career] || career;
+        }
+
+        function setLevel(level) {
+            state.level = level;
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                const isSelected = btn.dataset.level === level;
+                btn.classList.toggle('level-active', isSelected);
+                btn.classList.toggle('bg-amber-500/10', isSelected && level === 'hard');
+                btn.classList.toggle('border-amber-500', isSelected && level === 'hard');
+                btn.classList.toggle('text-amber-400', isSelected && level === 'hard');
+                
+                btn.classList.toggle('bg-red-500/10', isSelected && level === 'expert');
+                btn.classList.toggle('border-red-500', isSelected && level === 'expert');
+                btn.classList.toggle('text-red-400', isSelected && level === 'expert');
+                
+                btn.classList.toggle('bg-blue-500/10', isSelected && level === 'normal');
+                btn.classList.toggle('border-blue-500', isSelected && level === 'normal');
+                btn.classList.toggle('text-blue-400', isSelected && level === 'normal');
+            });
+
+            const info = document.getElementById('levelInfo');
+            const texts = {
+                normal: { title: 'Modo: Padrão', desc: 'Questões no nível exato da banca. Ideal para revisão inicial.', color: 'blue' },
+                hard: { title: 'Modo: Um Nível Acima 🔥', desc: 'Questões 20% mais difíceis que o padrão. Inclui pegadinhas avançadas.', color: 'amber' },
+                expert: { title: 'Modo: Expert ⚡', desc: 'Questões 40% mais difíceis. Interpretações complexas e casos atípicos.', color: 'red' }
+            };
+            const t = texts[level];
+            info.className = `mt-4 p-4 rounded-xl bg-${t.color}-500/10 border border-${t.color}-500/30`;
+            info.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">${level === 'normal' ? '📘' : level === 'hard' ? '🎯' : '⚡'}</span>
+                    <div>
+                        <h4 class="font-semibold text-${t.color}-400 mb-1">${t.title}</h4>
+                        <p class="text-sm text-slate-400">${t.desc}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleEssay() {
+            state.includeEssay = document.getElementById('essayToggle').checked;
+            document.getElementById('essayConfig').classList.toggle('hidden', !state.includeEssay);
+        }
+
+        function startSimulation() {
+            if (!state.career) {
+                showToast('Atenção', 'Selecione uma carreira primeiro!', 'warning');
+                document.querySelector('.career-btn').classList.add('animate-shake');
+                setTimeout(() => document.querySelector('.career-btn').classList.remove('animate-shake'), 500);
+                return;
+            }
+            if (!document.getElementById('bancaSelect').value) {
+                showToast('Atenção', 'Selecione uma banca!', 'warning');
+                return;
+            }
+
+            state.banca = document.getElementById('bancaSelect').value;
+            state.temporalFilter = document.getElementById('temporalFilter').value;
+            state.antiMofo = document.getElementById('antiMofo').checked;
+            state.removeAnnulled = document.getElementById('removeAnnulled').checked;
+
+            // Setup simulation
+            document.getElementById('simCareer').textContent = getCareerName(state.career);
+            document.getElementById('simBanca').textContent = state.banca.toUpperCase();
+            document.getElementById('totalQ').textContent = state.totalQuestions;
+
+            // Add essay time if enabled
+            if (state.includeEssay) {
+                state.timeRemaining += 5400; // 1h30
+            }
+
+            // Generate question grid
+            generateQuestionGrid();
+
+            // Load first question
+            loadQuestion(0);
+
+            // Start timer
+            startTimer();
+
+            // Switch page
+            switchPage('page-sim');
+
+            showToast('Simulação iniciada!', `Banca: ${state.banca.toUpperCase()} | Nível: ${state.level.toUpperCase()}`);
+        }
+
+        function generateQuestionGrid() {
+            const grid = document.getElementById('questionGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= state.totalQuestions; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'w-8 h-8 rounded text-xs font-medium transition-all border border-slate-700 bg-slate-800 text-slate-400 hover:border-blue-500';
+                btn.textContent = i;
+                btn.onclick = () => loadQuestion(i - 1);
+                btn.id = `qgrid-${i}`;
+                grid.appendChild(btn);
+            }
+        }
+
+        function loadQuestion(index) {
+            state.currentQuestion = index;
+            const q = questionsDB[index % questionsDB.length];
+            
+            document.getElementById('qNumber').textContent = index + 1;
+            document.getElementById('qSubject').textContent = q.subject;
+            document.getElementById('questionText').innerHTML = q.text.replace(/\n/g, '<br>');
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group';
+                btn.onclick = () => selectOption(i);
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">${letters[i]}</span>
+                    <span class="text-slate-300 group-hover:text-white transition-colors">${opt}</span>
+                `;
+                btn.dataset.index = i;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Restore previous answer if exists
+            if (state.answers[index] !== undefined) {
+                selectOption(state.answers[index], false);
+                if (state.answers[index] === q.correct) {
+                    markCorrect(state.answers[index]);
+                } else {
+                    markWrong(state.answers[index], q.correct);
+                }
+            }
+
+            // Update commentary visibility
+            document.getElementById('commentaryBox').classList.toggle('hidden', state.answers[index] === undefined);
+
+            // Update progress
+            document.getElementById('currentQ').textContent = index + 1;
+            document.getElementById('progressBar').style.width = `${((index + 1) / state.totalQuestions) * 100}%`;
+            
+            // Update nav buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            
+            // Update grid highlight
+            document.querySelectorAll('#questionGrid button').forEach((btn, i) => {
+                btn.classList.toggle('ring-2', i === index);
+                btn.classList.toggle('ring-blue-500', i === index);
+            });
+
+            // Update mini stats
+            updateMiniStats();
+        }
+
+        function selectOption(index, save = true) {
+            if (save) state.answers[state.currentQuestion] = index;
+            
+            document.querySelectorAll('.option-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+        }
+
+        function confirmAnswer() {
+            if (state.answers[state.currentQuestion] === undefined) {
+                showToast('Atenção', 'Selecione uma alternativa primeiro!', 'warning');
+                return;
+            }
+
+            const q = questionsDB[state.currentQuestion % questionsDB.length];
+            const selected = state.answers[state.currentQuestion];
+            
+            if (selected === q.correct) {
+                markCorrect(selected);
+                showToast('Correto!', 'Excelente resposta!', 'success');
+            } else {
+                markWrong(selected, q.correct);
+                showToast('Incorreto', 'Revise o comentário', 'error');
+            }
+
+            // Show commentary
+            const commentary = document.getElementById('commentaryBox');
+            commentary.classList.remove('hidden');
+            commentary.innerHTML = `
+                <h4 class="text-lg font-semibold ${selected === q.correct ? 'text-green-400' : 'text-red-400'} mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${selected === q.correct ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}"/>
+                    </svg>
+                    ${selected === q.correct ? 'Gabarito Comentado' : 'Resposta Incorreta'}
+                </h4>
+                <p class="text-slate-300 leading-relaxed mb-4">
+                    <strong class="text-white">Resposta correta: Letra ${['A', 'B', 'C', 'D', 'E'][q.correct]}</strong>
+                    ${selected !== q.correct ? ` | Sua resposta: Letra ${['A', 'B', 'C', 'D', 'E'][selected]}` : ''}
+                </p>
+                <div class="space-y-3 text-sm text-slate-400">
+                    <p>${q.commentary}</p>
+                </div>
+                <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                    <p class="text-xs text-blue-400 font-medium">📚 ${q.law}</p>
+                </div>
+            `;
+
+            // Update grid color
+            const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
+            gridBtn.classList.remove('bg-slate-800', 'text-slate-400');
+            gridBtn.classList.add(selected === q.correct ? 'bg-green-500' : 'bg-red-500', 'text-white');
+
+            updateMiniStats();
+        }
+
+        function markCorrect(index) {
+            const cards = document.querySelectorAll('.option-card');
+            cards[index].classList.add('correct');
+            cards[index].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
+        }
+
+        function markWrong(selected, correct) {
+            const cards = document.querySelectorAll('.option-card');
+            cards[selected].classList.add('wrong');
+            cards[selected].querySelector('span:first-child').classList.add('bg-red-500', 'text-white');
+            cards[correct].classList.add('correct');
+            cards[correct].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
+        }
+
+        function markDoubt() {
+            const btn = document.getElementById('doubtBtn');
+            const isMarked = state.doubts.has(state.currentQuestion);
+            
+            if (isMarked) {
+                state.doubts.delete(state.currentQuestion);
+                btn.classList.remove('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
+                btn.classList.add('border-slate-700', 'text-slate-400');
+            } else {
+                state.doubts.add(state.currentQuestion);
+                btn.classList.add('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
+                btn.classList.remove('border-slate-700', 'text-slate-400');
+            }
+
+            // Update grid
+            const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
+            if (!isMarked) {
+                gridBtn.classList.add('bg-amber-500', 'text-white');
+                gridBtn.classList.remove('bg-slate-800');
+            }
+        }
+
+        function previousQuestion() {
+            if (state.currentQuestion > 0) {
+                loadQuestion(state.currentQuestion - 1);
+            }
+        }
+
+        function skipQuestion() {
+            if (state.currentQuestion < state.totalQuestions - 1) {
+                loadQuestion(state.currentQuestion + 1);
+            }
+        }
+
+        function updateMiniStats() {
+            let correct = 0, wrong = 0, blank = 0;
+            for (let i = 0; i < state.totalQuestions; i++) {
+                if (state.answers[i] === undefined) blank++;
+                else if (state.answers[i] === questionsDB[i % questionsDB.length].correct) correct++;
+                else wrong++;
+            }
+            document.getElementById('miniCorrect').textContent = correct;
+            document.getElementById('miniWrong').textContent = wrong;
+            document.getElementById('miniBlank').textContent = blank;
+        }
+
+        function startTimer() {
+            state.timer = setInterval(() => {
+                state.timeRemaining--;
+                const hours = Math.floor(state.timeRemaining / 3600);
+                const minutes = Math.floor((state.timeRemaining % 3600) / 60);
+                const seconds = state.timeRemaining % 60;
+                document.getElementById('mainTimer').textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                if (state.timeRemaining <= 300) {
+                    document.getElementById('mainTimer').classList.add('text-red-400', 'animate-pulse');
+                }
+                
+                if (state.timeRemaining <= 0) {
+                    clearInterval(state.timer);
+                    finishSimulation();
+                }
+            }, 1000);
+        }
+
+        function finishSimulation() {
+            clearInterval(state.timer);
+            
+            // Calculate results
+            let correct = 0, wrong = 0, blank = 0;
+            const subjectStats = {};
+            
+            for (let i = 0; i < state.totalQuestions; i++) {
+                const q = questionsDB[i % questionsDB.length];
+                if (!subjectStats[q.subject]) subjectStats[q.subject] = { total: 0, correct: 0 };
+                subjectStats[q.subject].total++;
+                
+                if (state.answers[i] === undefined) blank++;
+                else if (state.answers[i] === q.correct) {
+                    correct++;
+                    subjectStats[q.subject].correct++;
+                } else wrong++;
+            }
+
+            const percentage = Math.round((correct / state.totalQuestions) * 100);
+            const cutoffScore = 72; // PRF cutoff
+            const yourScore = (percentage / 100) * 100; // Simplified
+            
+            // Update results page
+            document.getElementById('finalScore').textContent = `${percentage}%`;
+            document.getElementById('finalCorrect').textContent = correct;
+            document.getElementById('finalWrong').textContent = wrong;
+            document.getElementById('finalBlank').textContent = blank;
+            document.getElementById('yourAverage').textContent = `${yourScore.toFixed(1)} pts`;
+            
+            // Animate score circle
+            const circle = document.getElementById('scoreCircle');
+            const circumference = 2 * Math.PI * 88;
+            const offset = circumference - (percentage / 100) * circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 500);
+
+            // Generate subject analysis
+            const analysisContainer = document.getElementById('subjectAnalysis');
+            analysisContainer.innerHTML = '';
+            Object.entries(subjectStats).forEach(([subject, stats]) => {
+                const subjPct = Math.round((stats.correct / stats.total) * 100);
+                const color = subjPct >= 70 ? 'green' : subjPct >= 50 ? 'amber' : 'red';
+                analysisContainer.innerHTML += `
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-slate-800/30">
+                        <div class="flex-1">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-white">${subject}</span>
+                                <span class="text-sm font-mono text-${color}-400">${subjPct}%</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2">
+                                <div class="bg-${color}-500 h-2 rounded-full transition-all" style="width: ${subjPct}%"></div>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-1">${stats.correct}/${stats.total} questões</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Generate radar chart
+            generateRadarChart(subjectStats);
+
+            // Generate wrong questions list
+            const wrongList = document.getElementById('wrongQuestionsList');
+            wrongList.innerHTML = '';
+            for (let i = 0; i < state.totalQuestions; i++) {
+                if (state.answers[i] !== undefined && state.answers[i] !== questionsDB[i % questionsDB.length].correct) {
+                    const q = questionsDB[i % questionsDB.length];
+                    wrongList.innerHTML += `
+                        <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/20 flex items-center justify-between">
+                            <div>
+                                <div class="text-sm font-medium text-white">Questão ${i + 1} - ${q.subject}</div>
+                                <div class="text-xs text-slate-500">${q.banca} ${q.year}</div>
+                            </div>
+                            <button onclick="reviewQuestion(${i})" class="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
+                                Revisar
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            switchPage('page-result');
+            
+            // Confetti if approved
+            if (percentage >= 60) {
+                createConfetti();
+            }
+        }
+
+        function generateRadarChart(subjectStats) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            const labels = Object.keys(subjectStats);
+            const data = labels.map(s => Math.round((subjectStats[s].correct / subjectStats[s].total) * 100));
+            const cutoffData = labels.map(() => 60); // 60% cutoff line
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Seu Desempenho',
+                        data: data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: '#3B82F6',
+                        pointBackgroundColor: '#3B82F6',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#3B82F6'
+                    }, {
+                        label: 'Nota de Corte',
+                        data: cutoffData,
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderColor: '#F59E0B',
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#94a3b8', font: { size: 11 } },
+                            ticks: { display: false, backdropColor: 'transparent' },
+                            suggestedMin: 0,
+                            suggestedMax: 100
                         }
-                    ],
-                    'Direito Penal': [
-                        {
-                            id: 204,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'No Código Penal, o crime de abuso de autoridade (Lei nº 13.869/2019) pode ser praticado por:',
-                            alternativas: [
-                                'Qualquer pessoa.',
-                                'Apenas funcionário público no exercício de suas funções ou a pretexto de exercê-las.',
-                                'Apenas policiais militares.',
-                                'Apenas juízes e promotores.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 1º, Lei 13.869/2019: "Considera-se crime de abuso de autoridade, nos termos desta Lei, a conduta do funcionário público que, no exercício de suas funções ou a pretexto de exercê-las..."'
-                        },
-                        {
-                            id: 205,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'A Lei Maria da Penha (Lei nº 11.340/2006) aplica-se em casos de:',
-                            alternativas: [
-                                'Violência doméstica e familiar contra a mulher.',
-                                'Apenas violência física entre cônjuges.',
-                                'Violência apenas quando há lesão corporal grave.',
-                                'Apenas em relações heteroafetivas casadas.'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 1º, Lei 11.340/2006: "Esta Lei cria mecanismos para coibir e prevenir a violência doméstica e familiar contra a mulher, nos termos do § 8º do art. 226 da Constituição Federal, da Convenção sobre a Eliminação de Todas as Formas de Violência contra a Mulher, da Convenção Interamericana para Prevenir, Punir e Erradicar a Violência contra a Mulher e de outros tratados internacionais ratificados pela República Federativa do Brasil."'
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8' }
                         }
-                    ],
-                    'Direito Processual Penal': [
-                        {
-                            id: 206,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'O inquérito policial, segundo o CPP, tem como finalidade:',
-                            alternativas: [
-                                'Julgar o acusado.',
-                                'Apurar a autoria e a materialidade da infração penal.',
-                                'Aplicar pena ao infrator.',
-                                'Executar a sentença condenatória.'
-                            ],
-                            correta: 1,
-                            explicacao: 'Art. 129, CPP: "O inquérito policial será instaurado: I - de ofício, quando o delegado de polícia tiver conhecimento da existência de infração penal; II - por determinação da autoridade judiciária; III - por requisição do Ministério Público; IV - por requisição de outra autoridade que tenha competência para o exercício da ação penal." Sua finalidade é apurar a autoria e materialidade.'
-                        },
-                        {
-                            id: 207,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'A prisão temporária, conforme a Lei nº 7.960/1989, pode durar no máximo:',
-                            alternativas: [
-                                '5 dias.',
-                                '10 dias.',
-                                '15 dias.',
-                                '30 dias.'
-                            ],
-                            correta: 0,
-                            explicacao: 'Art. 2º, Lei 7.960/89: "A prisão temporária durará 5 (cinco) dias, podendo o juiz prorrogar-la por igual período, uma única vez, mediante requisição fundamentada da autoridade policial ou do Ministério Público."'
-                        }
-                    ],
-                    'Direito Administrativo': [
-                        {
-                            id: 208,
-                            banca: 'FCC',
-                            ano: '2022',
-                            texto: 'A improbidade administrativa, segundo a Lei nº
+                    }
+                }
+            });
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 4)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function toggleFocusMode() {
+            state.focusMode = !state.focusMode;
+            const overlay = document.getElementById('focusOverlay');
+            overlay.classList.toggle('hidden', !state.focusMode);
+            
+            if (state.focusMode) {
+                state.focusTimeRemaining = 1500;
+                state.focusTimer = setInterval(() => {
+                    state.focusTimeRemaining--;
+                    const mins = Math.floor(state.focusTimeRemaining / 60);
+                    const secs = state.focusTimeRemaining % 60;
+                    document.getElementById('focusTimer').textContent = 
+                        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                    
+                    if (state.focusTimeRemaining <= 0) {
+                        clearInterval(state.focusTimer);
+                        showToast('Pomodoro', 'Tempo de foco concluído! Faça uma pausa de 5 minutos.');
+                        toggleFocusMode();
+                    }
+                }, 1000);
+            } else {
+                clearInterval(state.focusTimer);
+            }
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-transition').forEach(page => {
+                page.classList.add('page-hidden');
+                page.classList.remove('page-active');
+            });
+            document.getElementById(pageId).classList.remove('page-hidden');
+            document.getElementById(pageId).classList.add('page-active');
+            window.scrollTo(0, 0);
+        }
+
+        function newSimulation() {
+            // Reset state
+            state.answers = {};
+            state.doubts.clear();
+            state.currentQuestion = 0;
+            state.timeRemaining = state.includeEssay ? 12600 : 7200;
+            clearInterval(state.timer);
+            
+            switchPage('page-config');
+        }
+
+        function reviewErrors() {
+            showToast('Em breve', 'Modo de revisão de erros será implementado!');
+        }
+
+        function shareResult() {
+            const text = `Delta Questões - Resultado do Simulado\nCarreira: ${getCareerName(state.career)}\nAcertos: ${document.getElementById('finalCorrect').textContent}/50\nPercentual: ${document.getElementById('finalScore').textContent}\nStatus: ${parseInt(document.getElementById('finalScore').textContent) >= 60 ? 'APROVADO ✅' : 'REPROVADO ❌'}`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copiado!', 'Resultado copiado para a área de transferência');
+            });
+        }
+
+        function showToast(title, message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const icons = {
+                info: 'ℹ️',
+                success: '✅',
+                warning: '⚠️',
+                error: '❌'
+            };
+            const colors = {
+                info: 'border-blue-500',
+                success: 'border-green-500',
+                warning: 'border-amber-500',
+                error: 'border-red-500'
+            };
+            
+            document.getElementById('toastIcon').textContent = icons[type];
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            toast.querySelector('.glass-strong').className = `glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 ${colors[type]}`;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Session timer
+        let sessionSeconds = 0;
+        setInterval(() => {
+            sessionSeconds++;
+            const mins = Math.floor(sessionSeconds / 60);
+            const secs = sessionSeconds % 60;
+            document.getElementById('sessionTimer').textContent = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }, 1000);
+
+        // Initialize
+        setLevel('hard');
+    </script>
+</body>
+</html>
