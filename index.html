@@ -3,35 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Questões - Simulador Policial Inteligente</title>
+    <title>Delta Questões - Simulador Policial Realista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0F172A;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
+        * { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Animations */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0B1120; }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2d5a8a; }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -40,52 +24,35 @@
             0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
             50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes progress {
-            from { width: 0%; }
-        }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
-        @keyframes countUp {
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
-        .animate-slide-in {
-            animation: slideIn 0.5s ease-out forwards;
-        }
-        .animate-pulse-glow {
-            animation: pulse-glow 2s infinite;
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        .animate-shake {
-            animation: shake 0.4s ease-in-out;
-        }
-        .animate-count {
-            animation: countUp 0.6s ease-out forwards;
-        }
+        .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
+        .animate-pulse-glow { animation: pulse-glow 2s infinite; }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
 
-        /* Glassmorphism */
         .glass {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .glass-strong {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(11, 17, 32, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Custom Radio/Checkbox */
         .option-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -108,45 +75,6 @@
             background: rgba(239, 68, 68, 0.15);
         }
 
-        /* Timer */
-        .timer-circle {
-            transition: stroke-dashoffset 1s linear;
-        }
-
-        /* Toggle Switch */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #3B82F6;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #3B82F6;
-        }
-
-        /* Level Badge */
-        .level-badge {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        }
-
-        /* Confetti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #3B82F6;
-            animation: confetti-fall 3s ease-out forwards;
-        }
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-
-        /* Focus Mode Overlay */
-        .focus-overlay {
-            background: radial-gradient(circle at center, transparent 0%, rgba(15, 23, 42, 0.95) 100%);
-        }
-
-        /* Smooth transitions */
         .page-transition {
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
@@ -164,14 +92,39 @@
             position: relative;
         }
 
-        /* Chart container */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* Tooltip */
+        .level-badge {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #3B82F6;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        .focus-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(11, 17, 32, 0.95) 100%);
+        }
+
+        .streak-fire {
+            animation: flicker 1.5s ease-in-out infinite;
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
         .tooltip {
             visibility: hidden;
             opacity: 0;
@@ -182,1474 +135,1239 @@
             opacity: 1;
         }
 
-        /* Neon text effect for important items */
-        .neon-text {
-            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+        .cebraspe-option {
+            transition: all 0.3s ease;
+        }
+        .cebraspe-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3B82F6;
+        }
+        .cebraspe-option.selected-c {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10B981;
+            color: #10B981;
+        }
+        .cebraspe-option.selected-e {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #EF4444;
+            color: #EF4444;
         }
 
-        /* Card hover lift */
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Progress ring */
-        .progress-ring__circle {
-            transition: stroke-dashoffset 0.5s ease-in-out;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        /* Streak fire animation */
-        @keyframes flicker {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-        }
-        .streak-fire {
-            animation: flicker 1.5s ease-in-out infinite;
+        .subject-tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
     </style>
+<base target="_blank">
 </head>
 <body class="bg-[#0B1120] text-[#F1F5F9] min-h-screen overflow-x-hidden">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões</h1>
-                        <p class="text-xs text-slate-400 font-medium">Simulador Policial Inteligente</p>
-                    </div>
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
-                
-                <div class="hidden md:flex items-center space-x-6">
-                    <div class="flex items-center space-x-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50">
-                        <span class="text-amber-400 text-lg streak-fire">🔥</span>
-                        <span class="text-sm font-semibold text-amber-400">12 dias</span>
-                    </div>
-                    <div class="flex items-center space-x-2 text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-sm font-mono" id="sessionTimer">00:00</span>
-                    </div>
-                    <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Modo Foco">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </button>
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all">
-                        V
-                    </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões</h1>
+                    <p class="text-xs text-slate-400 font-medium">Simulador Realista de Concursos Policiais</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-6">
+                <div class="flex items-center space-x-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50">
+                    <span class="text-amber-400 text-lg streak-fire">🔥</span>
+                    <span class="text-sm font-semibold text-amber-400" id="streakDisplay">0 dias</span>
+                </div>
+                <div class="flex items-center space-x-2 text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-sm font-mono" id="sessionTimer">00:00</span>
+                </div>
+                <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Modo Foco">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all">
+                    V
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Main Content -->
-    <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+<!-- Main Content -->
+<main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
-        <!-- PAGE 1: CONFIGURATION -->
-        <div id="page-config" class="page-transition page-active">
-            <!-- Hero Section -->
-            <div class="text-center mb-12 animate-slide-in">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
-                    Prepare-se como um <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 neon-text">Nível Acima</span>
-                </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                    Simulador inteligente para concursos policiais. Questões filtradas por temporalidade, banca e nível de dificuldade superior ao edital.
-                </p>
-            </div>
+    <!-- PAGE 1: CONFIGURATION -->
+    <div id="page-config" class="page-transition page-active">
+        <div class="text-center mb-12 animate-slide-in">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+                Prepare-se com <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 neon-text">100% de Realismo</span>
+            </h2>
+            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                Simulador baseado nos editais reais. Questões, regras de eliminação, pesos por disciplina e estilo de cada banca exatamente como na prova.
+            </p>
+        </div>
 
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Configuration Panel -->
-                <div class="lg:col-span-2 space-y-6">
-                    
-                    <!-- Career Selection -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                </svg>
-                                1. Escolha sua Carreira
-                            </h3>
-                            <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-medium">Obrigatório</span>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="careerGrid">
-                            <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
-                                <div class="text-2xl mb-2">🚔</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
-                                <div class="text-xs text-slate-400 mt-1">Polícia Militar BA</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="prf">
-                                <div class="text-2xl mb-2">🛣️</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PRF</div>
-                                <div class="text-xs text-slate-400 mt-1">Polícia Rodoviária</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pf">
-                                <div class="text-2xl mb-2">🕵️</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PF</div>
-                                <div class="text-xs text-slate-400 mt-1">Polícia Federal</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pc">
-                                <div class="text-2xl mb-2">🔍</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PC</div>
-                                <div class="text-xs text-slate-400 mt-1">Polícia Civil</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
 
-                    <!-- Banca & Level -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                <!-- Career Selection -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2">
                             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                             </svg>
-                            2. Banca Examinadora & Nível de Dificuldade
+                            1. Escolha sua Carreira
                         </h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Banca</label>
-                                <select id="bancaSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
-                                    <option value="">Selecione a banca...</option>
-                                    <option value="fcc">FCC - Fundação Carlos Chagas</option>
-                                    <option value="cebraspe">CEBRASPE (CESPE)</option>
-                                    <option value="fgv">FGV - Fundação Getúlio Vargas</option>
-                                    <option value="ibfc">IBFC - Instituto Brasileiro de Formação</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">
-                                    Nível de Dificuldade
-                                    <span class="has-tooltip inline-block ml-1">
-                                        <svg class="w-4 h-4 text-slate-500 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <span class="tooltip absolute bg-slate-800 text-xs text-slate-300 p-2 rounded-lg border border-slate-700 w-48 -mt-12 ml-2 z-50">
-                                            Sempre um nível acima do edital para garantir sua aprovação!
-                                        </span>
-                                    </span>
-                                </label>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <button onclick="setLevel('normal')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-level="normal">
-                                        Padrão
-                                    </button>
-                                    <button onclick="setLevel('hard')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all level-active bg-amber-500/10 border-amber-500 text-amber-400" data-level="hard">
-                                        +1 Nível 🔥
-                                    </button>
-                                    <button onclick="setLevel('expert')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-red-500 hover:text-red-400 transition-all" data-level="expert">
-                                        Expert ⚡
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Level Info Card -->
-                        <div id="levelInfo" class="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                            <div class="flex items-start gap-3">
-                                <span class="text-2xl">🎯</span>
-                                <div>
-                                    <h4 class="font-semibold text-amber-400 mb-1">Modo: Um Nível Acima</h4>
-                                    <p class="text-sm text-slate-400">Questões 20% mais difíceis que o padrão da <span id="bancaName">banca selecionada</span>. Inclui pegadinhas avançadas e interpretações complexas.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-medium">Obrigatório</span>
                     </div>
-
-                    <!-- Filters -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.3s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                            </svg>
-                            3. Filtros Inteligentes
-                        </h3>
-
-                        <div class="space-y-4">
-                            <!-- Temporal Filter -->
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Temporalidade</div>
-                                        <div class="text-xs text-slate-400">Filtrar por ano das questões</div>
-                                    </div>
-                                </div>
-                                <select id="temporalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                                    <option value="2">Últimos 2 anos</option>
-                                    <option value="5" selected>Últimos 5 anos</option>
-                                    <option value="all">Todos os anos</option>
-                                </select>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="careerGrid">
+                        <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
+                            <div class="text-2xl mb-2">🚔</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
+                            <div class="text-xs text-slate-400 mt-1">80 questões FCC/UNEB</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
                             </div>
-
-                            <!-- Anti-Mofo Filter -->
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Filtro Anti-Mofo</div>
-                                        <div class="text-xs text-slate-400">Remover leis revogadas e questões anuladas</div>
-                                    </div>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="antiMofo" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                                </label>
+                        </button>
+                        <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="prf">
+                            <div class="text-2xl mb-2">🛣️</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PRF</div>
+                            <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
                             </div>
-
-                            <!-- Remove Annulled -->
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Remover Anuladas</div>
-                                        <div class="text-xs text-slate-400">Excluir questões anuladas após recursos</div>
-                                    </div>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="removeAnnulled" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
-                                </label>
+                        </button>
+                        <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pf">
+                            <div class="text-2xl mb-2">🕵️</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PF</div>
+                            <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Essay Module -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.4s">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                                4. Módulo de Redação (Opcional)
-                            </h3>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="essayToggle" class="sr-only peer" onchange="toggleEssay()">
-                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
-                            </label>
-                        </div>
-                        
-                        <div id="essayConfig" class="hidden space-y-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">📝</span>
-                                <div>
-                                    <p class="text-sm text-purple-300">Tema será baseado em editais reais da banca selecionada</p>
-                                    <p class="text-xs text-slate-400 mt-1">Tempo adicional: <span class="font-mono text-purple-400">1h 30min</span></p>
-                                </div>
+                        </button>
+                        <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pc">
+                            <div class="text-2xl mb-2">🔍</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PC</div>
+                            <div class="text-xs text-slate-400 mt-1">100 questões IDECAN/IBADE</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Start Button -->
-                    <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.5s">
-                        <span>Iniciar Simulação</span>
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Sidebar Stats -->
-                <div class="space-y-6">
-                    <!-- Quick Stats -->
-                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Desempenho</h3>
-                        
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-400">Questões Respondidas</span>
-                                <span class="font-mono text-xl font-bold text-white">1.247</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 68%"></div>
-                            </div>
-                            
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-slate-400">Taxa de Acerto</span>
-                                <span class="font-mono text-xl font-bold text-green-400">72%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
-                            </div>
-
-                            <div class="pt-4 border-t border-slate-700/50">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-slate-400">Nota de Corte PRF</span>
-                                    <span class="font-mono text-sm font-bold text-amber-400">73 pts (60%)</span>
-                                </div>
-                                <div class="flex justify-between items-center mt-2">
-                                    <span class="text-slate-400">Sua Média</span>
-                                    <span class="font-mono text-sm font-bold text-green-400">86.4 pts</span>
-                                </div>
-                                <div class="mt-2 text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-lg inline-block">
-                                    ✅ Você estaria APROVADO
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Study Streak -->
-                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sequência de Estudos</h3>
-                        <div class="flex items-center justify-between">
-                            <div class="text-center">
-                                <div class="text-3xl font-bold text-white">12</div>
-                                <div class="text-xs text-slate-400">dias seguidos</div>
-                            </div>
-                            <div class="flex gap-1">
-                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">S</div>
-                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">T</div>
-                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">Q</div>
-                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">Q</div>
-                                <div class="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-xs text-green-400">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700/50 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-blue-500/30 flex items-center justify-center text-xs text-blue-400 border border-blue-500/50">D</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Weak Areas -->
-                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.4s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Pontos Fracos Detectados</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-red-500/10 border border-red-500/20">
-                                <span class="text-sm text-red-300">Direito Constitucional</span>
-                                <span class="text-xs font-mono text-red-400">45%</span>
-                            </div>
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                                <span class="text-sm text-amber-300">Raciocínio Lógico</span>
-                                <span class="text-xs font-mono text-amber-400">58%</span>
-                            </div>
-                            <div class="flex items-center justify-between p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                                <span class="text-sm text-blue-300">Direito Penal</span>
-                                <span class="text-xs font-mono text-blue-400">62%</span>
-                            </div>
-                        </div>
-                        <button class="w-full mt-4 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all">
-                            Ver Detalhes Completos
                         </button>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PAGE 2: SIMULATION INTERFACE -->
-        <div id="page-sim" class="page-transition page-hidden">
-            <!-- Top Bar -->
-            <div class="glass rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
-                        <span class="font-semibold text-white" id="simCareer">PMBA</span>
+                    <div id="careerInfo" class="mt-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 hidden">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">ℹ️</span>
+                            <div id="careerInfoText"></div>
+                        </div>
                     </div>
-                    <div class="h-6 w-px bg-slate-700"></div>
-                    <div class="flex items-center gap-2 text-slate-400 text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </div>
+
+                <!-- Banca Display -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        <span id="simBanca">FCC</span>
-                    </div>
-                    <div class="level-badge px-3 py-1 rounded-full text-xs font-bold text-white">
-                        NÍVEL +1
+                        2. Banca Examinadora
+                    </h3>
+                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="font-semibold text-white" id="bancaDisplay">Selecione uma carreira</div>
+                                <div class="text-sm text-slate-400 mt-1" id="bancaStyle">--</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-slate-500 uppercase tracking-wider">Formato</div>
+                                <div class="font-mono text-blue-400 font-bold" id="formatDisplay">--</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-6">
-                    <!-- Progress -->
-                    <div class="hidden sm:flex items-center gap-3">
-                        <span class="text-sm text-slate-400">Questão</span>
-                        <span class="font-mono text-lg font-bold text-white"><span id="currentQ">1</span>/<span id="totalQ">50</span></span>
-                        <div class="w-32 bg-slate-800 rounded-full h-2">
-                            <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 2%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Timer -->
-                    <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl px-4 py-2 border border-slate-700/50">
+                <!-- Question Quantity -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.3s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
                         </svg>
-                        <span id="mainTimer" class="font-mono text-xl font-bold text-white">02:00:00</span>
+                        3. Quantidade de Questões
+                    </h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="setQuantity(25)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="25">
+                            <div class="text-2xl font-bold text-white">25</div>
+                            <div class="text-xs text-slate-400 mt-1">Treino Rápido</div>
+                            <div class="text-xs text-blue-400 mt-1">~30 min</div>
+                        </button>
+                        <button onclick="setQuantity(50)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="50">
+                            <div class="text-2xl font-bold text-white">50</div>
+                            <div class="text-xs text-slate-400 mt-1">Treino Médio</div>
+                            <div class="text-xs text-blue-400 mt-1">~60 min</div>
+                        </button>
+                        <button onclick="setQuantity(80)" class="qty-btn p-4 rounded-xl border-2 border-blue-500 bg-blue-500/10 transition-all text-center qty-active" data-qty="80">
+                            <div class="text-2xl font-bold text-blue-400">80</div>
+                            <div class="text-xs text-slate-400 mt-1">Simulado Real</div>
+                            <div class="text-xs text-blue-400 mt-1">~4h (PMBA)</div>
+                        </button>
                     </div>
-
-                    <button onclick="finishSimulation()" class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all text-sm font-medium border border-red-500/30">
-                        Finalizar
-                    </button>
+                    <div id="qtyInfo" class="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-300">
+                        ⚠️ A prova real da PMBA tem <strong>80 questões</strong>. Treinar com menos questões é para revisão rápida, mas o cálculo de aprovação será proporcional.
+                    </div>
                 </div>
-            </div>
 
-            <div class="grid lg:grid-cols-4 gap-6">
-                <!-- Question Area -->
-                <div class="lg:col-span-3 space-y-6">
-                    <!-- Question Card -->
-                    <div class="glass rounded-2xl p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-6">
+                <!-- Level -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.4s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        4. Nível de Dificuldade
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <button onclick="setLevel('normal')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-level="normal">
+                            Edital Real
+                        </button>
+                        <button onclick="setLevel('hard')" class="level-btn px-3 py-2 rounded-lg border border-amber-500 text-sm text-amber-400 bg-amber-500/10 transition-all level-active" data-level="hard">
+                            +1 Nível 🔥
+                        </button>
+                        <button onclick="setLevel('expert')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-red-500 hover:text-red-400 transition-all" data-level="expert">
+                            Expert ⚡
+                        </button>
+                    </div>
+                    <div id="levelInfo" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">🎯</span>
+                            <div>
+                                <h4 class="font-semibold text-amber-400 mb-1">Modo: Um Nível Acima</h4>
+                                <p class="text-sm text-slate-400">Questões 20% mais difíceis que o padrão da banca. Inclui pegadinhas avançadas, interpretações complexas e casos atípicos conforme o estilo de cada banca.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disciplines -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.5s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        5. Distribuição Real por Disciplina
+                    </h3>
+                    <div id="disciplinesList" class="space-y-2">
+                        <p class="text-sm text-slate-400 text-center py-4">Selecione uma carreira para ver a distribuição real de questões</p>
+                    </div>
+                    <div class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                        <p class="text-xs text-red-400 font-medium">🚨 Regra de Eliminação Real: Nota ZERO em qualquer disciplina = ELIMINAÇÃO automática do concurso!</p>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.6s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        6. Filtros Inteligentes
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
                             <div class="flex items-center gap-3">
-                                <span id="qNumber" class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">1</span>
-                                <div>
-                                    <span id="qSubject" class="text-sm text-blue-400 font-medium">Direito Constitucional</span>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Banca: FCC 2024</span>
-                                        <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">Nível: Difícil</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="markDoubt()" id="doubtBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all text-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                Dúvida
-                            </button>
-                        </div>
-
-                        <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8">
-                            Com base na Constituição Federal de 1988 e na jurisprudência consolidada do STF, analise as seguintes assertivas sobre o direito de reunião:
-                            <br><br>
-                            I. O direito de reunião, mesmo em templos ou locais de educação, é absoluto e não admite restrições de qualquer natureza.
-                            <br><br>
-                            II. A autoridade competente pode, mediante requerimento, exigir que a reunião se realize em local diverso do inicialmente pretendido, desde que haja justificativa fundamentada de ordem pública.
-                            <br><br>
-                            III. A necessidade de prévio aviso à autoridade competente para a realização de reunião em logradouro público não configura cerceamento ao direito constitucional, desde que não se exija autorização que possa ser arbitrariamente negada.
-                            <br><br>
-                            Está correto o que se afirma em:
-                        </div>
-
-                        <!-- Options -->
-                        <div class="space-y-3" id="optionsContainer">
-                            <button onclick="selectOption(0)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
-                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">A</span>
-                                <span class="text-slate-300 group-hover:text-white transition-colors">Apenas I</span>
-                            </button>
-                            <button onclick="selectOption(1)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
-                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">B</span>
-                                <span class="text-slate-300 group-hover:text-white transition-colors">Apenas II</span>
-                            </button>
-                            <button onclick="selectOption(2)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
-                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">C</span>
-                                <span class="text-slate-300 group-hover:text-white transition-colors">I e III</span>
-                            </button>
-                            <button onclick="selectOption(3)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
-                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">D</span>
-                                <span class="text-slate-300 group-hover:text-white transition-colors">II e III</span>
-                            </button>
-                            <button onclick="selectOption(4)" class="option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group">
-                                <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">E</span>
-                                <span class="text-slate-300 group-hover:text-white transition-colors">I, II e III</span>
-                            </button>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
-                            <button onclick="previousQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-50" id="prevBtn">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                                </svg>
-                                Anterior
-                            </button>
-                            
-                            <div class="flex gap-3">
-                                <button onclick="skipQuestion()" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white transition-all text-sm">
-                                    Pular
-                                </button>
-                                <button onclick="confirmAnswer()" id="confirmBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
-                                    Confirmar
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
-                                </button>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Temporalidade</div>
+                                    <div class="text-xs text-slate-400">Filtrar por ano das questões</div>
+                                </div>
                             </div>
+                            <select id="temporalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                                <option value="2">Últimos 2 anos</option>
+                                <option value="5" selected>Últimos 5 anos</option>
+                                <option value="all">Todos os anos</option>
+                            </select>
                         </div>
-                    </div>
-
-                    <!-- Commentary (Hidden initially) -->
-                    <div id="commentaryBox" class="hidden glass rounded-2xl p-6 border-l-4 border-green-500">
-                        <h4 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Gabarito Comentado
-                        </h4>
-                        <p class="text-slate-300 leading-relaxed mb-4">
-                            <strong class="text-white">Resposta correta: Letra D (II e III)</strong>
-                        </p>
-                        <div class="space-y-3 text-sm text-slate-400">
-                            <p><span class="text-red-400 font-semibold">I - INCORRETA:</span> O direito de reunião <strong class="text-slate-300">NÃO é absoluto</strong>. O art. 5º, XVI, da CF/88 estabelece que a reunião em templos ou locais de educação <strong class="text-slate-300">só pode ocorrer no término das atividades</strong>, o que demonstra uma restrição constitucionalmente prevista.</p>
-                            <p><span class="text-green-400 font-semibold">II - CORRETA:</span> Conforme entendimento do STF (ADI 4.146-MC), a autoridade pode determinar alteração de local desde que haja justificativa fundamentada de ordem pública, não se tratando de censura prévia.</p>
-                            <p><span class="text-green-400 font-semibold">III - CORRETA:</span> O prévio aviso (comunicação) é exigência constitucionalmente legítima (art. 5º, XVI), desde que não se transforme em autorização sujeita a arbítrio da autoridade.</p>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Anti-Mofo</div>
+                                    <div class="text-xs text-slate-400">Remover leis revogadas</div>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="antiMofo" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                            </label>
                         </div>
-                        <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                            <p class="text-xs text-blue-400 font-medium">📚 Fundamentação Legal: Art. 5º, XVI, CF/88 | Súmula Vinculante 14, STF</p>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Remover Anuladas</div>
+                                    <div class="text-xs text-slate-400">Excluir questões anuladas</div>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="removeAnnulled" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <!-- Question Navigator -->
-                <div class="lg:col-span-1">
-                    <div class="glass rounded-2xl p-4 sticky top-24">
-                        <h4 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Navegador</h4>
-                        <div class="grid grid-cols-5 gap-2 mb-4" id="questionGrid">
-                            <!-- Generated by JS -->
-                        </div>
-                        
-                        <div class="space-y-2 text-xs">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-blue-500"></div>
-                                <span class="text-slate-400">Respondida</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-amber-500"></div>
-                                <span class="text-slate-400">Dúvida</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
-                                <span class="text-slate-400">Pendente</span>
-                            </div>
-                        </div>
+                <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.7s">
+                    <span>Iniciar Simulação Realista</span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
+            </div>
 
-                        <!-- Mini Stats -->
-                        <div class="mt-6 pt-4 border-t border-slate-700/50">
-                            <div class="grid grid-cols-3 gap-2 text-center">
-                                <div class="p-2 rounded-lg bg-green-500/10">
-                                    <div class="text-lg font-bold text-green-400" id="miniCorrect">0</div>
-                                    <div class="text-[10px] text-slate-500">Acertos</div>
-                                </div>
-                                <div class="p-2 rounded-lg bg-red-500/10">
-                                    <div class="text-lg font-bold text-red-400" id="miniWrong">0</div>
-                                    <div class="text-[10px] text-slate-500">Erros</div>
-                                </div>
-                                <div class="p-2 rounded-lg bg-slate-700/30">
-                                    <div class="text-lg font-bold text-slate-400" id="miniBlank">50</div>
-                                    <div class="text-[10px] text-slate-500">Brancas</div>
-                                </div>
-                            </div>
+            <!-- Sidebar Stats - ZERADO -->
+            <div class="space-y-6">
+                <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Desempenho</h3>
+                    <div class="text-center py-8">
+                        <div class="text-5xl mb-2">📊</div>
+                        <p class="text-slate-400 text-sm">Inicie um simulado para começar a contabilizar seu desempenho</p>
+                    </div>
+                    <div class="space-y-4 opacity-50">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">Questões Respondidas</span>
+                            <span class="font-mono text-xl font-bold text-white">0</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-slate-400">Taxa de Acerto</span>
+                            <span class="font-mono text-xl font-bold text-green-400">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.4s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sequência de Estudos</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-white">0</div>
+                            <div class="text-xs text-slate-400">dias seguidos</div>
+                        </div>
+                        <div class="flex gap-1 opacity-30">
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">T</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">D</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.5s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Notas de Corte (Referência)</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PMBA</span>
+                            <span class="text-xs font-mono text-amber-400">60 pts</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PRF</span>
+                            <span class="text-xs font-mono text-amber-400">73 pts</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PF</span>
+                            <span class="text-xs font-mono text-amber-400">48 pts</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PC</span>
+                            <span class="text-xs font-mono text-amber-400">50 pts</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- PAGE 3: RESULTS & DIAGNOSTIC -->
-        <div id="page-result" class="page-transition page-hidden">
-            <!-- Header Result -->
-            <div class="text-center mb-8 animate-slide-in">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 font-semibold mb-4">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    <!-- PAGE 2: SIMULATION INTERFACE -->
+    <div id="page-sim" class="page-transition page-hidden">
+        <div class="glass rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
+                    <span class="font-semibold text-white" id="simCareer">PMBA</span>
+                </div>
+                <div class="h-6 w-px bg-slate-700"></div>
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    Simulação Concluída
+                    <span id="simBanca">FCC</span>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Aprovação</h2>
-                <p class="text-slate-400">Análise completa do seu desempenho comparada ao último concurso</p>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-6 mb-8">
-                <!-- Main Score Card -->
-                <div class="lg:col-span-1 glass rounded-2xl p-6 text-center animate-slide-in" style="animation-delay: 0.1s">
-                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sua Performance</h3>
-                    
-                    <div class="relative w-48 h-48 mx-auto mb-4">
-                        <svg class="w-full h-full transform -rotate-90">
-                            <circle cx="96" cy="96" r="88" stroke="#1e293b" stroke-width="12" fill="none"/>
-                            <circle id="scoreCircle" cx="96" cy="96" r="88" stroke="#10B981" stroke-width="12" fill="none" 
-                                stroke-dasharray="553" stroke-dashoffset="138" stroke-linecap="round" class="transition-all duration-1000"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-4xl font-bold text-white" id="finalScore">75%</span>
-                            <span class="text-sm text-slate-400 mt-1">de acerto</span>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Acertos</span>
-                            <span class="font-bold text-green-400" id="finalCorrect">38</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Erros</span>
-                            <span class="font-bold text-red-400" id="finalWrong">8</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Brancas</span>
-                            <span class="font-bold text-slate-400" id="finalBlank">4</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Approval Probability -->
-                <div class="lg:col-span-2 glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
-                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Probabilidade de Aprovação</h3>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-green-400 font-semibold">Sua Média</span>
-                                    <span class="text-2xl font-bold text-green-400" id="yourAverage">86.4 pts</span>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3">
-                                    <div class="bg-green-500 h-3 rounded-full" style="width: 86%"></div>
-                                </div>
-                            </div>
-
-                            <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-slate-400 font-semibold">Nota de Corte Histórica</span>
-                                    <span class="text-2xl font-bold text-slate-400" id="cutoffScore">72.0 pts</span>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3">
-                                    <div class="bg-slate-600 h-3 rounded-full" style="width: 72%"></div>
-                                </div>
-                                <p class="text-xs text-slate-500 mt-2">Baseado no último concurso PRF 2022/2024</p>
-                            </div>
-
-                            <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-2xl">🎯</div>
-                                    <div>
-                                        <div class="text-lg font-bold text-blue-400">Você estaria APROVADO!</div>
-                                        <div class="text-sm text-slate-400">14.4 pts acima da nota de corte</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Radar Chart -->
-                        <div class="chart-container">
-                            <canvas id="radarChart"></canvas>
-                        </div>
-                    </div>
+                <div class="level-badge px-3 py-1 rounded-full text-xs font-bold text-white">
+                    NÍVEL +1
                 </div>
             </div>
 
-            <!-- Detailed Analysis -->
-            <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.3s">
-                <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+            <div class="flex items-center gap-6">
+                <div class="hidden sm:flex items-center gap-3">
+                    <span class="text-sm text-slate-400">Questão</span>
+                    <span class="font-mono text-lg font-bold text-white"><span id="currentQ">1</span>/<span id="totalQ">80</span></span>
+                    <div class="w-32 bg-slate-800 rounded-full h-2">
+                        <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 1.25%"></div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl px-4 py-2 border border-slate-700/50">
                     <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    Análise por Matéria
-                </h3>
-
-                <div class="space-y-4" id="subjectAnalysis">
-                    <!-- Generated by JS -->
+                    <span id="mainTimer" class="font-mono text-xl font-bold text-white">04:00:00</span>
                 </div>
-            </div>
-
-            <!-- Recommendations -->
-            <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.4s">
-                <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                    Plano de Ação Inteligente
-                </h3>
-                
-                <div class="grid md:grid-cols-3 gap-4" id="actionPlan">
-                    <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-                        <div class="text-red-400 font-semibold mb-2">🔥 Prioridade Máxima</div>
-                        <p class="text-sm text-slate-400">Direito Constitucional - Art. 5º (Direitos Fundamentais). Sua taxa de acerto está 15% abaixo da média de aprovação.</p>
-                        <button class="mt-3 w-full py-2 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
-                            Iniciar Revisão Agora
-                        </button>
-                    </div>
-                    
-                    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                        <div class="text-amber-400 font-semibold mb-2">⚡ Reforço Necessário</div>
-                        <p class="text-sm text-slate-400">Raciocínio Lógico - Diagramas e argumentação. Questões de nível +1 estão te desafiando mais que o normal.</p>
-                        <button class="mt-3 w-full py-2 rounded-lg bg-amber-500/20 text-amber-400 text-sm hover:bg-amber-500/30 transition-all">
-                            Ver Questões Similares
-                        </button>
-                    </div>
-                    
-                    <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/20">
-                        <div class="text-green-400 font-semibold mb-2">✅ Manter Desempenho</div>
-                        <p class="text-sm text-slate-400">Direito Penal - Parte Geral. Você está 8% acima da média. Continue resolvendo 10 questões/dia para manter.</p>
-                        <button class="mt-3 w-full py-2 rounded-lg bg-green-500/20 text-green-400 text-sm hover:bg-green-500/30 transition-all">
-                            Praticar Mais
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Wrong Questions Review -->
-            <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.5s">
-                <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros</h3>
-                <div class="space-y-3" id="wrongQuestionsList">
-                    <!-- Generated by JS -->
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex flex-wrap gap-4 justify-center animate-slide-in" style="animation-delay: 0.6s">
-                <button onclick="newSimulation()" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Novo Simulado
-                </button>
-                <button onclick="reviewErrors()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                    </svg>
-                    Revisar Apenas Erros
-                </button>
-                <button onclick="shareResult()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-green-500 hover:text-green-400 transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-                    </svg>
-                    Compartilhar
+                <button onclick="finishSimulation()" class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all text-sm font-medium border border-red-500/30">
+                    Finalizar
                 </button>
             </div>
         </div>
-    </main>
 
-    <!-- Focus Mode Overlay -->
-    <div id="focusOverlay" class="fixed inset-0 z-[100] focus-overlay hidden flex items-center justify-center">
-        <div class="text-center">
-            <div class="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
-                <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
+        <!-- Elimination Warning -->
+        <div id="elimWarning" class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-center">
+            <p class="text-sm text-red-400 font-semibold">⚠️ ATENÇÃO: Você está com nota ZERO em <span id="elimSubject">--</span>. Isso te ELIMINA do concurso real!</p>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-3 space-y-6">
+                <div class="glass rounded-2xl p-6 md:p-8">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <span id="qNumber" class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">1</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span id="qSubject" class="text-sm text-blue-400 font-medium">Direito Constitucional</span>
+                                    <span id="qWeight" class="subject-tag bg-blue-500/20 text-blue-400">10 questões</span>
+                                </div>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Banca: FCC 2024</span>
+                                    <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">Nível: +1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="markDoubt()" id="doubtBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Dúvida
+                        </button>
+                    </div>
+
+                    <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8">
+                        Carregando questão...
+                    </div>
+
+                    <div class="space-y-3" id="optionsContainer"></div>
+
+                    <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
+                        <button onclick="previousQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-50" id="prevBtn">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Anterior
+                        </button>
+                        <div class="flex gap-3">
+                            <button onclick="skipQuestion()" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white transition-all text-sm">
+                                Pular
+                            </button>
+                            <button onclick="confirmAnswer()" id="confirmBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                                Confirmar
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="commentaryBox" class="hidden glass rounded-2xl p-6 border-l-4 border-green-500">
+                    <h4 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Gabarito Comentado
+                    </h4>
+                    <div id="commentaryContent"></div>
+                </div>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Modo Foco Ativado</h3>
-            <p class="text-slate-400 mb-6">Distrações bloqueadas. Foque apenas na questão.</p>
-            <div class="font-mono text-4xl font-bold text-blue-400 mb-6" id="focusTimer">25:00</div>
-            <button onclick="toggleFocusMode()" class="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-all">
-                Sair do Modo Foco
+
+            <div class="lg:col-span-1">
+                <div class="glass rounded-2xl p-4 sticky top-24">
+                    <h4 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Navegador</h4>
+                    <div class="grid grid-cols-5 gap-2 mb-4" id="questionGrid"></div>
+
+                    <div class="space-y-2 text-xs mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded bg-blue-500"></div>
+                            <span class="text-slate-400">Respondida</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded bg-amber-500"></div>
+                            <span class="text-slate-400">Dúvida</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
+                            <span class="text-slate-400">Pendente</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700/50">
+                        <h4 class="text-xs font-semibold text-slate-500 uppercase mb-2">Desempenho por Disciplina</h4>
+                        <div id="miniSubjectStats" class="space-y-2 text-xs"></div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700/50">
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="p-2 rounded-lg bg-green-500/10">
+                                <div class="text-lg font-bold text-green-400" id="miniCorrect">0</div>
+                                <div class="text-[10px] text-slate-500">Acertos</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-500/10">
+                                <div class="text-lg font-bold text-red-400" id="miniWrong">0</div>
+                                <div class="text-[10px] text-slate-500">Erros</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-slate-700/30">
+                                <div class="text-lg font-bold text-slate-400" id="miniBlank">80</div>
+                                <div class="text-[10px] text-slate-500">Brancas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3: RESULTS & DIAGNOSTIC -->
+    <div id="page-result" class="page-transition page-hidden">
+        <div class="text-center mb-8 animate-slide-in">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 font-semibold mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Simulação Concluída
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Aprovação</h2>
+            <p class="text-slate-400">Análise completa baseada nas regras reais do concurso</p>
+        </div>
+
+        <!-- Elimination Alert -->
+        <div id="eliminationAlert" class="hidden mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-center">
+            <h3 class="text-xl font-bold text-red-400 mb-2">❌ ELIMINADO</h3>
+            <p class="text-slate-300">Você zerou em: <span id="eliminatedSubjects" class="font-bold text-white"></span></p>
+            <p class="text-sm text-slate-400 mt-1">Na prova real, isso significa eliminação automática do concurso!</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6 mb-8">
+            <div class="lg:col-span-1 glass rounded-2xl p-6 text-center animate-slide-in" style="animation-delay: 0.1s">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sua Performance</h3>
+                <div class="relative w-48 h-48 mx-auto mb-4">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="96" cy="96" r="88" stroke="#1e293b" stroke-width="12" fill="none"/>
+                        <circle id="scoreCircle" cx="96" cy="96" r="88" stroke="#10B981" stroke-width="12" fill="none" 
+                            stroke-dasharray="553" stroke-dashoffset="553" stroke-linecap="round" class="transition-all duration-1000"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-4xl font-bold text-white" id="finalScore">0%</span>
+                        <span class="text-sm text-slate-400 mt-1">de acerto</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Acertos</span>
+                        <span class="font-bold text-green-400" id="finalCorrect">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Erros</span>
+                        <span class="font-bold text-red-400" id="finalWrong">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Brancas</span>
+                        <span class="font-bold text-slate-400" id="finalBlank">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm pt-2 border-t border-slate-700/50">
+                        <span class="text-slate-400">Nota Final</span>
+                        <span class="font-bold text-white" id="finalGrade">0 pts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Probabilidade de Aprovação</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-2xl">🎯</div>
+                                <div>
+                                    <div class="text-lg font-bold text-blue-400" id="approvalStatus">Calculando...</div>
+                                    <div class="text-sm text-slate-400" id="approvalDetail"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-green-400 font-semibold">Sua Média</span>
+                                <span class="text-2xl font-bold text-green-400" id="yourAverage">0 pts</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-3">
+                                <div id="yourBar" class="bg-green-500 h-3 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-slate-400 font-semibold">Nota de Corte Histórica</span>
+                                <span class="text-2xl font-bold text-slate-400" id="cutoffScore">0 pts</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-3">
+                                <div id="cutoffBar" class="bg-slate-600 h-3 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="cutoffSource"></p>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.3s">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Análise por Disciplina (com Regra de Eliminação)
+            </h3>
+            <div class="space-y-4" id="subjectAnalysis"></div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.4s">
+            <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros</h3>
+            <div class="space-y-3" id="wrongQuestionsList"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-4 justify-center animate-slide-in" style="animation-delay: 0.5s">
+            <button onclick="newSimulation()" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Novo Simulado
+            </button>
+            <button onclick="reviewErrors()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                Revisar Apenas Erros
             </button>
         </div>
     </div>
+</main>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
-        <div class="glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-blue-500">
-            <div id="toastIcon">ℹ️</div>
-            <div>
-                <div id="toastTitle" class="font-semibold text-white">Notificação</div>
-                <div id="toastMessage" class="text-sm text-slate-400">Mensagem aqui</div>
-            </div>
+<!-- Focus Mode Overlay -->
+<div id="focusOverlay" class="fixed inset-0 z-[100] focus-overlay hidden flex items-center justify-center">
+    <div class="text-center">
+        <div class="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+            <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">Modo Foco Ativado</h3>
+        <p class="text-slate-400 mb-6">Distrações bloqueadas. Foque apenas na questão.</p>
+        <div class="font-mono text-4xl font-bold text-blue-400 mb-6" id="focusTimer">25:00</div>
+        <button onclick="toggleFocusMode()" class="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-all">
+            Sair do Modo Foco
+        </button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
+    <div class="glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-blue-500">
+        <div id="toastIcon">ℹ️</div>
+        <div>
+            <div id="toastTitle" class="font-semibold text-white">Notificação</div>
+            <div id="toastMessage" class="text-sm text-slate-400">Mensagem aqui</div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ===== STATE MANAGEMENT =====
-        const state = {
-            career: null,
-            banca: '',
-            level: 'hard',
-            temporalFilter: '5',
-            antiMofo: true,
-            removeAnnulled: true,
-            includeEssay: false,
-            currentQuestion: 0,
-            totalQuestions: 50,
-            answers: {},
-            doubts: new Set(),
-            timer: null,
-            timeRemaining: 7200, // 2 hours in seconds
-            focusMode: false,
-            focusTimer: null,
-            focusTimeRemaining: 1500 // 25 minutes
-        };
 
-        // Mock Questions Database
-        const questionsDB = [
-            {
-                id: 1,
-                subject: 'Direito Constitucional',
-                banca: 'FCC',
-                year: 2024,
-                text: 'Com base na Constituição Federal de 1988 e na jurisprudência consolidada do STF, analise as seguintes assertivas sobre o direito de reunião:\n\nI. O direito de reunião, mesmo em templos ou locais de educação, é absoluto e não admite restrições de qualquer natureza.\n\nII. A autoridade competente pode, mediante requerimento, exigir que a reunião se realize em local diverso do inicialmente pretendido, desde que haja justificativa fundamentada de ordem pública.\n\nIII. A necessidade de prévio aviso à autoridade competente para a realização de reunião em logradouro público não configura cerceamento ao direito constitucional, desde que não se exija autorização que possa ser arbitrariamente negada.\n\nEstá correto o que se afirma em:',
-                options: ['Apenas I', 'Apenas II', 'I e III', 'II e III', 'I, II e III'],
-                correct: 3,
-                commentary: 'I - INCORRETA: O direito de reunião NÃO é absoluto. O art. 5º, XVI, da CF/88 estabelece restrições. II - CORRETA: STF (ADI 4.146-MC). III - CORRETA: Prévio aviso é exigência legítima desde que não se transforme em autorização arbitrária.',
-                law: 'Art. 5º, XVI, CF/88 | Súmula Vinculante 14, STF',
-                difficulty: 'hard'
-            },
-            {
-                id: 2,
-                subject: 'Direito Penal',
-                banca: 'CEBRASPE',
-                year: 2025,
-                text: 'Sobre o crime de peculato (art. 312, CP), assinale a alternativa correta:',
-                options: [
-                    'Apropriação de dinheiro público por funcionário particular contratado pela administração configura peculato-furto.',
-                    'O agente público que desvia dinheiro público para fins pessoais pratica peculato-apropriação, desde que haja dolo específico de enriquecimento ilícito.',
-                    'O funcionário que destrói documento público para ocultar desvio de verbas pratica crime de peculato-culposo.',
-                    'O particular que induz o agente público a desviar recursos é partícipe de peculato-furto.',
-                    'O agente que se apropria de dinheiro público por erro de máquina de contagem pratica peculato-apropriação.'
-                ],
-                correct: 1,
-                commentary: 'O peculato-apropriação exige dolo específico de enriquecimento ilícito (Súmula 83, STJ). Apropriação por particular é peculato-furto (art. 312, §1º, CP). Não existe peculato-culposo.',
-                law: 'Art. 312, CP | Súmula 83, STJ',
-                difficulty: 'hard'
-            },
-            {
-                id: 3,
-                subject: 'Direito Processual Penal',
-                banca: 'FGV',
-                year: 2024,
-                text: 'No que tange à prisão preventiva, conforme entendimento atual do STF e STJ, é correto afirmar:',
-                options: [
-                    'A prisão preventiva pode ser decretada exclusivamente com base na gravidade abstrata do crime, sem necessidade de demonstração concreta dos requisitos legais.',
-                    'A falta de fixedade do réu (domicílio e profissão) configura, por si só, garantia da ordem pública suficiente para a decretação da preventiva.',
-                    'A prisão preventiva deve ser revista a cada 90 dias, sendo obrigatória a substituição por medidas cautelares diversas após esse prazo.',
-                    'O periculum libertatis deve ser avaliado caso a caso, considerando as circunstâncias concretas do fato e do agente.',
-                    'A reincidência específica é fator absolutamente proibido de ser considerado na análise do periculum libertatis.'
-                ],
-                correct: 3,
-                commentary: 'O STF (HC 126.292) e STJ firmaram entendimento de que a prisão preventiva exige análise concreta e individualizada do periculum libertatis, não podendo ser decretada de forma automática ou abstrata.',
-                law: 'Art. 312 e 313, CPP | HC 126.292, STF',
-                difficulty: 'expert'
-            },
-            {
-                id: 4,
-                subject: 'Raciocínio Lógico',
-                banca: 'FCC',
-                year: 2025,
-                text: 'Se "Todo policial é honesto" é falso, então necessariamente é verdadeiro que:',
-                options: [
-                    'Nenhum policial é honesto.',
-                    'Algum policial não é honesto.',
-                    'Algum policial é honesto.',
-                    'Todo honesto é policial.',
-                    'Nenhum honesto é policial.'
-                ],
-                correct: 1,
-                commentary: 'A negação de "Todo A é B" é "Algum A não é B" (particular negativa). Não se pode afirmar que "nenhum é", pois pode haver policiais honestos e desonestos.',
-                law: 'Lógica Proposicional - Negação de Proposições Categóricas',
-                difficulty: 'normal'
-            },
-            {
-                id: 5,
-                subject: 'Direito Administrativo',
-                banca: 'IBFC',
-                year: 2024,
-                text: 'Sobre o princípio da vinculação ao edital nos concursos públicos, é correto afirmar:',
-                options: [
-                    'O edital pode ser alterado a qualquer tempo, desde que haja interesse da administração pública.',
-                    'A vinculação ao edital é relativa, permitindo-se alterações unilaterais em caso de necessidade administrativa.',
-                    'O edital constitui lei específica do concurso, vinculando a administração e os candidatos, não admitindo alterações que prejudiquem os direitos adquiridos.',
-                    'O candidato aprovado dentro do número de vagas não possui direito subjetivo à nomeação, sendo este mero interesse jurídico.',
-                    'A anulação do concurso pode ocorrer livremente pela administração, sem necessidade de motivação específica.'
-                ],
-                correct: 2,
-                commentary: 'O edital é lei específica do concurso (Súmula 473, STF). A vinculação é absoluta, não admitindo alterações que prejudiquem direitos adquiridos dos candidatos.',
-                law: 'Súmula 473, STF | Lei 9.784/99',
-                difficulty: 'hard'
+function showCommentary(q, isCorrect) {
+    const commentary = document.getElementById('commentaryBox');
+    commentary.classList.remove('hidden');
+
+    const config = careerConfig[state.career];
+    const letters = config.bancaStyle === 'cebraspe' ? ['CERTO', 'ERRADO'] : ['A', 'B', 'C', 'D', 'E'];
+
+    commentary.innerHTML = `
+        <h4 class="text-lg font-semibold ${isCorrect ? 'text-green-400' : 'text-red-400'} mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isCorrect ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}"/>
+            </svg>
+            ${isCorrect ? 'Gabarito Comentado' : 'Resposta Incorreta'}
+        </h4>
+        <p class="text-slate-300 leading-relaxed mb-4">
+            <strong class="text-white">Resposta correta: ${letters[q.correct]}</strong>
+            ${!isCorrect ? ` | Sua resposta: ${letters[state.answers[state.currentQuestion]]}` : ''}
+        </p>
+        <div class="space-y-3 text-sm text-slate-400">
+            <p>${q.commentary}</p>
+        </div>
+        <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <p class="text-xs text-blue-400 font-medium">📚 ${q.law}</p>
+        </div>
+        ${config.bancaStyle === 'cebraspe' ? `
+        <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+            <p class="text-xs text-amber-400 font-medium">⚠️ Estilo CEBRASPE: Erro anula acerto! Cada item vale +1 ou -1 ponto.</p>
+        </div>
+        ` : ''}
+    `;
+}
+
+function markCorrect(index, style) {
+    if (style === 'cebraspe') {
+        const cards = document.querySelectorAll('.cebraspe-option');
+        cards[index].classList.add('selected-c');
+    } else {
+        const cards = document.querySelectorAll('.option-card');
+        cards[index].classList.add('correct');
+        cards[index].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
+    }
+}
+
+function markWrong(selected, correct, style) {
+    if (style === 'cebraspe') {
+        const cards = document.querySelectorAll('.cebraspe-option');
+        cards[selected].classList.add('selected-e');
+        cards[correct].classList.add('selected-c');
+    } else {
+        const cards = document.querySelectorAll('.option-card');
+        cards[selected].classList.add('wrong');
+        cards[selected].querySelector('span:first-child').classList.add('bg-red-500', 'text-white');
+        cards[correct].classList.add('correct');
+        cards[correct].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
+    }
+}
+
+function markDoubt() {
+    const btn = document.getElementById('doubtBtn');
+    const isMarked = state.doubts.has(state.currentQuestion);
+
+    if (isMarked) {
+        state.doubts.delete(state.currentQuestion);
+        btn.classList.remove('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
+        btn.classList.add('border-slate-700', 'text-slate-400');
+    } else {
+        state.doubts.add(state.currentQuestion);
+        btn.classList.add('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
+        btn.classList.remove('border-slate-700', 'text-slate-400');
+    }
+
+    const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
+    if (!isMarked) {
+        gridBtn.classList.add('bg-amber-500', 'text-white');
+        gridBtn.classList.remove('bg-slate-800');
+    }
+}
+
+function previousQuestion() {
+    if (state.currentQuestion > 0) {
+        loadQuestion(state.currentQuestion - 1);
+    }
+}
+
+function skipQuestion() {
+    if (state.currentQuestion < state.totalQuestions - 1) {
+        loadQuestion(state.currentQuestion + 1);
+    }
+}
+
+function checkEliminationWarning() {
+    const config = careerConfig[state.career];
+    if (!config.eliminationRule.includes('ZERO')) return;
+
+    const subjectScores = {};
+    config.disciplines.forEach(d => subjectScores[d.name] = { correct: 0, total: 0 });
+
+    const careerQuestions = questionsDB[state.career];
+    for (let i = 0; i < state.totalQuestions; i++) {
+        if (state.answers[i] === undefined) continue;
+
+        let currentSubject = config.disciplines[0];
+        let accumulated = 0;
+        const proportion = state.totalQuestions / config.totalQuestions;
+
+        for (const disc of config.disciplines) {
+            accumulated += Math.round(disc.questions * proportion);
+            if (i < accumulated) {
+                currentSubject = disc;
+                break;
             }
-        ];
-
-        // Generate more mock questions
-        for(let i = 6; i <= 50; i++) {
-            const subjects = ['Direito Constitucional', 'Direito Penal', 'Direito Processual Penal', 'Direito Administrativo', 'Raciocínio Lógico', 'Português', 'Informática', 'Noções de Direitos Humanos'];
-            const bancas = ['FCC', 'CEBRASPE', 'FGV', 'IBFC'];
-            const difficulties = ['normal', 'hard', 'expert'];
-            
-            questionsDB.push({
-                id: i,
-                subject: subjects[Math.floor(Math.random() * subjects.length)],
-                banca: bancas[Math.floor(Math.random() * bancas.length)],
-                year: 2022 + Math.floor(Math.random() * 4),
-                text: `[Questão ${i}] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
-                options: ['Alternativa A', 'Alternativa B', 'Alternativa C', 'Alternativa D', 'Alternativa E'],
-                correct: Math.floor(Math.random() * 5),
-                commentary: `Comentário detalhado da questão ${i} com fundamentação legal completa.`,
-                law: 'Art. 5º, CF/88',
-                difficulty: difficulties[Math.floor(Math.random() * difficulties.length)]
-            });
         }
 
-        // ===== FUNCTIONS =====
+        const q = careerQuestions[i % careerQuestions.length];
+        subjectScores[currentSubject.name].total++;
+        if (state.answers[i] === q.correct) {
+            subjectScores[currentSubject.name].correct++;
+        }
+    }
 
-        function selectCareer(career) {
-            state.career = career;
-            document.querySelectorAll('.career-btn').forEach(btn => {
-                const isSelected = btn.dataset.career === career;
-                btn.classList.toggle('border-blue-500', isSelected);
-                btn.classList.toggle('bg-blue-500/10', isSelected);
-                btn.querySelector('.check-indicator div').classList.toggle('opacity-100', isSelected);
-            });
-            showToast('Carreira selecionada', getCareerName(career));
+    const zeroSubjects = Object.entries(subjectScores)
+        .filter(([name, score]) => score.total > 0 && score.correct === 0)
+        .map(([name]) => name);
+
+    const warning = document.getElementById('elimWarning');
+    if (zeroSubjects.length > 0) {
+        warning.classList.remove('hidden');
+        document.getElementById('elimSubject').textContent = zeroSubjects.join(', ');
+    } else {
+        warning.classList.add('hidden');
+    }
+}
+
+function updateMiniStats() {
+    const config = careerConfig[state.career];
+    const careerQuestions = questionsDB[state.career];
+
+    let correct = 0, wrong = 0, blank = 0;
+    const subjectStats = {};
+    config.disciplines.forEach(d => subjectStats[d.name] = { correct: 0, total: 0 });
+
+    for (let i = 0; i < state.totalQuestions; i++) {
+        let currentSubject = config.disciplines[0];
+        let accumulated = 0;
+        const proportion = state.totalQuestions / config.totalQuestions;
+
+        for (const disc of config.disciplines) {
+            accumulated += Math.round(disc.questions * proportion);
+            if (i < accumulated) {
+                currentSubject = disc;
+                break;
+            }
         }
 
-        function getCareerName(career) {
-            const names = { pmba: 'PMBA', prf: 'PRF', pf: 'PF', pc: 'PC' };
-            return names[career] || career;
+        const q = careerQuestions[i % careerQuestions.length];
+
+        if (state.answers[i] === undefined) {
+            blank++;
+        } else {
+            subjectStats[currentSubject.name].total++;
+            if (state.answers[i] === q.correct) {
+                correct++;
+                subjectStats[currentSubject.name].correct++;
+            } else {
+                wrong++;
+            }
+        }
+    }
+
+    document.getElementById('miniCorrect').textContent = correct;
+    document.getElementById('miniWrong').textContent = wrong;
+    document.getElementById('miniBlank').textContent = blank;
+
+    // Update mini subject stats
+    const miniSubjectDiv = document.getElementById('miniSubjectStats');
+    miniSubjectDiv.innerHTML = '';
+    Object.entries(subjectStats).forEach(([name, stats]) => {
+        if (stats.total > 0) {
+            const pct = Math.round((stats.correct / stats.total) * 100);
+            const color = pct >= 60 ? 'green' : pct >= 40 ? 'amber' : 'red';
+            miniSubjectDiv.innerHTML += `
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 truncate">${name}</span>
+                    <span class="text-${color}-400 font-mono">${pct}%</span>
+                </div>
+            `;
+        }
+    });
+
+    // Update grid colors
+    for (let i = 0; i < state.totalQuestions; i++) {
+        const gridBtn = document.getElementById(`qgrid-${i + 1}`);
+        if (!gridBtn) continue;
+
+        if (state.answers[i] !== undefined) {
+            const q = careerQuestions[i % careerQuestions.length];
+            gridBtn.classList.remove('bg-slate-800', 'text-slate-400', 'bg-amber-500');
+            gridBtn.classList.add(state.answers[i] === q.correct ? 'bg-green-500' : 'bg-red-500', 'text-white');
+        } else if (state.doubts.has(i)) {
+            gridBtn.classList.add('bg-amber-500', 'text-white');
+        }
+    }
+}
+
+function startTimer() {
+    if (state.timer) clearInterval(state.timer);
+    state.timer = setInterval(() => {
+        state.timeRemaining--;
+        const hours = Math.floor(state.timeRemaining / 3600);
+        const minutes = Math.floor((state.timeRemaining % 3600) / 60);
+        const seconds = state.timeRemaining % 60;
+        document.getElementById('mainTimer').textContent = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (state.timeRemaining <= 300) {
+            document.getElementById('mainTimer').classList.add('text-red-400', 'animate-pulse');
         }
 
-        function setLevel(level) {
-            state.level = level;
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                const isSelected = btn.dataset.level === level;
-                btn.classList.toggle('level-active', isSelected);
-                btn.classList.toggle('bg-amber-500/10', isSelected && level === 'hard');
-                btn.classList.toggle('border-amber-500', isSelected && level === 'hard');
-                btn.classList.toggle('text-amber-400', isSelected && level === 'hard');
-                
-                btn.classList.toggle('bg-red-500/10', isSelected && level === 'expert');
-                btn.classList.toggle('border-red-500', isSelected && level === 'expert');
-                btn.classList.toggle('text-red-400', isSelected && level === 'expert');
-                
-                btn.classList.toggle('bg-blue-500/10', isSelected && level === 'normal');
-                btn.classList.toggle('border-blue-500', isSelected && level === 'normal');
-                btn.classList.toggle('text-blue-400', isSelected && level === 'normal');
-            });
+        if (state.timeRemaining <= 0) {
+            clearInterval(state.timer);
+            finishSimulation();
+        }
+    }, 1000);
+}
 
-            const info = document.getElementById('levelInfo');
-            const texts = {
-                normal: { title: 'Modo: Padrão', desc: 'Questões no nível exato da banca. Ideal para revisão inicial.', color: 'blue' },
-                hard: { title: 'Modo: Um Nível Acima 🔥', desc: 'Questões 20% mais difíceis que o padrão. Inclui pegadinhas avançadas.', color: 'amber' },
-                expert: { title: 'Modo: Expert ⚡', desc: 'Questões 40% mais difíceis. Interpretações complexas e casos atípicos.', color: 'red' }
-            };
-            const t = texts[level];
-            info.className = `mt-4 p-4 rounded-xl bg-${t.color}-500/10 border border-${t.color}-500/30`;
-            info.innerHTML = `
-                <div class="flex items-start gap-3">
-                    <span class="text-2xl">${level === 'normal' ? '📘' : level === 'hard' ? '🎯' : '⚡'}</span>
+function finishSimulation() {
+    clearInterval(state.timer);
+
+    const config = careerConfig[state.career];
+    const careerQuestions = questionsDB[state.career];
+
+    let correct = 0, wrong = 0, blank = 0;
+    const subjectStats = {};
+    config.disciplines.forEach(d => subjectStats[d.name] = { total: 0, correct: 0, questions: [] });
+
+    for (let i = 0; i < state.totalQuestions; i++) {
+        let currentSubject = config.disciplines[0];
+        let accumulated = 0;
+        const proportion = state.totalQuestions / config.totalQuestions;
+
+        for (const disc of config.disciplines) {
+            accumulated += Math.round(disc.questions * proportion);
+            if (i < accumulated) {
+                currentSubject = disc;
+                break;
+            }
+        }
+
+        const q = careerQuestions[i % careerQuestions.length];
+        subjectStats[currentSubject.name].total++;
+
+        if (state.answers[i] === undefined) {
+            blank++;
+        } else if (state.answers[i] === q.correct) {
+            correct++;
+            subjectStats[currentSubject.name].correct++;
+        } else {
+            wrong++;
+            subjectStats[currentSubject.name].questions.push({ index: i, question: q });
+        }
+    }
+
+    // Calculate score
+    let score = 0;
+    if (config.bancaStyle === 'cebraspe') {
+        // CEBRASPE: +1 for correct, -1 for wrong
+        score = (correct * 1) + (wrong * -1);
+        // Minimum 0
+        score = Math.max(0, score);
+    } else {
+        // FCC/IDECAN: weight per question
+        score = correct * config.weightPerQuestion;
+    }
+
+    // Scale to real exam proportion
+    const realScore = (score / state.totalQuestions) * config.totalQuestions;
+
+    // Check elimination
+    const zeroSubjects = Object.entries(subjectStats)
+        .filter(([name, stats]) => stats.total > 0 && stats.correct === 0)
+        .map(([name]) => name);
+
+    const isEliminated = zeroSubjects.length > 0;
+    const percentage = Math.round((correct / state.totalQuestions) * 100);
+    const isApproved = !isEliminated && realScore >= config.cutoffScore;
+
+    // Update results page
+    document.getElementById('finalScore').textContent = `${percentage}%`;
+    document.getElementById('finalCorrect').textContent = correct;
+    document.getElementById('finalWrong').textContent = wrong;
+    document.getElementById('finalBlank').textContent = blank;
+    document.getElementById('finalGrade').textContent = `${realScore.toFixed(1)} pts`;
+
+    // Animate score circle
+    const circle = document.getElementById('scoreCircle');
+    const circumference = 2 * Math.PI * 88;
+    const offset = circumference - (percentage / 100) * circumference;
+    setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+    }, 500);
+
+    // Elimination alert
+    const elimAlert = document.getElementById('eliminationAlert');
+    if (isEliminated) {
+        elimAlert.classList.remove('hidden');
+        document.getElementById('eliminatedSubjects').textContent = zeroSubjects.join(', ');
+    } else {
+        elimAlert.classList.add('hidden');
+    }
+
+    // Approval status
+    const statusDiv = document.getElementById('approvalStatus');
+    const detailDiv = document.getElementById('approvalDetail');
+
+    if (isEliminated) {
+        statusDiv.textContent = 'ELIMINADO ❌';
+        statusDiv.className = 'text-lg font-bold text-red-400';
+        detailDiv.textContent = `Você zerou em: ${zeroSubjects.join(', ')}`;
+    } else if (isApproved) {
+        statusDiv.textContent = 'APROVADO ✅';
+        statusDiv.className = 'text-lg font-bold text-green-400';
+        detailDiv.textContent = `${(realScore - config.cutoffScore).toFixed(1)} pts acima da nota de corte`;
+    } else {
+        statusDiv.textContent = 'REPROVADO ❌';
+        statusDiv.className = 'text-lg font-bold text-red-400';
+        detailDiv.textContent = `Faltam ${(config.cutoffScore - realScore).toFixed(1)} pts para aprovação`;
+    }
+
+    // Bars
+    document.getElementById('yourAverage').textContent = `${realScore.toFixed(1)} pts`;
+    document.getElementById('yourBar').style.width = `${Math.min(100, (realScore / config.cutoffScore) * 100)}%`;
+    document.getElementById('cutoffScore').textContent = `${config.cutoffScore} pts`;
+    document.getElementById('cutoffBar').style.width = '100%';
+    document.getElementById('cutoffSource').textContent = config.cutoffNote;
+
+    // Subject analysis
+    const analysisContainer = document.getElementById('subjectAnalysis');
+    analysisContainer.innerHTML = '';
+
+    Object.entries(subjectStats).forEach(([subject, stats]) => {
+        if (stats.total === 0) return;
+
+        const subjPct = Math.round((stats.correct / stats.total) * 100);
+        const isZero = stats.correct === 0 && stats.total > 0;
+        const color = isZero ? 'red' : subjPct >= 60 ? 'green' : subjPct >= 40 ? 'amber' : 'red';
+        const configDisc = config.disciplines.find(d => d.name === subject);
+
+        analysisContainer.innerHTML += `
+            <div class="flex items-center gap-4 p-3 rounded-lg ${isZero ? 'bg-red-500/10 border border-red-500/20' : 'bg-slate-800/30'}">
+                <div class="flex-1">
+                    <div class="flex justify-between mb-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-white">${subject}</span>
+                            ${isZero ? '<span class="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">ELIMINATÓRIO</span>' : ''}
+                        </div>
+                        <span class="text-sm font-mono text-${color}-400">${subjPct}% (${stats.correct}/${stats.total})</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-2">
+                        <div class="bg-${color}-500 h-2 rounded-full transition-all" style="width: ${subjPct}%"></div>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">Peso na prova: ${configDisc ? configDisc.questions : '?'} questões</div>
+                </div>
+            </div>
+        `;
+    });
+
+    // Radar chart
+    generateRadarChart(subjectStats);
+
+    // Wrong questions list
+    const wrongList = document.getElementById('wrongQuestionsList');
+    wrongList.innerHTML = '';
+
+    Object.entries(subjectStats).forEach(([subject, stats]) => {
+        stats.questions.forEach(({ index, question }) => {
+            wrongList.innerHTML += `
+                <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/20 flex items-center justify-between">
                     <div>
-                        <h4 class="font-semibold text-${t.color}-400 mb-1">${t.title}</h4>
-                        <p class="text-sm text-slate-400">${t.desc}</p>
+                        <div class="text-sm font-medium text-white">Questão ${index + 1} - ${subject}</div>
+                        <div class="text-xs text-slate-500">${question.banca} ${question.year} | ${question.difficulty}</div>
                     </div>
+                    <button onclick="reviewQuestion(${index})" class="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
+                        Revisar
+                    </button>
                 </div>
             `;
-        }
+        });
+    });
 
-        function toggleEssay() {
-            state.includeEssay = document.getElementById('essayToggle').checked;
-            document.getElementById('essayConfig').classList.toggle('hidden', !state.includeEssay);
-        }
+    // Update session stats
+    state.sessionStats.totalAnswered += state.totalQuestions;
+    state.sessionStats.totalCorrect += correct;
+    state.sessionStats.totalWrong += wrong;
 
-        function startSimulation() {
-            if (!state.career) {
-                showToast('Atenção', 'Selecione uma carreira primeiro!', 'warning');
-                document.querySelector('.career-btn').classList.add('animate-shake');
-                setTimeout(() => document.querySelector('.career-btn').classList.remove('animate-shake'), 500);
-                return;
-            }
-            if (!document.getElementById('bancaSelect').value) {
-                showToast('Atenção', 'Selecione uma banca!', 'warning');
-                return;
-            }
+    switchPage('page-result');
 
-            state.banca = document.getElementById('bancaSelect').value;
-            state.temporalFilter = document.getElementById('temporalFilter').value;
-            state.antiMofo = document.getElementById('antiMofo').checked;
-            state.removeAnnulled = document.getElementById('removeAnnulled').checked;
+    if (isApproved && !isEliminated) {
+        createConfetti();
+    }
+}
 
-            // Setup simulation
-            document.getElementById('simCareer').textContent = getCareerName(state.career);
-            document.getElementById('simBanca').textContent = state.banca.toUpperCase();
-            document.getElementById('totalQ').textContent = state.totalQuestions;
+function generateRadarChart(subjectStats) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const labels = Object.keys(subjectStats).filter(s => subjectStats[s].total > 0);
+    const data = labels.map(s => Math.round((subjectStats[s].correct / subjectStats[s].total) * 100));
+    const cutoffData = labels.map(() => 60);
 
-            // Add essay time if enabled
-            if (state.includeEssay) {
-                state.timeRemaining += 5400; // 1h30
-            }
-
-            // Generate question grid
-            generateQuestionGrid();
-
-            // Load first question
-            loadQuestion(0);
-
-            // Start timer
-            startTimer();
-
-            // Switch page
-            switchPage('page-sim');
-
-            showToast('Simulação iniciada!', `Banca: ${state.banca.toUpperCase()} | Nível: ${state.level.toUpperCase()}`);
-        }
-
-        function generateQuestionGrid() {
-            const grid = document.getElementById('questionGrid');
-            grid.innerHTML = '';
-            for (let i = 1; i <= state.totalQuestions; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'w-8 h-8 rounded text-xs font-medium transition-all border border-slate-700 bg-slate-800 text-slate-400 hover:border-blue-500';
-                btn.textContent = i;
-                btn.onclick = () => loadQuestion(i - 1);
-                btn.id = `qgrid-${i}`;
-                grid.appendChild(btn);
-            }
-        }
-
-        function loadQuestion(index) {
-            state.currentQuestion = index;
-            const q = questionsDB[index % questionsDB.length];
-            
-            document.getElementById('qNumber').textContent = index + 1;
-            document.getElementById('qSubject').textContent = q.subject;
-            document.getElementById('questionText').innerHTML = q.text.replace(/\n/g, '<br>');
-            
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-            const letters = ['A', 'B', 'C', 'D', 'E'];
-            
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-card w-full p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 text-left flex items-start gap-4 group';
-                btn.onclick = () => selectOption(i);
-                btn.innerHTML = `
-                    <span class="w-8 h-8 rounded-lg bg-slate-700 group-hover:bg-blue-500/20 flex items-center justify-center text-sm font-bold text-slate-400 group-hover:text-blue-400 transition-all flex-shrink-0 mt-0.5">${letters[i]}</span>
-                    <span class="text-slate-300 group-hover:text-white transition-colors">${opt}</span>
-                `;
-                btn.dataset.index = i;
-                optionsContainer.appendChild(btn);
-            });
-
-            // Restore previous answer if exists
-            if (state.answers[index] !== undefined) {
-                selectOption(state.answers[index], false);
-                if (state.answers[index] === q.correct) {
-                    markCorrect(state.answers[index]);
-                } else {
-                    markWrong(state.answers[index], q.correct);
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Seu Desempenho',
+                data: data,
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: '#3B82F6',
+                pointBackgroundColor: '#3B82F6',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#3B82F6'
+            }, {
+                label: 'Nota de Corte (60%)',
+                data: cutoffData,
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                borderColor: '#F59E0B',
+                borderDash: [5, 5],
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                    ticks: { display: false, backdropColor: 'transparent' },
+                    suggestedMin: 0,
+                    suggestedMax: 100
                 }
-            }
-
-            // Update commentary visibility
-            document.getElementById('commentaryBox').classList.toggle('hidden', state.answers[index] === undefined);
-
-            // Update progress
-            document.getElementById('currentQ').textContent = index + 1;
-            document.getElementById('progressBar').style.width = `${((index + 1) / state.totalQuestions) * 100}%`;
-            
-            // Update nav buttons
-            document.getElementById('prevBtn').disabled = index === 0;
-            
-            // Update grid highlight
-            document.querySelectorAll('#questionGrid button').forEach((btn, i) => {
-                btn.classList.toggle('ring-2', i === index);
-                btn.classList.toggle('ring-blue-500', i === index);
-            });
-
-            // Update mini stats
-            updateMiniStats();
-        }
-
-        function selectOption(index, save = true) {
-            if (save) state.answers[state.currentQuestion] = index;
-            
-            document.querySelectorAll('.option-card').forEach((card, i) => {
-                card.classList.toggle('selected', i === index);
-            });
-        }
-
-        function confirmAnswer() {
-            if (state.answers[state.currentQuestion] === undefined) {
-                showToast('Atenção', 'Selecione uma alternativa primeiro!', 'warning');
-                return;
-            }
-
-            const q = questionsDB[state.currentQuestion % questionsDB.length];
-            const selected = state.answers[state.currentQuestion];
-            
-            if (selected === q.correct) {
-                markCorrect(selected);
-                showToast('Correto!', 'Excelente resposta!', 'success');
-            } else {
-                markWrong(selected, q.correct);
-                showToast('Incorreto', 'Revise o comentário', 'error');
-            }
-
-            // Show commentary
-            const commentary = document.getElementById('commentaryBox');
-            commentary.classList.remove('hidden');
-            commentary.innerHTML = `
-                <h4 class="text-lg font-semibold ${selected === q.correct ? 'text-green-400' : 'text-red-400'} mb-3 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${selected === q.correct ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}"/>
-                    </svg>
-                    ${selected === q.correct ? 'Gabarito Comentado' : 'Resposta Incorreta'}
-                </h4>
-                <p class="text-slate-300 leading-relaxed mb-4">
-                    <strong class="text-white">Resposta correta: Letra ${['A', 'B', 'C', 'D', 'E'][q.correct]}</strong>
-                    ${selected !== q.correct ? ` | Sua resposta: Letra ${['A', 'B', 'C', 'D', 'E'][selected]}` : ''}
-                </p>
-                <div class="space-y-3 text-sm text-slate-400">
-                    <p>${q.commentary}</p>
-                </div>
-                <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                    <p class="text-xs text-blue-400 font-medium">📚 ${q.law}</p>
-                </div>
-            `;
-
-            // Update grid color
-            const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
-            gridBtn.classList.remove('bg-slate-800', 'text-slate-400');
-            gridBtn.classList.add(selected === q.correct ? 'bg-green-500' : 'bg-red-500', 'text-white');
-
-            updateMiniStats();
-        }
-
-        function markCorrect(index) {
-            const cards = document.querySelectorAll('.option-card');
-            cards[index].classList.add('correct');
-            cards[index].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
-        }
-
-        function markWrong(selected, correct) {
-            const cards = document.querySelectorAll('.option-card');
-            cards[selected].classList.add('wrong');
-            cards[selected].querySelector('span:first-child').classList.add('bg-red-500', 'text-white');
-            cards[correct].classList.add('correct');
-            cards[correct].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
-        }
-
-        function markDoubt() {
-            const btn = document.getElementById('doubtBtn');
-            const isMarked = state.doubts.has(state.currentQuestion);
-            
-            if (isMarked) {
-                state.doubts.delete(state.currentQuestion);
-                btn.classList.remove('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
-                btn.classList.add('border-slate-700', 'text-slate-400');
-            } else {
-                state.doubts.add(state.currentQuestion);
-                btn.classList.add('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
-                btn.classList.remove('border-slate-700', 'text-slate-400');
-            }
-
-            // Update grid
-            const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
-            if (!isMarked) {
-                gridBtn.classList.add('bg-amber-500', 'text-white');
-                gridBtn.classList.remove('bg-slate-800');
+            },
+            plugins: {
+                legend: { labels: { color: '#94a3b8' } }
             }
         }
+    });
+}
 
-        function previousQuestion() {
-            if (state.currentQuestion > 0) {
-                loadQuestion(state.currentQuestion - 1);
-            }
-        }
+function createConfetti() {
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 4)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+    }
+}
 
-        function skipQuestion() {
-            if (state.currentQuestion < state.totalQuestions - 1) {
-                loadQuestion(state.currentQuestion + 1);
-            }
-        }
+function toggleFocusMode() {
+    state.focusMode = !state.focusMode;
+    const overlay = document.getElementById('focusOverlay');
+    overlay.classList.toggle('hidden', !state.focusMode);
 
-        function updateMiniStats() {
-            let correct = 0, wrong = 0, blank = 0;
-            for (let i = 0; i < state.totalQuestions; i++) {
-                if (state.answers[i] === undefined) blank++;
-                else if (state.answers[i] === questionsDB[i % questionsDB.length].correct) correct++;
-                else wrong++;
-            }
-            document.getElementById('miniCorrect').textContent = correct;
-            document.getElementById('miniWrong').textContent = wrong;
-            document.getElementById('miniBlank').textContent = blank;
-        }
-
-        function startTimer() {
-            state.timer = setInterval(() => {
-                state.timeRemaining--;
-                const hours = Math.floor(state.timeRemaining / 3600);
-                const minutes = Math.floor((state.timeRemaining % 3600) / 60);
-                const seconds = state.timeRemaining % 60;
-                document.getElementById('mainTimer').textContent = 
-                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
-                if (state.timeRemaining <= 300) {
-                    document.getElementById('mainTimer').classList.add('text-red-400', 'animate-pulse');
-                }
-                
-                if (state.timeRemaining <= 0) {
-                    clearInterval(state.timer);
-                    finishSimulation();
-                }
-            }, 1000);
-        }
-
-        function finishSimulation() {
-            clearInterval(state.timer);
-            
-            // Calculate results
-            let correct = 0, wrong = 0, blank = 0;
-            const subjectStats = {};
-            
-            for (let i = 0; i < state.totalQuestions; i++) {
-                const q = questionsDB[i % questionsDB.length];
-                if (!subjectStats[q.subject]) subjectStats[q.subject] = { total: 0, correct: 0 };
-                subjectStats[q.subject].total++;
-                
-                if (state.answers[i] === undefined) blank++;
-                else if (state.answers[i] === q.correct) {
-                    correct++;
-                    subjectStats[q.subject].correct++;
-                } else wrong++;
-            }
-
-            const percentage = Math.round((correct / state.totalQuestions) * 100);
-            const cutoffScore = 72; // PRF cutoff
-            const yourScore = (percentage / 100) * 100; // Simplified
-            
-            // Update results page
-            document.getElementById('finalScore').textContent = `${percentage}%`;
-            document.getElementById('finalCorrect').textContent = correct;
-            document.getElementById('finalWrong').textContent = wrong;
-            document.getElementById('finalBlank').textContent = blank;
-            document.getElementById('yourAverage').textContent = `${yourScore.toFixed(1)} pts`;
-            
-            // Animate score circle
-            const circle = document.getElementById('scoreCircle');
-            const circumference = 2 * Math.PI * 88;
-            const offset = circumference - (percentage / 100) * circumference;
-            setTimeout(() => {
-                circle.style.strokeDashoffset = offset;
-            }, 500);
-
-            // Generate subject analysis
-            const analysisContainer = document.getElementById('subjectAnalysis');
-            analysisContainer.innerHTML = '';
-            Object.entries(subjectStats).forEach(([subject, stats]) => {
-                const subjPct = Math.round((stats.correct / stats.total) * 100);
-                const color = subjPct >= 70 ? 'green' : subjPct >= 50 ? 'amber' : 'red';
-                analysisContainer.innerHTML += `
-                    <div class="flex items-center gap-4 p-3 rounded-lg bg-slate-800/30">
-                        <div class="flex-1">
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-white">${subject}</span>
-                                <span class="text-sm font-mono text-${color}-400">${subjPct}%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-${color}-500 h-2 rounded-full transition-all" style="width: ${subjPct}%"></div>
-                            </div>
-                            <div class="text-xs text-slate-500 mt-1">${stats.correct}/${stats.total} questões</div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Generate radar chart
-            generateRadarChart(subjectStats);
-
-            // Generate wrong questions list
-            const wrongList = document.getElementById('wrongQuestionsList');
-            wrongList.innerHTML = '';
-            for (let i = 0; i < state.totalQuestions; i++) {
-                if (state.answers[i] !== undefined && state.answers[i] !== questionsDB[i % questionsDB.length].correct) {
-                    const q = questionsDB[i % questionsDB.length];
-                    wrongList.innerHTML += `
-                        <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/20 flex items-center justify-between">
-                            <div>
-                                <div class="text-sm font-medium text-white">Questão ${i + 1} - ${q.subject}</div>
-                                <div class="text-xs text-slate-500">${q.banca} ${q.year}</div>
-                            </div>
-                            <button onclick="reviewQuestion(${i})" class="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
-                                Revisar
-                            </button>
-                        </div>
-                    `;
-                }
-            }
-
-            switchPage('page-result');
-            
-            // Confetti if approved
-            if (percentage >= 60) {
-                createConfetti();
-            }
-        }
-
-        function generateRadarChart(subjectStats) {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            const labels = Object.keys(subjectStats);
-            const data = labels.map(s => Math.round((subjectStats[s].correct / subjectStats[s].total) * 100));
-            const cutoffData = labels.map(() => 60); // 60% cutoff line
-
-            new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Seu Desempenho',
-                        data: data,
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: '#3B82F6',
-                        pointBackgroundColor: '#3B82F6',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#3B82F6'
-                    }, {
-                        label: 'Nota de Corte',
-                        data: cutoffData,
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        borderColor: '#F59E0B',
-                        borderDash: [5, 5],
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            pointLabels: { color: '#94a3b8', font: { size: 11 } },
-                            ticks: { display: false, backdropColor: 'transparent' },
-                            suggestedMin: 0,
-                            suggestedMax: 100
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: { color: '#94a3b8' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createConfetti() {
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 4)];
-                confetti.style.animationDelay = Math.random() * 2 + 's';
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
-            }
-        }
-
-        function toggleFocusMode() {
-            state.focusMode = !state.focusMode;
-            const overlay = document.getElementById('focusOverlay');
-            overlay.classList.toggle('hidden', !state.focusMode);
-            
-            if (state.focusMode) {
-                state.focusTimeRemaining = 1500;
-                state.focusTimer = setInterval(() => {
-                    state.focusTimeRemaining--;
-                    const mins = Math.floor(state.focusTimeRemaining / 60);
-                    const secs = state.focusTimeRemaining % 60;
-                    document.getElementById('focusTimer').textContent = 
-                        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-                    
-                    if (state.focusTimeRemaining <= 0) {
-                        clearInterval(state.focusTimer);
-                        showToast('Pomodoro', 'Tempo de foco concluído! Faça uma pausa de 5 minutos.');
-                        toggleFocusMode();
-                    }
-                }, 1000);
-            } else {
-                clearInterval(state.focusTimer);
-            }
-        }
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-transition').forEach(page => {
-                page.classList.add('page-hidden');
-                page.classList.remove('page-active');
-            });
-            document.getElementById(pageId).classList.remove('page-hidden');
-            document.getElementById(pageId).classList.add('page-active');
-            window.scrollTo(0, 0);
-        }
-
-        function newSimulation() {
-            // Reset state
-            state.answers = {};
-            state.doubts.clear();
-            state.currentQuestion = 0;
-            state.timeRemaining = state.includeEssay ? 12600 : 7200;
-            clearInterval(state.timer);
-            
-            switchPage('page-config');
-        }
-
-        function reviewErrors() {
-            showToast('Em breve', 'Modo de revisão de erros será implementado!');
-        }
-
-        function shareResult() {
-            const text = `Delta Questões - Resultado do Simulado\nCarreira: ${getCareerName(state.career)}\nAcertos: ${document.getElementById('finalCorrect').textContent}/50\nPercentual: ${document.getElementById('finalScore').textContent}\nStatus: ${parseInt(document.getElementById('finalScore').textContent) >= 60 ? 'APROVADO ✅' : 'REPROVADO ❌'}`;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Copiado!', 'Resultado copiado para a área de transferência');
-            });
-        }
-
-        function showToast(title, message, type = 'info') {
-            const toast = document.getElementById('toast');
-            const icons = {
-                info: 'ℹ️',
-                success: '✅',
-                warning: '⚠️',
-                error: '❌'
-            };
-            const colors = {
-                info: 'border-blue-500',
-                success: 'border-green-500',
-                warning: 'border-amber-500',
-                error: 'border-red-500'
-            };
-            
-            document.getElementById('toastIcon').textContent = icons[type];
-            document.getElementById('toastTitle').textContent = title;
-            document.getElementById('toastMessage').textContent = message;
-            toast.querySelector('.glass-strong').className = `glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 ${colors[type]}`;
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // Session timer
-        let sessionSeconds = 0;
-        setInterval(() => {
-            sessionSeconds++;
-            const mins = Math.floor(sessionSeconds / 60);
-            const secs = sessionSeconds % 60;
-            document.getElementById('sessionTimer').textContent = 
+    if (state.focusMode) {
+        state.focusTimeRemaining = 1500;
+        state.focusTimer = setInterval(() => {
+            state.focusTimeRemaining--;
+            const mins = Math.floor(state.focusTimeRemaining / 60);
+            const secs = state.focusTimeRemaining % 60;
+            document.getElementById('focusTimer').textContent = 
                 `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }, 1000);
 
-        // Initialize
-        setLevel('hard');
-    </script>
+            if (state.focusTimeRemaining <= 0) {
+                clearInterval(state.focusTimer);
+                showToast('Pomodoro', 'Tempo de foco concluído!');
+                toggleFocusMode();
+            }
+        }, 1000);
+    } else {
+        clearInterval(state.focusTimer);
+    }
+}
+
+function switchPage(pageId) {
+    document.querySelectorAll('.page-transition').forEach(page => {
+        page.classList.add('page-hidden');
+        page.classList.remove('page-active');
+    });
+    document.getElementById(pageId).classList.remove('page-hidden');
+    document.getElementById(pageId).classList.add('page-active');
+    window.scrollTo(0, 0);
+}
+
+function newSimulation() {
+    clearInterval(state.timer);
+    state.answers = {};
+    state.doubts.clear();
+    state.currentQuestion = 0;
+    switchPage('page-config');
+}
+
+function reviewErrors() {
+    showToast('Em breve', 'Modo de revisão de erros será implementado!');
+}
+
+function reviewQuestion(index) {
+    switchPage('page-sim');
+    loadQuestion(index);
+}
+
+function showToast(title, message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', error: '❌' };
+    const colors = { info: 'border-blue-500', success: 'border-green-500', warning: 'border-amber-500', error: 'border-red-500' };
+
+    document.getElementById('toastIcon').textContent = icons[type];
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMessage').textContent = message;
+    toast.querySelector('.glass-strong').className = `glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 ${colors[type]}`;
+
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+}
+
+// Session timer
+let sessionSeconds = 0;
+setInterval(() => {
+    sessionSeconds++;
+    const mins = Math.floor(sessionSeconds / 60);
+    const secs = sessionSeconds % 60;
+    document.getElementById('sessionTimer').textContent = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}, 1000);
+
+// Initialize
+setLevel('hard');
+</script>
 </body>
 </html>
