@@ -10,7 +10,7 @@
     <style>
         * { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
+
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0B1120; }
         ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
@@ -24,18 +24,10 @@
             0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
             50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
-        }
-        @keyframes countUp {
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
         }
         @keyframes confetti-fall {
             0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
@@ -48,9 +40,7 @@
 
         .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
         .animate-pulse-glow { animation: pulse-glow 2s infinite; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
         .animate-shake { animation: shake 0.4s ease-in-out; }
-        .animate-count { animation: countUp 0.6s ease-out forwards; }
 
         .glass {
             background: rgba(15, 23, 42, 0.7);
@@ -145,7 +135,6 @@
             opacity: 1;
         }
 
-        /* Cebraspe style toggle */
         .cebraspe-option {
             transition: all 0.3s ease;
         }
@@ -173,791 +162,1212 @@
             letter-spacing: 0.05em;
         }
     </style>
+<base target="_blank">
 </head>
 <body class="bg-[#0B1120] text-[#F1F5F9] min-h-screen overflow-x-hidden">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões</h1>
-                        <p class="text-xs text-slate-400 font-medium">Simulador Realista de Concursos Policiais</p>
-                    </div>
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
-                
-                <div class="hidden md:flex items-center space-x-6">
-                    <div class="flex items-center space-x-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50">
-                        <span class="text-amber-400 text-lg streak-fire">🔥</span>
-                        <span class="text-sm font-semibold text-amber-400" id="streakDisplay">0 dias</span>
-                    </div>
-                    <div class="flex items-center space-x-2 text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-sm font-mono" id="sessionTimer">00:00</span>
-                    </div>
-                    <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Modo Foco">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </button>
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all">
-                        V
-                    </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões</h1>
+                    <p class="text-xs text-slate-400 font-medium">Simulador Realista de Concursos Policiais</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-6">
+                <div class="flex items-center space-x-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50">
+                    <span class="text-amber-400 text-lg streak-fire">🔥</span>
+                    <span class="text-sm font-semibold text-amber-400" id="streakDisplay">0 dias</span>
+                </div>
+                <div class="flex items-center space-x-2 text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-sm font-mono" id="sessionTimer">00:00</span>
+                </div>
+                <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Modo Foco">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all">
+                    V
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Main Content -->
-    <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+<!-- Main Content -->
+<main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
-        <!-- PAGE 1: CONFIGURATION -->
-        <div id="page-config" class="page-transition page-active">
-            <div class="text-center mb-12 animate-slide-in">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
-                    Prepare-se com <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 neon-text">100% de Realismo</span>
-                </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                    Simulador baseado nos editais reais. Questões, regras de eliminação, pesos por disciplina e estilo de cada banca exatamente como na prova.
-                </p>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-6">
-                    
-                    <!-- Career Selection -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                </svg>
-                                1. Escolha sua Carreira
-                            </h3>
-                            <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-medium">Obrigatório</span>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="careerGrid">
-                            <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
-                                <div class="text-2xl mb-2">🚔</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
-                                <div class="text-xs text-slate-400 mt-1">80 questões FCC/UNEB</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="prf">
-                                <div class="text-2xl mb-2">🛣️</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PRF</div>
-                                <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pf">
-                                <div class="text-2xl mb-2">🕵️</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PF</div>
-                                <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pc">
-                                <div class="text-2xl mb-2">🔍</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PC</div>
-                                <div class="text-xs text-slate-400 mt-1">100 questões IDECAN/IBADE</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                        </div>
-                        <div id="careerInfo" class="mt-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 hidden">
-                            <div class="flex items-start gap-3">
-                                <span class="text-2xl">ℹ️</span>
-                                <div id="careerInfoText">
-                                    <h4 class="font-semibold text-blue-400 mb-1">Informações da Carreira</h4>
-                                    <p class="text-sm text-slate-400"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Banca Selection (Auto-filled by career) -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            2. Banca Examinadora
-                        </h3>
-                        <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="font-semibold text-white" id="bancaDisplay">Selecione uma carreira</div>
-                                    <div class="text-sm text-slate-400 mt-1" id="bancaStyle">--</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-xs text-slate-500 uppercase tracking-wider">Formato</div>
-                                    <div class="font-mono text-blue-400 font-bold" id="formatDisplay">--</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Question Quantity -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.3s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
-                            </svg>
-                            3. Quantidade de Questões
-                        </h3>
-                        <div class="grid grid-cols-3 gap-3">
-                            <button onclick="setQuantity(25)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="25">
-                                <div class="text-2xl font-bold text-white">25</div>
-                                <div class="text-xs text-slate-400 mt-1">Treino Rápido</div>
-                                <div class="text-xs text-blue-400 mt-1">~30 min</div>
-                            </button>
-                            <button onclick="setQuantity(50)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="50">
-                                <div class="text-2xl font-bold text-white">50</div>
-                                <div class="text-xs text-slate-400 mt-1">Treino Médio</div>
-                                <div class="text-xs text-blue-400 mt-1">~60 min</div>
-                            </button>
-                            <button onclick="setQuantity(80)" class="qty-btn p-4 rounded-xl border-2 border-blue-500 bg-blue-500/10 transition-all text-center qty-active" data-qty="80">
-                                <div class="text-2xl font-bold text-blue-400">80</div>
-                                <div class="text-xs text-slate-400 mt-1">Simulado Real</div>
-                                <div class="text-xs text-blue-400 mt-1">~4h (PMBA/PC)</div>
-                            </button>
-                        </div>
-                        <div id="qtyInfo" class="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-300">
-                            ⚠️ A prova real da PMBA tem <strong>80 questões</strong>. Treinar com menos questões é para revisão rápida, mas o cálculo de aprovação será proporcional.
-                        </div>
-                    </div>
-
-                    <!-- Level & Difficulty -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.4s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                            </svg>
-                            4. Nível de Dificuldade
-                        </h3>
-                        <div class="grid grid-cols-3 gap-2 mb-4">
-                            <button onclick="setLevel('normal')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-level="normal">
-                                Edital Real
-                            </button>
-                            <button onclick="setLevel('hard')" class="level-btn px-3 py-2 rounded-lg border border-amber-500 text-sm text-amber-400 bg-amber-500/10 transition-all level-active" data-level="hard">
-                                +1 Nível 🔥
-                            </button>
-                            <button onclick="setLevel('expert')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-red-500 hover:text-red-400 transition-all" data-level="expert">
-                                Expert ⚡
-                            </button>
-                        </div>
-                        <div id="levelInfo" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                            <div class="flex items-start gap-3">
-                                <span class="text-2xl">🎯</span>
-                                <div>
-                                    <h4 class="font-semibold text-amber-400 mb-1">Modo: Um Nível Acima</h4>
-                                    <p class="text-sm text-slate-400">Questões 20% mais difíceis que o padrão da banca. Inclui pegadinhas avançadas, interpretações complexas e casos atípicos conforme o estilo de cada banca.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Disciplines Distribution -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.5s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                            </svg>
-                            5. Distribuição Real por Disciplina
-                        </h3>
-                        <div id="disciplinesList" class="space-y-2">
-                            <p class="text-sm text-slate-400 text-center py-4">Selecione uma carreira para ver a distribuição real de questões</p>
-                        </div>
-                        <div class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                            <p class="text-xs text-red-400 font-medium">🚨 Regra de Eliminação Real: Nota ZERO em qualquer disciplina = ELIMINAÇÃO automática do concurso!</p>
-                        </div>
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.6s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                            </svg>
-                            6. Filtros Inteligentes
-                        </h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Temporalidade</div>
-                                        <div class="text-xs text-slate-400">Filtrar por ano das questões</div>
-                                    </div>
-                                </div>
-                                <select id="temporalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                                    <option value="2">Últimos 2 anos</option>
-                                    <option value="5" selected>Últimos 5 anos</option>
-                                    <option value="all">Todos os anos</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Anti-Mofo</div>
-                                        <div class="text-xs text-slate-400">Remover leis revogadas</div>
-                                    </div>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="antiMofo" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                                </label>
-                            </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Remover Anuladas</div>
-                                        <div class="text-xs text-slate-400">Excluir questões anuladas</div>
-                                    </div>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="removeAnnulled" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Start Button -->
-                    <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.7s">
-                        <span>Iniciar Simulação Realista</span>
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Sidebar Stats - ZERADO -->
-                <div class="space-y-6">
-                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Desempenho</h3>
-                        <div class="text-center py-8">
-                            <div class="text-5xl mb-2">📊</div>
-                            <p class="text-slate-400 text-sm">Inicie um simulado para começar a contabilizar seu desempenho</p>
-                        </div>
-                        <div class="space-y-4 opacity-50">
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-400">Questões Respondidas</span>
-                                <span class="font-mono text-xl font-bold text-white">0</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-slate-400">Taxa de Acerto</span>
-                                <span class="font-mono text-xl font-bold text-green-400">0%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.4s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sequência de Estudos</h3>
-                        <div class="flex items-center justify-between">
-                            <div class="text-center">
-                                <div class="text-3xl font-bold text-white">0</div>
-                                <div class="text-xs text-slate-400">dias seguidos</div>
-                            </div>
-                            <div class="flex gap-1 opacity-30">
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">T</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">D</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.5s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Notas de Corte (Referência)</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PMBA</span>
-                                <span class="text-xs font-mono text-amber-400">60 pts</span>
-                            </div>
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PRF</span>
-                                <span class="text-xs font-mono text-amber-400">73 pts</span>
-                            </div>
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PF</span>
-                                <span class="text-xs font-mono text-amber-400">48 pts</span>
-                            </div>
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PC</span>
-                                <span class="text-xs font-mono text-amber-400">50 pts</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- PAGE 1: CONFIGURATION -->
+    <div id="page-config" class="page-transition page-active">
+        <div class="text-center mb-12 animate-slide-in">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+                Prepare-se com <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 neon-text">100% de Realismo</span>
+            </h2>
+            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                Simulador baseado nos editais reais. Questões, regras de eliminação, pesos por disciplina e estilo de cada banca exatamente como na prova.
+            </p>
         </div>
 
-        <!-- PAGE 2: SIMULATION INTERFACE -->
-        <div id="page-sim" class="page-transition page-hidden">
-            <div class="glass rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
-                        <span class="font-semibold text-white" id="simCareer">PMBA</span>
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- Career Selection -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            1. Escolha sua Carreira
+                        </h3>
+                        <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-medium">Obrigatório</span>
                     </div>
-                    <div class="h-6 w-px bg-slate-700"></div>
-                    <div class="flex items-center gap-2 text-slate-400 text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="careerGrid">
+                        <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
+                            <div class="text-2xl mb-2">🚔</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
+                            <div class="text-xs text-slate-400 mt-1">80 questões FCC/UNEB</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </button>
+                        <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="prf">
+                            <div class="text-2xl mb-2">🛣️</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PRF</div>
+                            <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </button>
+                        <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pf">
+                            <div class="text-2xl mb-2">🕵️</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PF</div>
+                            <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </button>
+                        <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pc">
+                            <div class="text-2xl mb-2">🔍</div>
+                            <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PC</div>
+                            <div class="text-xs text-slate-400 mt-1">100 questões IDECAN/IBADE</div>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
+                                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
+                            </div>
+                        </button>
+                    </div>
+                    <div id="careerInfo" class="mt-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 hidden">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">ℹ️</span>
+                            <div id="careerInfoText"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banca Display -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        <span id="simBanca">FCC</span>
-                    </div>
-                    <div class="level-badge px-3 py-1 rounded-full text-xs font-bold text-white">
-                        NÍVEL +1
+                        2. Banca Examinadora
+                    </h3>
+                    <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="font-semibold text-white" id="bancaDisplay">Selecione uma carreira</div>
+                                <div class="text-sm text-slate-400 mt-1" id="bancaStyle">--</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-slate-500 uppercase tracking-wider">Formato</div>
+                                <div class="font-mono text-blue-400 font-bold" id="formatDisplay">--</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-6">
-                    <div class="hidden sm:flex items-center gap-3">
-                        <span class="text-sm text-slate-400">Questão</span>
-                        <span class="font-mono text-lg font-bold text-white"><span id="currentQ">1</span>/<span id="totalQ">80</span></span>
-                        <div class="w-32 bg-slate-800 rounded-full h-2">
-                            <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 1.25%"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl px-4 py-2 border border-slate-700/50">
+                <!-- Question Quantity -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.3s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
                         </svg>
-                        <span id="mainTimer" class="font-mono text-xl font-bold text-white">04:00:00</span>
+                        3. Quantidade de Questões
+                    </h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="setQuantity(25)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="25">
+                            <div class="text-2xl font-bold text-white">25</div>
+                            <div class="text-xs text-slate-400 mt-1">Treino Rápido</div>
+                            <div class="text-xs text-blue-400 mt-1">~30 min</div>
+                        </button>
+                        <button onclick="setQuantity(50)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="50">
+                            <div class="text-2xl font-bold text-white">50</div>
+                            <div class="text-xs text-slate-400 mt-1">Treino Médio</div>
+                            <div class="text-xs text-blue-400 mt-1">~60 min</div>
+                        </button>
+                        <button onclick="setQuantity(80)" class="qty-btn p-4 rounded-xl border-2 border-blue-500 bg-blue-500/10 transition-all text-center qty-active" data-qty="80">
+                            <div class="text-2xl font-bold text-blue-400">80</div>
+                            <div class="text-xs text-slate-400 mt-1">Simulado Real</div>
+                            <div class="text-xs text-blue-400 mt-1">~4h (PMBA)</div>
+                        </button>
                     </div>
-                    <button onclick="finishSimulation()" class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all text-sm font-medium border border-red-500/30">
-                        Finalizar
-                    </button>
+                    <div id="qtyInfo" class="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-300">
+                        ⚠️ A prova real da PMBA tem <strong>80 questões</strong>. Treinar com menos questões é para revisão rápida, mas o cálculo de aprovação será proporcional.
+                    </div>
                 </div>
-            </div>
 
-            <!-- Elimination Warning -->
-            <div id="elimWarning" class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-center">
-                <p class="text-sm text-red-400 font-semibold">⚠️ ATENÇÃO: Você está com nota ZERO em <span id="elimSubject">--</span>. Isso te ELIMINA do concurso real!</p>
-            </div>
+                <!-- Level -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.4s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        4. Nível de Dificuldade
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <button onclick="setLevel('normal')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-level="normal">
+                            Edital Real
+                        </button>
+                        <button onclick="setLevel('hard')" class="level-btn px-3 py-2 rounded-lg border border-amber-500 text-sm text-amber-400 bg-amber-500/10 transition-all level-active" data-level="hard">
+                            +1 Nível 🔥
+                        </button>
+                        <button onclick="setLevel('expert')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-red-500 hover:text-red-400 transition-all" data-level="expert">
+                            Expert ⚡
+                        </button>
+                    </div>
+                    <div id="levelInfo" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">🎯</span>
+                            <div>
+                                <h4 class="font-semibold text-amber-400 mb-1">Modo: Um Nível Acima</h4>
+                                <p class="text-sm text-slate-400">Questões 20% mais difíceis que o padrão da banca. Inclui pegadinhas avançadas, interpretações complexas e casos atípicos conforme o estilo de cada banca.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="grid lg:grid-cols-4 gap-6">
-                <div class="lg:col-span-3 space-y-6">
-                    <div class="glass rounded-2xl p-6 md:p-8">
-                        <div class="flex items-start justify-between mb-6">
+                <!-- Disciplines -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.5s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        5. Distribuição Real por Disciplina
+                    </h3>
+                    <div id="disciplinesList" class="space-y-2">
+                        <p class="text-sm text-slate-400 text-center py-4">Selecione uma carreira para ver a distribuição real de questões</p>
+                    </div>
+                    <div class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                        <p class="text-xs text-red-400 font-medium">🚨 Regra de Eliminação Real: Nota ZERO em qualquer disciplina = ELIMINAÇÃO automática do concurso!</p>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.6s">
+                    <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        6. Filtros Inteligentes
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
                             <div class="flex items-center gap-3">
-                                <span id="qNumber" class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">1</span>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="qSubject" class="text-sm text-blue-400 font-medium">Direito Constitucional</span>
-                                        <span id="qWeight" class="subject-tag bg-blue-500/20 text-blue-400">10 questões</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Banca: FCC 2024</span>
-                                        <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">Nível: +1</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="markDoubt()" id="doubtBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all text-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                Dúvida
-                            </button>
-                        </div>
-
-                        <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8">
-                            Carregando questão...
-                        </div>
-
-                        <!-- Options Container - Dynamic by Banca -->
-                        <div class="space-y-3" id="optionsContainer">
-                            <!-- Generated by JS based on banca style -->
-                        </div>
-
-                        <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
-                            <button onclick="previousQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-50" id="prevBtn">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                                </svg>
-                                Anterior
-                            </button>
-                            <div class="flex gap-3">
-                                <button onclick="skipQuestion()" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white transition-all text-sm">
-                                    Pular
-                                </button>
-                                <button onclick="confirmAnswer()" id="confirmBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
-                                    Confirmar
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
-                                </button>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Temporalidade</div>
+                                    <div class="text-xs text-slate-400">Filtrar por ano das questões</div>
+                                </div>
                             </div>
+                            <select id="temporalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                                <option value="2">Últimos 2 anos</option>
+                                <option value="5" selected>Últimos 5 anos</option>
+                                <option value="all">Todos os anos</option>
+                            </select>
                         </div>
-                    </div>
-
-                    <div id="commentaryBox" class="hidden glass rounded-2xl p-6 border-l-4 border-green-500">
-                        <h4 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Gabarito Comentado
-                        </h4>
-                        <div id="commentaryContent"></div>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Anti-Mofo</div>
+                                    <div class="text-xs text-slate-400">Remover leis revogadas</div>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="antiMofo" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">Remover Anuladas</div>
+                                    <div class="text-xs text-slate-400">Excluir questões anuladas</div>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="removeAnnulled" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-1">
-                    <div class="glass rounded-2xl p-4 sticky top-24">
-                        <h4 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Navegador</h4>
-                        <div class="grid grid-cols-5 gap-2 mb-4" id="questionGrid"></div>
-                        
-                        <div class="space-y-2 text-xs mb-4">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-blue-500"></div>
-                                <span class="text-slate-400">Respondida</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-amber-500"></div>
-                                <span class="text-slate-400">Dúvida</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
-                                <span class="text-slate-400">Pendente</span>
-                            </div>
-                        </div>
+                <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.7s">
+                    <span>Iniciar Simulação Realista</span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
+            </div>
 
-                        <!-- Subject Performance Mini -->
-                        <div class="mt-4 pt-4 border-t border-slate-700/50">
-                            <h4 class="text-xs font-semibold text-slate-500 uppercase mb-2">Desempenho por Disciplina</h4>
-                            <div id="miniSubjectStats" class="space-y-2 text-xs">
-                                <!-- Generated by JS -->
-                            </div>
+            <!-- Sidebar Stats - ZERADO -->
+            <div class="space-y-6">
+                <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Desempenho</h3>
+                    <div class="text-center py-8">
+                        <div class="text-5xl mb-2">📊</div>
+                        <p class="text-slate-400 text-sm">Inicie um simulado para começar a contabilizar seu desempenho</p>
+                    </div>
+                    <div class="space-y-4 opacity-50">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">Questões Respondidas</span>
+                            <span class="font-mono text-xl font-bold text-white">0</span>
                         </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-slate-400">Taxa de Acerto</span>
+                            <span class="font-mono text-xl font-bold text-green-400">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="mt-4 pt-4 border-t border-slate-700/50">
-                            <div class="grid grid-cols-3 gap-2 text-center">
-                                <div class="p-2 rounded-lg bg-green-500/10">
-                                    <div class="text-lg font-bold text-green-400" id="miniCorrect">0</div>
-                                    <div class="text-[10px] text-slate-500">Acertos</div>
-                                </div>
-                                <div class="p-2 rounded-lg bg-red-500/10">
-                                    <div class="text-lg font-bold text-red-400" id="miniWrong">0</div>
-                                    <div class="text-[10px] text-slate-500">Erros</div>
-                                </div>
-                                <div class="p-2 rounded-lg bg-slate-700/30">
-                                    <div class="text-lg font-bold text-slate-400" id="miniBlank">80</div>
-                                    <div class="text-[10px] text-slate-500">Brancas</div>
-                                </div>
-                            </div>
+                <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.4s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sequência de Estudos</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-white">0</div>
+                            <div class="text-xs text-slate-400">dias seguidos</div>
+                        </div>
+                        <div class="flex gap-1 opacity-30">
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">T</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
+                            <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">D</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.5s">
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Notas de Corte (Referência)</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PMBA</span>
+                            <span class="text-xs font-mono text-amber-400">60 pts</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PRF</span>
+                            <span class="text-xs font-mono text-amber-400">73 pts</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PF</span>
+                            <span class="text-xs font-mono text-amber-400">48 pts</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                            <span class="text-xs text-slate-400">PC</span>
+                            <span class="text-xs font-mono text-amber-400">50 pts</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- PAGE 3: RESULTS & DIAGNOSTIC -->
-        <div id="page-result" class="page-transition page-hidden">
-            <div class="text-center mb-8 animate-slide-in">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 font-semibold mb-4">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    <!-- PAGE 2: SIMULATION INTERFACE -->
+    <div id="page-sim" class="page-transition page-hidden">
+        <div class="glass rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
+                    <span class="font-semibold text-white" id="simCareer">PMBA</span>
+                </div>
+                <div class="h-6 w-px bg-slate-700"></div>
+                <div class="flex items-center gap-2 text-slate-400 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    Simulação Concluída
+                    <span id="simBanca">FCC</span>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Aprovação</h2>
-                <p class="text-slate-400">Análise completa baseada nas regras reais do concurso</p>
-            </div>
-
-            <!-- Elimination Alert -->
-            <div id="eliminationAlert" class="hidden mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-center">
-                <h3 class="text-xl font-bold text-red-400 mb-2">❌ ELIMINADO</h3>
-                <p class="text-slate-300">Você zerou em: <span id="eliminatedSubjects" class="font-bold text-white"></span></p>
-                <p class="text-sm text-slate-400 mt-1">Na prova real, isso significa eliminação automática do concurso!</p>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-6 mb-8">
-                <div class="lg:col-span-1 glass rounded-2xl p-6 text-center animate-slide-in" style="animation-delay: 0.1s">
-                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sua Performance</h3>
-                    <div class="relative w-48 h-48 mx-auto mb-4">
-                        <svg class="w-full h-full transform -rotate-90">
-                            <circle cx="96" cy="96" r="88" stroke="#1e293b" stroke-width="12" fill="none"/>
-                            <circle id="scoreCircle" cx="96" cy="96" r="88" stroke="#10B981" stroke-width="12" fill="none" 
-                                stroke-dasharray="553" stroke-dashoffset="553" stroke-linecap="round" class="transition-all duration-1000"/>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-4xl font-bold text-white" id="finalScore">0%</span>
-                            <span class="text-sm text-slate-400 mt-1">de acerto</span>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Acertos</span>
-                            <span class="font-bold text-green-400" id="finalCorrect">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Erros</span>
-                            <span class="font-bold text-red-400" id="finalWrong">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Brancas</span>
-                            <span class="font-bold text-slate-400" id="finalBlank">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm pt-2 border-t border-slate-700/50">
-                            <span class="text-slate-400">Nota Final</span>
-                            <span class="font-bold text-white" id="finalGrade">0 pts</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-2 glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
-                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Probabilidade de Aprovação</h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-2xl">🎯</div>
-                                    <div>
-                                        <div class="text-lg font-bold text-blue-400" id="approvalStatus">Calculando...</div>
-                                        <div class="text-sm text-slate-400" id="approvalDetail"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-green-400 font-semibold">Sua Média</span>
-                                    <span class="text-2xl font-bold text-green-400" id="yourAverage">0 pts</span>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3">
-                                    <div id="yourBar" class="bg-green-500 h-3 rounded-full" style="width: 0%"></div>
-                                </div>
-                            </div>
-                            <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-slate-400 font-semibold">Nota de Corte Histórica</span>
-                                    <span class="text-2xl font-bold text-slate-400" id="cutoffScore">0 pts</span>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3">
-                                    <div id="cutoffBar" class="bg-slate-600 h-3 rounded-full" style="width: 0%"></div>
-                                </div>
-                                <p class="text-xs text-slate-500 mt-2" id="cutoffSource"></p>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="radarChart"></canvas>
-                        </div>
-                    </div>
+                <div class="level-badge px-3 py-1 rounded-full text-xs font-bold text-white">
+                    NÍVEL +1
                 </div>
             </div>
 
-            <!-- Subject Analysis -->
-            <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.3s">
-                <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+            <div class="flex items-center gap-6">
+                <div class="hidden sm:flex items-center gap-3">
+                    <span class="text-sm text-slate-400">Questão</span>
+                    <span class="font-mono text-lg font-bold text-white"><span id="currentQ">1</span>/<span id="totalQ">80</span></span>
+                    <div class="w-32 bg-slate-800 rounded-full h-2">
+                        <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 1.25%"></div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl px-4 py-2 border border-slate-700/50">
                     <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    Análise por Disciplina (com Regra de Eliminação)
-                </h3>
-                <div class="space-y-4" id="subjectAnalysis"></div>
-            </div>
-
-            <!-- Wrong Questions -->
-            <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.4s">
-                <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros</h3>
-                <div class="space-y-3" id="wrongQuestionsList"></div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex flex-wrap gap-4 justify-center animate-slide-in" style="animation-delay: 0.5s">
-                <button onclick="newSimulation()" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Novo Simulado
-                </button>
-                <button onclick="reviewErrors()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                    </svg>
-                    Revisar Apenas Erros
+                    <span id="mainTimer" class="font-mono text-xl font-bold text-white">04:00:00</span>
+                </div>
+                <button onclick="finishSimulation()" class="px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all text-sm font-medium border border-red-500/30">
+                    Finalizar
                 </button>
             </div>
         </div>
-    </main>
 
-    <!-- Focus Mode Overlay -->
-    <div id="focusOverlay" class="fixed inset-0 z-[100] focus-overlay hidden flex items-center justify-center">
-        <div class="text-center">
-            <div class="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
-                <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
+        <!-- Elimination Warning -->
+        <div id="elimWarning" class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-center">
+            <p class="text-sm text-red-400 font-semibold">⚠️ ATENÇÃO: Você está com nota ZERO em <span id="elimSubject">--</span>. Isso te ELIMINA do concurso real!</p>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-3 space-y-6">
+                <div class="glass rounded-2xl p-6 md:p-8">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <span id="qNumber" class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">1</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span id="qSubject" class="text-sm text-blue-400 font-medium">Direito Constitucional</span>
+                                    <span id="qWeight" class="subject-tag bg-blue-500/20 text-blue-400">10 questões</span>
+                                </div>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Banca: FCC 2024</span>
+                                    <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">Nível: +1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="markDoubt()" id="doubtBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:border-amber-500 hover:text-amber-400 transition-all text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Dúvida
+                        </button>
+                    </div>
+
+                    <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8">
+                        Carregando questão...
+                    </div>
+
+                    <div class="space-y-3" id="optionsContainer"></div>
+
+                    <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
+                        <button onclick="previousQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-50" id="prevBtn">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Anterior
+                        </button>
+                        <div class="flex gap-3">
+                            <button onclick="skipQuestion()" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white transition-all text-sm">
+                                Pular
+                            </button>
+                            <button onclick="confirmAnswer()" id="confirmBtn" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                                Confirmar
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="commentaryBox" class="hidden glass rounded-2xl p-6 border-l-4 border-green-500">
+                    <h4 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Gabarito Comentado
+                    </h4>
+                    <div id="commentaryContent"></div>
+                </div>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Modo Foco Ativado</h3>
-            <p class="text-slate-400 mb-6">Distrações bloqueadas. Foque apenas na questão.</p>
-            <div class="font-mono text-4xl font-bold text-blue-400 mb-6" id="focusTimer">25:00</div>
-            <button onclick="toggleFocusMode()" class="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-all">
-                Sair do Modo Foco
+
+            <div class="lg:col-span-1">
+                <div class="glass rounded-2xl p-4 sticky top-24">
+                    <h4 class="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Navegador</h4>
+                    <div class="grid grid-cols-5 gap-2 mb-4" id="questionGrid"></div>
+
+                    <div class="space-y-2 text-xs mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded bg-blue-500"></div>
+                            <span class="text-slate-400">Respondida</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded bg-amber-500"></div>
+                            <span class="text-slate-400">Dúvida</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
+                            <span class="text-slate-400">Pendente</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700/50">
+                        <h4 class="text-xs font-semibold text-slate-500 uppercase mb-2">Desempenho por Disciplina</h4>
+                        <div id="miniSubjectStats" class="space-y-2 text-xs"></div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700/50">
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="p-2 rounded-lg bg-green-500/10">
+                                <div class="text-lg font-bold text-green-400" id="miniCorrect">0</div>
+                                <div class="text-[10px] text-slate-500">Acertos</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-red-500/10">
+                                <div class="text-lg font-bold text-red-400" id="miniWrong">0</div>
+                                <div class="text-[10px] text-slate-500">Erros</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-slate-700/30">
+                                <div class="text-lg font-bold text-slate-400" id="miniBlank">80</div>
+                                <div class="text-[10px] text-slate-500">Brancas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3: RESULTS & DIAGNOSTIC -->
+    <div id="page-result" class="page-transition page-hidden">
+        <div class="text-center mb-8 animate-slide-in">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 font-semibold mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Simulação Concluída
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Aprovação</h2>
+            <p class="text-slate-400">Análise completa baseada nas regras reais do concurso</p>
+        </div>
+
+        <!-- Elimination Alert -->
+        <div id="eliminationAlert" class="hidden mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-center">
+            <h3 class="text-xl font-bold text-red-400 mb-2">❌ ELIMINADO</h3>
+            <p class="text-slate-300">Você zerou em: <span id="eliminatedSubjects" class="font-bold text-white"></span></p>
+            <p class="text-sm text-slate-400 mt-1">Na prova real, isso significa eliminação automática do concurso!</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6 mb-8">
+            <div class="lg:col-span-1 glass rounded-2xl p-6 text-center animate-slide-in" style="animation-delay: 0.1s">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sua Performance</h3>
+                <div class="relative w-48 h-48 mx-auto mb-4">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="96" cy="96" r="88" stroke="#1e293b" stroke-width="12" fill="none"/>
+                        <circle id="scoreCircle" cx="96" cy="96" r="88" stroke="#10B981" stroke-width="12" fill="none" 
+                            stroke-dasharray="553" stroke-dashoffset="553" stroke-linecap="round" class="transition-all duration-1000"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-4xl font-bold text-white" id="finalScore">0%</span>
+                        <span class="text-sm text-slate-400 mt-1">de acerto</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Acertos</span>
+                        <span class="font-bold text-green-400" id="finalCorrect">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Erros</span>
+                        <span class="font-bold text-red-400" id="finalWrong">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Brancas</span>
+                        <span class="font-bold text-slate-400" id="finalBlank">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm pt-2 border-t border-slate-700/50">
+                        <span class="text-slate-400">Nota Final</span>
+                        <span class="font-bold text-white" id="finalGrade">0 pts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
+                <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Probabilidade de Aprovação</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-2xl">🎯</div>
+                                <div>
+                                    <div class="text-lg font-bold text-blue-400" id="approvalStatus">Calculando...</div>
+                                    <div class="text-sm text-slate-400" id="approvalDetail"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-green-400 font-semibold">Sua Média</span>
+                                <span class="text-2xl font-bold text-green-400" id="yourAverage">0 pts</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-3">
+                                <div id="yourBar" class="bg-green-500 h-3 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-slate-400 font-semibold">Nota de Corte Histórica</span>
+                                <span class="text-2xl font-bold text-slate-400" id="cutoffScore">0 pts</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-3">
+                                <div id="cutoffBar" class="bg-slate-600 h-3 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2" id="cutoffSource"></p>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.3s">
+            <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Análise por Disciplina (com Regra de Eliminação)
+            </h3>
+            <div class="space-y-4" id="subjectAnalysis"></div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.4s">
+            <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros</h3>
+            <div class="space-y-3" id="wrongQuestionsList"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-4 justify-center animate-slide-in" style="animation-delay: 0.5s">
+            <button onclick="newSimulation()" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Novo Simulado
+            </button>
+            <button onclick="reviewErrors()" class="px-8 py-3 rounded-xl border border-slate-700 text-slate-300 hover:border-red-500 hover:text-red-400 transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                Revisar Apenas Erros
             </button>
         </div>
     </div>
+</main>
 
-    <!-- Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
-        <div class="glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-blue-500">
-            <div id="toastIcon">ℹ️</div>
-            <div>
-                <div id="toastTitle" class="font-semibold text-white">Notificação</div>
-                <div id="toastMessage" class="text-sm text-slate-400">Mensagem aqui</div>
-            </div>
+<!-- Focus Mode Overlay -->
+<div id="focusOverlay" class="fixed inset-0 z-[100] focus-overlay hidden flex items-center justify-center">
+    <div class="text-center">
+        <div class="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+            <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">Modo Foco Ativado</h3>
+        <p class="text-slate-400 mb-6">Distrações bloqueadas. Foque apenas na questão.</p>
+        <div class="font-mono text-4xl font-bold text-blue-400 mb-6" id="focusTimer">25:00</div>
+        <button onclick="toggleFocusMode()" class="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-all">
+            Sair do Modo Foco
+        </button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
+    <div class="glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-blue-500">
+        <div id="toastIcon">ℹ️</div>
+        <div>
+            <div id="toastTitle" class="font-semibold text-white">Notificação</div>
+            <div id="toastMessage" class="text-sm text-slate-400">Mensagem aqui</div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ===== CAREER CONFIGURATIONS (REAL DATA FROM EDITALS) =====
-        const careerConfig = {
-            pmba: {
-                name: 'PMBA',
-                fullName: 'Polícia Militar da Bahia',
-                banca: 'FCC / UNEB',
-                format: 'Múltipla Escolha (5 alternativas)',
-                totalQuestions: 80,
-                timeMinutes: 240, // 4 hours
-                cutoffScore: 60,
-                cutoffNote: 'Nota mínima: 60 pts. Nota ZERO em qualquer disciplina = ELIMINAÇÃO',
-                weightPerQuestion: 1.25,
-                hasEssay: true,
-                essayTime: 90, // minutes
-                essayMinScore: 50,
-                disciplines: [
-                    { name: 'Língua Portuguesa', questions: 15, color: 'blue' },
-                    { name: 'Direito Constitucional', questions: 10, color: 'indigo' },
-                    { name: 'Direito Administrativo', questions: 10, color: 'purple' },
-                    { name: 'Direito Penal Militar', questions: 10, color: 'red' },
-                    { name: 'Direito Penal', questions: 10, color: 'rose' },
-                    { name: 'Direitos Humanos', questions: 10, color: 'teal' },
-                    { name: 'História do Brasil', questions: 5, color: 'amber' },
-                    { name: 'Geografia do Brasil', questions: 5, color: 'green' },
-                    { name: 'Atualidades', questions: 5, color: 'cyan' }
-                ],
-                eliminationRule: 'Nota ZERO em qualquer disciplina = ELIMINAÇÃO',
-                bancaStyle: 'fcc',
-                bancaCharacteristics: 'Questões com 5 alternativas, uma única correta. Pegadinhas com alternativas "apenas I", "I e II", etc.'
+
+function showCommentary(q, isCorrect) {
+    const commentary = document.getElementById('commentaryBox');
+    commentary.classList.remove('hidden');
+
+    const config = careerConfig[state.career];
+    const letters = config.bancaStyle === 'cebraspe' ? ['CERTO', 'ERRADO'] : ['A', 'B', 'C', 'D', 'E'];
+
+    commentary.innerHTML = `
+        <h4 class="text-lg font-semibold ${isCorrect ? 'text-green-400' : 'text-red-400'} mb-3 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isCorrect ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}"/>
+            </svg>
+            ${isCorrect ? 'Gabarito Comentado' : 'Resposta Incorreta'}
+        </h4>
+        <p class="text-slate-300 leading-relaxed mb-4">
+            <strong class="text-white">Resposta correta: ${letters[q.correct]}</strong>
+            ${!isCorrect ? ` | Sua resposta: ${letters[state.answers[state.currentQuestion]]}` : ''}
+        </p>
+        <div class="space-y-3 text-sm text-slate-400">
+            <p>${q.commentary}</p>
+        </div>
+        <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <p class="text-xs text-blue-400 font-medium">📚 ${q.law}</p>
+        </div>
+        ${config.bancaStyle === 'cebraspe' ? `
+        <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+            <p class="text-xs text-amber-400 font-medium">⚠️ Estilo CEBRASPE: Erro anula acerto! Cada item vale +1 ou -1 ponto.</p>
+        </div>
+        ` : ''}
+    `;
+}
+
+function markCorrect(index, style) {
+    if (style === 'cebraspe') {
+        const cards = document.querySelectorAll('.cebraspe-option');
+        cards[index].classList.add('selected-c');
+    } else {
+        const cards = document.querySelectorAll('.option-card');
+        cards[index].classList.add('correct');
+        cards[index].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
+    }
+}
+
+function markWrong(selected, correct, style) {
+    if (style === 'cebraspe') {
+        const cards = document.querySelectorAll('.cebraspe-option');
+        cards[selected].classList.add('selected-e');
+        cards[correct].classList.add('selected-c');
+    } else {
+        const cards = document.querySelectorAll('.option-card');
+        cards[selected].classList.add('wrong');
+        cards[selected].querySelector('span:first-child').classList.add('bg-red-500', 'text-white');
+        cards[correct].classList.add('correct');
+        cards[correct].querySelector('span:first-child').classList.add('bg-green-500', 'text-white');
+    }
+}
+
+function markDoubt() {
+    const btn = document.getElementById('doubtBtn');
+    const isMarked = state.doubts.has(state.currentQuestion);
+
+    if (isMarked) {
+        state.doubts.delete(state.currentQuestion);
+        btn.classList.remove('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
+        btn.classList.add('border-slate-700', 'text-slate-400');
+    } else {
+        state.doubts.add(state.currentQuestion);
+        btn.classList.add('border-amber-500', 'text-amber-400', 'bg-amber-500/10');
+        btn.classList.remove('border-slate-700', 'text-slate-400');
+    }
+
+    const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
+    if (!isMarked) {
+        gridBtn.classList.add('bg-amber-500', 'text-white');
+        gridBtn.classList.remove('bg-slate-800');
+    }
+}
+
+function previousQuestion() {
+    if (state.currentQuestion > 0) {
+        loadQuestion(state.currentQuestion - 1);
+    }
+}
+
+function skipQuestion() {
+    if (state.currentQuestion < state.totalQuestions - 1) {
+        loadQuestion(state.currentQuestion + 1);
+    }
+}
+
+function checkEliminationWarning() {
+    const config = careerConfig[state.career];
+    if (!config.eliminationRule.includes('ZERO')) return;
+
+    const subjectScores = {};
+    config.disciplines.forEach(d => subjectScores[d.name] = { correct: 0, total: 0 });
+
+    const careerQuestions = questionsDB[state.career];
+    for (let i = 0; i < state.totalQuestions; i++) {
+        if (state.answers[i] === undefined) continue;
+
+        let currentSubject = config.disciplines[0];
+        let accumulated = 0;
+        const proportion = state.totalQuestions / config.totalQuestions;
+
+        for (const disc of config.disciplines) {
+            accumulated += Math.round(disc.questions * proportion);
+            if (i < accumulated) {
+                currentSubject = disc;
+                break;
+            }
+        }
+
+        const q = careerQuestions[i % careerQuestions.length];
+        subjectScores[currentSubject.name].total++;
+        if (state.answers[i] === q.correct) {
+            subjectScores[currentSubject.name].correct++;
+        }
+    }
+
+    const zeroSubjects = Object.entries(subjectScores)
+        .filter(([name, score]) => score.total > 0 && score.correct === 0)
+        .map(([name]) => name);
+
+    const warning = document.getElementById('elimWarning');
+    if (zeroSubjects.length > 0) {
+        warning.classList.remove('hidden');
+        document.getElementById('elimSubject').textContent = zeroSubjects.join(', ');
+    } else {
+        warning.classList.add('hidden');
+    }
+}
+
+function updateMiniStats() {
+    const config = careerConfig[state.career];
+    const careerQuestions = questionsDB[state.career];
+
+    let correct = 0, wrong = 0, blank = 0;
+    const subjectStats = {};
+    config.disciplines.forEach(d => subjectStats[d.name] = { correct: 0, total: 0 });
+
+    for (let i = 0; i < state.totalQuestions; i++) {
+        let currentSubject = config.disciplines[0];
+        let accumulated = 0;
+        const proportion = state.totalQuestions / config.totalQuestions;
+
+        for (const disc of config.disciplines) {
+            accumulated += Math.round(disc.questions * proportion);
+            if (i < accumulated) {
+                currentSubject = disc;
+                break;
+            }
+        }
+
+        const q = careerQuestions[i % careerQuestions.length];
+
+        if (state.answers[i] === undefined) {
+            blank++;
+        } else {
+            subjectStats[currentSubject.name].total++;
+            if (state.answers[i] === q.correct) {
+                correct++;
+                subjectStats[currentSubject.name].correct++;
+            } else {
+                wrong++;
+            }
+        }
+    }
+
+    document.getElementById('miniCorrect').textContent = correct;
+    document.getElementById('miniWrong').textContent = wrong;
+    document.getElementById('miniBlank').textContent = blank;
+
+    // Update mini subject stats
+    const miniSubjectDiv = document.getElementById('miniSubjectStats');
+    miniSubjectDiv.innerHTML = '';
+    Object.entries(subjectStats).forEach(([name, stats]) => {
+        if (stats.total > 0) {
+            const pct = Math.round((stats.correct / stats.total) * 100);
+            const color = pct >= 60 ? 'green' : pct >= 40 ? 'amber' : 'red';
+            miniSubjectDiv.innerHTML += `
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 truncate">${name}</span>
+                    <span class="text-${color}-400 font-mono">${pct}%</span>
+                </div>
+            `;
+        }
+    });
+
+    // Update grid colors
+    for (let i = 0; i < state.totalQuestions; i++) {
+        const gridBtn = document.getElementById(`qgrid-${i + 1}`);
+        if (!gridBtn) continue;
+
+        if (state.answers[i] !== undefined) {
+            const q = careerQuestions[i % careerQuestions.length];
+            gridBtn.classList.remove('bg-slate-800', 'text-slate-400', 'bg-amber-500');
+            gridBtn.classList.add(state.answers[i] === q.correct ? 'bg-green-500' : 'bg-red-500', 'text-white');
+        } else if (state.doubts.has(i)) {
+            gridBtn.classList.add('bg-amber-500', 'text-white');
+        }
+    }
+}
+
+function startTimer() {
+    if (state.timer) clearInterval(state.timer);
+    state.timer = setInterval(() => {
+        state.timeRemaining--;
+        const hours = Math.floor(state.timeRemaining / 3600);
+        const minutes = Math.floor((state.timeRemaining % 3600) / 60);
+        const seconds = state.timeRemaining % 60;
+        document.getElementById('mainTimer').textContent = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (state.timeRemaining <= 300) {
+            document.getElementById('mainTimer').classList.add('text-red-400', 'animate-pulse');
+        }
+
+        if (state.timeRemaining <= 0) {
+            clearInterval(state.timer);
+            finishSimulation();
+        }
+    }, 1000);
+}
+
+function finishSimulation() {
+    clearInterval(state.timer);
+
+    const config = careerConfig[state.career];
+    const careerQuestions = questionsDB[state.career];
+
+    let correct = 0, wrong = 0, blank = 0;
+    const subjectStats = {};
+    config.disciplines.forEach(d => subjectStats[d.name] = { total: 0, correct: 0, questions: [] });
+
+    for (let i = 0; i < state.totalQuestions; i++) {
+        let currentSubject = config.disciplines[0];
+        let accumulated = 0;
+        const proportion = state.totalQuestions / config.totalQuestions;
+
+        for (const disc of config.disciplines) {
+            accumulated += Math.round(disc.questions * proportion);
+            if (i < accumulated) {
+                currentSubject = disc;
+                break;
+            }
+        }
+
+        const q = careerQuestions[i % careerQuestions.length];
+        subjectStats[currentSubject.name].total++;
+
+        if (state.answers[i] === undefined) {
+            blank++;
+        } else if (state.answers[i] === q.correct) {
+            correct++;
+            subjectStats[currentSubject.name].correct++;
+        } else {
+            wrong++;
+            subjectStats[currentSubject.name].questions.push({ index: i, question: q });
+        }
+    }
+
+    // Calculate score
+    let score = 0;
+    if (config.bancaStyle === 'cebraspe') {
+        // CEBRASPE: +1 for correct, -1 for wrong
+        score = (correct * 1) + (wrong * -1);
+        // Minimum 0
+        score = Math.max(0, score);
+    } else {
+        // FCC/IDECAN: weight per question
+        score = correct * config.weightPerQuestion;
+    }
+
+    // Scale to real exam proportion
+    const realScore = (score / state.totalQuestions) * config.totalQuestions;
+
+    // Check elimination
+    const zeroSubjects = Object.entries(subjectStats)
+        .filter(([name, stats]) => stats.total > 0 && stats.correct === 0)
+        .map(([name]) => name);
+
+    const isEliminated = zeroSubjects.length > 0;
+    const percentage = Math.round((correct / state.totalQuestions) * 100);
+    const isApproved = !isEliminated && realScore >= config.cutoffScore;
+
+    // Update results page
+    document.getElementById('finalScore').textContent = `${percentage}%`;
+    document.getElementById('finalCorrect').textContent = correct;
+    document.getElementById('finalWrong').textContent = wrong;
+    document.getElementById('finalBlank').textContent = blank;
+    document.getElementById('finalGrade').textContent = `${realScore.toFixed(1)} pts`;
+
+    // Animate score circle
+    const circle = document.getElementById('scoreCircle');
+    const circumference = 2 * Math.PI * 88;
+    const offset = circumference - (percentage / 100) * circumference;
+    setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+    }, 500);
+
+    // Elimination alert
+    const elimAlert = document.getElementById('eliminationAlert');
+    if (isEliminated) {
+        elimAlert.classList.remove('hidden');
+        document.getElementById('eliminatedSubjects').textContent = zeroSubjects.join(', ');
+    } else {
+        elimAlert.classList.add('hidden');
+    }
+
+    // Approval status
+    const statusDiv = document.getElementById('approvalStatus');
+    const detailDiv = document.getElementById('approvalDetail');
+
+    if (isEliminated) {
+        statusDiv.textContent = 'ELIMINADO ❌';
+        statusDiv.className = 'text-lg font-bold text-red-400';
+        detailDiv.textContent = `Você zerou em: ${zeroSubjects.join(', ')}`;
+    } else if (isApproved) {
+        statusDiv.textContent = 'APROVADO ✅';
+        statusDiv.className = 'text-lg font-bold text-green-400';
+        detailDiv.textContent = `${(realScore - config.cutoffScore).toFixed(1)} pts acima da nota de corte`;
+    } else {
+        statusDiv.textContent = 'REPROVADO ❌';
+        statusDiv.className = 'text-lg font-bold text-red-400';
+        detailDiv.textContent = `Faltam ${(config.cutoffScore - realScore).toFixed(1)} pts para aprovação`;
+    }
+
+    // Bars
+    document.getElementById('yourAverage').textContent = `${realScore.toFixed(1)} pts`;
+    document.getElementById('yourBar').style.width = `${Math.min(100, (realScore / config.cutoffScore) * 100)}%`;
+    document.getElementById('cutoffScore').textContent = `${config.cutoffScore} pts`;
+    document.getElementById('cutoffBar').style.width = '100%';
+    document.getElementById('cutoffSource').textContent = config.cutoffNote;
+
+    // Subject analysis
+    const analysisContainer = document.getElementById('subjectAnalysis');
+    analysisContainer.innerHTML = '';
+
+    Object.entries(subjectStats).forEach(([subject, stats]) => {
+        if (stats.total === 0) return;
+
+        const subjPct = Math.round((stats.correct / stats.total) * 100);
+        const isZero = stats.correct === 0 && stats.total > 0;
+        const color = isZero ? 'red' : subjPct >= 60 ? 'green' : subjPct >= 40 ? 'amber' : 'red';
+        const configDisc = config.disciplines.find(d => d.name === subject);
+
+        analysisContainer.innerHTML += `
+            <div class="flex items-center gap-4 p-3 rounded-lg ${isZero ? 'bg-red-500/10 border border-red-500/20' : 'bg-slate-800/30'}">
+                <div class="flex-1">
+                    <div class="flex justify-between mb-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-white">${subject}</span>
+                            ${isZero ? '<span class="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">ELIMINATÓRIO</span>' : ''}
+                        </div>
+                        <span class="text-sm font-mono text-${color}-400">${subjPct}% (${stats.correct}/${stats.total})</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-2">
+                        <div class="bg-${color}-500 h-2 rounded-full transition-all" style="width: ${subjPct}%"></div>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">Peso na prova: ${configDisc ? configDisc.questions : '?'} questões</div>
+                </div>
+            </div>
+        `;
+    });
+
+    // Radar chart
+    generateRadarChart(subjectStats);
+
+    // Wrong questions list
+    const wrongList = document.getElementById('wrongQuestionsList');
+    wrongList.innerHTML = '';
+
+    Object.entries(subjectStats).forEach(([subject, stats]) => {
+        stats.questions.forEach(({ index, question }) => {
+            wrongList.innerHTML += `
+                <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/20 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-medium text-white">Questão ${index + 1} - ${subject}</div>
+                        <div class="text-xs text-slate-500">${question.banca} ${question.year} | ${question.difficulty}</div>
+                    </div>
+                    <button onclick="reviewQuestion(${index})" class="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 text-sm hover:bg-red-500/30 transition-all">
+                        Revisar
+                    </button>
+                </div>
+            `;
+        });
+    });
+
+    // Update session stats
+    state.sessionStats.totalAnswered += state.totalQuestions;
+    state.sessionStats.totalCorrect += correct;
+    state.sessionStats.totalWrong += wrong;
+
+    switchPage('page-result');
+
+    if (isApproved && !isEliminated) {
+        createConfetti();
+    }
+}
+
+function generateRadarChart(subjectStats) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const labels = Object.keys(subjectStats).filter(s => subjectStats[s].total > 0);
+    const data = labels.map(s => Math.round((subjectStats[s].correct / subjectStats[s].total) * 100));
+    const cutoffData = labels.map(() => 60);
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Seu Desempenho',
+                data: data,
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: '#3B82F6',
+                pointBackgroundColor: '#3B82F6',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#3B82F6'
+            }, {
+                label: 'Nota de Corte (60%)',
+                data: cutoffData,
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                borderColor: '#F59E0B',
+                borderDash: [5, 5],
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                    ticks: { display: false, backdropColor: 'transparent' },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
             },
-            prf: {
-                name: 'PRF',
-                fullName: 'Polícia Rodoviária Federal',
-                banca: 'CEBRASPE',
-                format: 'Certo ou Errado (120 itens)',
-                totalQuestions: 120,
-                timeMinutes: 270, // 4h30
-                cutoffScore: 73,
-                cutoffNote: 'Nota de corte 2021: 73 pts (Ampla). Erro anula acerto!',
-                weightPerQuestion: 1,
-                hasEssay: true,
-                essayTime: 0, // Same day, separate
-                essayMinScore: 0,
-                disciplines: [
-                    { name: 'Legislação de Trânsito', questions: 30, color: 'red' },
-                    { name: 'Língua Portuguesa', questions: 18, color: 'blue' },
-                    { name: 'Língua Estrangeira', questions: 8, color: 'indigo' },
-                    { name: 'Informática', questions: 7, color: 'purple' },
-                    { name: 'Direito Administrativo', questions: 7, color: 'teal' },
-                    { name: 'Direito Constitucional', questions: 7, color: 'green' },
-                    { name: 'Ética e Cidadania', questions: 6, color: 'amber' },
-                    { name: 'Direito Penal', questions: 6, color: 'rose' },
-                    { name: 'Legislação Especial', questions: 6, color: 'cyan' },
-                    { name: 'Direitos Humanos', questions: 5, color: 'pink' },
-                    { name: 'Direito Processual Penal', questions: 5, color: 'orange' },
-                    { name: 'Raciocínio Lógico-Matemático', questions: 5, color: 'yellow' },
-                    { name: 'Geopolítica', questions: 5, color: 'lime' },
-                    { name: 'Física', questions: 5, color: 'violet' }
-                ],
-                eliminationRule: 'Nota abaixo da corte na objetiva = NÃO vai para redação',
-                bancaStyle: 'cebraspe',
-                bancaCharacteristics: 'CERTO ou ERRADO. Erro anula acerto! Muitas pegadinhas com "sempre", "nunca", "apenas".'
-            },
-            pf: {
-                name: 'PF',
-                fullName: 'Polícia Federal',
-                banca: 'CEBRASPE',
-                format: 'Certo ou Errado (120 itens)',
-                totalQuestions: 120,
-                timeMinutes: 270, // 4h30
-                cutoffScore: 48,
-                cutoffNote: 'Mínimo: 48 pts total. Bloco I: 6pts, Bloco II: 3pts, Bloco III: 2pts',
-                weightPerQuestion: 1,
-                hasEssay: true,
-                essayTime: 0,
-                essayMinScore: 0,
-                disciplines: [
-                    { name: 'Língua Portuguesa', questions: 24, color: 'blue' },
-                    { name: 'Informática', questions: 36, color: 'purple' },
-                    { name: 'Contabilidade Geral', questions: 24, color: 'green' },
-                    { name: 'Estatística', questions: 12, color: 'amber' },
-                    { name: 'Raciocínio Lógico', questions: 12, color: 'indigo' },
-                    { name: 'Direito Administrativo', questions: 3, color: 'teal' },
-                    { name: 'Direito Constitucional', questions: 3, color: 'cyan' },
-                    { name: 'Direito Penal/Processual', questions: 3, color: 'red' },
-                    { name: 'Legislação Especial', questions: 3, color: 'rose' }
-                ],
-                eliminationRule: 'Bloco I < 6pts, Bloco II < 3pts, Bloco III < 2pts, ou Total < 48pts = ELIMINAÇÃO',
-                bancaStyle: 'cebraspe',
-                bancaCharacteristics: 'CERTO ou ERRADO. Erro anula acerto! Foco em Informática (30% da prova).'
-            },
-            pc: {
-                name: 'PC',
-                fullName: 'Polícia Civil',
-                banca: 'IDECAN / IBADE / FUNDATEC',
-                format: 'Múltipla Escolha (5 alternativas)',
-                totalQuestions: 100,
-                timeMinutes: 300, // 5 hours
-                cutoffScore: 50,
-                cutoffNote: 'Mínimo: 50 pts. Nota ZERO em qualquer disciplina = ELIMINAÇÃO',
-                weightPerQuestion: 1,
-                hasEssay: true,
-                essayTime: 0,
-                essayMinScore: 0,
-                disciplines: [
-                    { name: 'Língua Portuguesa', questions: 20, color: 'blue' },
-                    { name: 'Direito Constitucional', questions: 10, color: 'indigo' },
-                    { name: 'Direito Administrativo', questions: 10, color: 'purple' },
-                    { name: 'Direito Penal', questions: 10, color: 'red' },
-                    { name: 'Direito Processual Penal', questions: 10, color: 'rose' },
-                    { name: 'Direitos Humanos', questions: Vou completar o código do site com todas as correções solicit
+            plugins: {
+                legend: { labels: { color: '#94a3b8' } }
+            }
+        }
+    });
+}
+
+function createConfetti() {
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 4)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+    }
+}
+
+function toggleFocusMode() {
+    state.focusMode = !state.focusMode;
+    const overlay = document.getElementById('focusOverlay');
+    overlay.classList.toggle('hidden', !state.focusMode);
+
+    if (state.focusMode) {
+        state.focusTimeRemaining = 1500;
+        state.focusTimer = setInterval(() => {
+            state.focusTimeRemaining--;
+            const mins = Math.floor(state.focusTimeRemaining / 60);
+            const secs = state.focusTimeRemaining % 60;
+            document.getElementById('focusTimer').textContent = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+            if (state.focusTimeRemaining <= 0) {
+                clearInterval(state.focusTimer);
+                showToast('Pomodoro', 'Tempo de foco concluído!');
+                toggleFocusMode();
+            }
+        }, 1000);
+    } else {
+        clearInterval(state.focusTimer);
+    }
+}
+
+function switchPage(pageId) {
+    document.querySelectorAll('.page-transition').forEach(page => {
+        page.classList.add('page-hidden');
+        page.classList.remove('page-active');
+    });
+    document.getElementById(pageId).classList.remove('page-hidden');
+    document.getElementById(pageId).classList.add('page-active');
+    window.scrollTo(0, 0);
+}
+
+function newSimulation() {
+    clearInterval(state.timer);
+    state.answers = {};
+    state.doubts.clear();
+    state.currentQuestion = 0;
+    switchPage('page-config');
+}
+
+function reviewErrors() {
+    showToast('Em breve', 'Modo de revisão de erros será implementado!');
+}
+
+function reviewQuestion(index) {
+    switchPage('page-sim');
+    loadQuestion(index);
+}
+
+function showToast(title, message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', error: '❌' };
+    const colors = { info: 'border-blue-500', success: 'border-green-500', warning: 'border-amber-500', error: 'border-red-500' };
+
+    document.getElementById('toastIcon').textContent = icons[type];
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMessage').textContent = message;
+    toast.querySelector('.glass-strong').className = `glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 ${colors[type]}`;
+
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+}
+
+// Session timer
+let sessionSeconds = 0;
+setInterval(() => {
+    sessionSeconds++;
+    const mins = Math.floor(sessionSeconds / 60);
+    const secs = sessionSeconds % 60;
+    document.getElementById('sessionTimer').textContent = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}, 1000);
+
+// Initialize
+setLevel('hard');
+</script>
+</body>
+</html>
