@@ -3,446 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Questões - Simulador Profissional</title>
+    <title>Delta Questões - Simulador Policial Realista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        * { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .page { display: none; }
-        .page-active { display: block; }
-        .option-btn { transition: all 0.2s; border: 1px solid #1e293b; background: #0f172a; text-align: left; }
-        .option-btn:hover { border-color: #3b82f6; background: #1e293b; }
-        .option-selected { border-color: #3b82f6; background: #1e3a8a !important; ring: 2px solid #3b82f6; }
-        .career-card { border: 1px solid #1e293b; transition: 0.3s; cursor: pointer; }
-        .career-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
-        .career-active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0B1120; }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2d5a8a; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
+
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-strong { background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+
+        .option-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 2px solid transparent; }
+        .option-card:hover { transform: translateX(8px); border-color: #3B82F6; background: rgba(59, 130, 246, 0.1); }
+        .option-card.selected { border-color: #3B82F6 !important; background: rgba(59, 130, 246, 0.15) !important; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+        .option-card.correct { border-color: #10B981 !important; background: rgba(16, 185, 129, 0.15) !important; }
+        .option-card.wrong { border-color: #EF4444 !important; background: rgba(239, 68, 68, 0.15) !important; }
+
+        .page-transition { transition: opacity 0.4s ease, transform 0.4s ease; }
+        .page-hidden { opacity: 0; pointer-events: none; transform: scale(0.95); position: absolute; width: 100%; top: 0; display: none; }
+        .page-active { opacity: 1; pointer-events: all; transform: scale(1); position: relative; display: block; }
+
+        .career-btn.active { border-color: #3B82F6 !important; background: rgba(59, 130, 246, 0.15) !important; }
+        .career-btn.active .check-indicator div { opacity: 1 !important; }
+        
+        .qgrid-btn { width: 100%; aspect-ratio: 1; border-radius: 6px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #334155; background: #1e293b; }
+        .qgrid-btn.answered { background: #3B82F6; color: white; border-color: #3B82F6; }
+        .qgrid-btn.current { border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="bg-[#0B1120] text-[#F1F5F9] min-h-screen">
 
-    <!-- BARRA SUPERIOR -->
-    <header class="border-b border-slate-800 bg-[#0B1120]/80 backdrop-blur-md sticky top-0 z-50 p-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-900/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04a11.666 11.666 0 00-1.022 7.711a11.908 11.908 0 005.078 7.32l.034.022a11.947 11.947 0 0011.056 0l.034-.022a11.908 11.908 0 005.078-7.32a11.666 11.666 0 00-1.022-7.711z" />
-                    </svg>
-                </div>
-                <h1 class="text-xl font-black tracking-tighter">DELTA <span class="text-blue-500 text-sm font-bold ml-1">QUESTÕES</span></h1>
-            </div>
-            <div id="userStats" class="hidden md:flex gap-6 items-center">
-                <div class="text-center"><p class="text-[10px] text-slate-500 uppercase">Foco Diário</p><p id="streakHeader" class="text-orange-500 font-bold">1 Dia</p></div>
-                <button onclick="location.reload()" class="text-xs bg-slate-800 px-3 py-1.5 rounded hover:bg-slate-700">Reiniciar</button>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto p-6 mt-8">
-        
-        <!-- PÁGINA DE CONFIGURAÇÃO -->
-        <section id="page-config" class="page page-active space-y-10">
-            <div class="text-center">
-                <h2 class="text-4xl font-extrabold mb-3">Simulador de Combate</h2>
-                <p class="text-slate-400">Escolha sua carreira policial e teste seu nível em condições reais.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div onclick="selectCareer('pmba')" id="card-pmba" class="career-card p-6 rounded-2xl bg-[#0f172a]">
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="text-xs font-bold text-blue-400 px-2 py-1 bg-blue-900/30 rounded uppercase">PMBA / CBMBA</span>
-                        <span class="text-slate-500 text-xs font-mono">Banca: FCC</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Soldado e Oficial</h3>
-                    <p class="text-sm text-slate-400">Peso 1.0 a 1.5 por disciplina. 80 Questões objetivas + Redação eliminatória.</p>
-                </div>
-
-                <div onclick="selectCareer('pmal')" id="card-pmal" class="career-card p-6 rounded-2xl bg-[#0f172a]">
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="text-xs font-bold text-orange-400 px-2 py-1 bg-orange-900/30 rounded uppercase">PMAL</span>
-                        <span class="text-slate-500 text-xs font-mono">Banca: CEBRASPE</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Soldado PM</h3>
-                    <p class="text-sm text-slate-400">Formato Certo/Errado. Uma errada anula uma certa. Foco em legislação estadual.</p>
-                </div>
-            </div>
-
-            <div id="setup-details" class="hidden bg-[#0B1120] border border-blue-500/30 p-8 rounded-3xl space-y-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800">
-                        <p class="text-xs text-slate-500 mb-1 uppercase">Questões</p>
-                        <p id="totalQDisplay" class="text-xl font-bold">80</p>
-                    </div>
-                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800">
-                        <p class="text-xs text-slate-500 mb-1 uppercase">Tempo Máx</p>
-                        <p class="text-xl font-bold">04:30</p>
-                    </div>
-                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800">
-                        <p class="text-xs text-slate-500 mb-1 uppercase">Estilo</p>
-                        <p id="bancaEstilo" class="text-xl font-bold text-blue-500">M.E.</p>
-                    </div>
-                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800">
-                        <p class="text-xs text-slate-500 mb-1 uppercase">Redação</p>
-                        <p id="redacaoDisplay" class="text-xl font-bold text-green-500">SIM</p>
-                    </div>
-                </div>
-
-                <button onclick="startSimulation()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-900/20 uppercase tracking-widest transition-all">
-                    Iniciar Simulado Oficial
-                </button>
-            </div>
-        </section>
-
-        <!-- PÁGINA DO SIMULADO -->
-        <section id="page-sim" class="page space-y-6">
-            <div class="flex justify-between items-end">
+    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-white">Δ</div>
                 <div>
-                    <span id="subjectLabel" class="text-blue-500 text-[10px] font-black uppercase tracking-[0.2em]">Direito Constitucional</span>
-                    <h3 class="text-2xl font-bold text-white">Questão <span id="currentNum">1</span><span class="text-slate-600">/<span id="totalNum">80</span></span></h3>
-                </div>
-                <div class="text-right">
-                    <p id="timer" class="text-3xl font-mono font-bold text-white tracking-tighter">04:30:00</p>
-                    <div class="h-1.5 w-32 bg-slate-800 rounded-full mt-1 overflow-hidden">
-                        <div id="progressTimer" class="h-full bg-blue-600 transition-all" style="width: 100%"></div>
-                    </div>
+                    <h1 class="text-lg font-bold text-white">Delta Questões</h1>
+                    <p class="text-xs text-slate-400">Simulador de Elite</p>
                 </div>
             </div>
+            <div id="simTimerNav" class="hidden font-mono text-blue-400 font-bold bg-slate-800/50 px-4 py-1.5 rounded-full border border-slate-700">00:00:00</div>
+        </div>
+    </nav>
 
-            <div class="bg-[#0f172a] border border-slate-800 rounded-3xl p-10 shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
-                <div id="questionArea" class="space-y-8">
-                    <p id="enunciado" class="text-xl leading-relaxed text-slate-200 font-medium">
-                        Carregando questão do banco oficial...
-                    </p>
-                    
-                    <div id="optionsList" class="grid grid-cols-1 gap-4">
-                        <!-- Opções Dinâmicas -->
-                    </div>
-                </div>
+    <main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
+        <!-- CONFIG PAGE -->
+        <div id="page-config" class="page-transition page-active space-y-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-white">Configure seu Simulado Realista</h2>
             </div>
-
-            <div class="flex flex-col md:flex-row gap-4 justify-between items-center bg-[#0B1120] p-4 rounded-2xl border border-slate-800">
-                <div class="flex gap-2">
-                    <button onclick="prevQ()" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold px-6">Anterior</button>
-                    <button onclick="markDoubt()" id="doubtBtn" class="p-3 border border-amber-500/40 text-amber-500 hover:bg-amber-500/10 rounded-xl font-bold px-4 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Dúvida
+            
+            <div class="glass rounded-2xl p-6">
+                <h3 class="mb-4 font-semibold text-blue-400">1. Selecione a Carreira</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button onclick="selectCareer('pmba')" class="career-btn p-4 rounded-xl border-2 border-slate-700 bg-slate-800/50 text-left relative" id="btn-pmba">
+                        <div class="text-xl">🚔</div>
+                        <div class="font-bold">PMBA</div>
+                        <div class="text-xs text-slate-400">FCC - 80 Qs</div>
+                        <div class="check-indicator absolute top-2 right-2 w-4 h-4 border border-slate-600 rounded-full flex items-center justify-center"><div class="w-2 h-2 bg-blue-500 rounded-full opacity-0"></div></div>
+                    </button>
+                    <button onclick="selectCareer('prf')" class="career-btn p-4 rounded-xl border-2 border-slate-700 bg-slate-800/50 text-left relative" id="btn-prf">
+                        <div class="text-xl">🛣️</div>
+                        <div class="font-bold">PRF</div>
+                        <div class="text-xs text-slate-400">Cebraspe - 120 Qs</div>
                     </button>
                 </div>
-                
-                <div class="grid grid-cols-10 gap-1 overflow-x-auto max-w-full p-2" id="gridMap">
-                    <!-- Mapa de questões visual -->
-                </div>
-
-                <button onclick="nextQ()" id="nextBtn" class="p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold px-10 shadow-lg shadow-blue-900/20">Próxima</button>
-            </div>
-        </section>
-
-        <!-- PÁGINA DE RESULTADO -->
-        <section id="page-results" class="page space-y-8">
-            <div id="statusBox" class="text-center p-12 rounded-[40px] border-4 border-dashed relative overflow-hidden">
-                <div id="statusOverlay" class="absolute inset-0 opacity-10"></div>
-                <h2 id="finalStatus" class="text-7xl font-black mb-4 tracking-tighter uppercase">APROVADO</h2>
-                <p id="finalMessage" class="text-xl text-slate-400 font-medium max-w-lg mx-auto">Seu desempenho atingiu a nota de corte estimada para este concurso. Mantenha o ritmo!</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl text-center">
-                    <p class="text-xs text-slate-500 uppercase font-bold mb-2">Pontuação Final</p>
-                    <p id="scoreVal" class="text-5xl font-black text-white">00.0</p>
-                    <p id="scoreCompare" class="text-xs text-slate-400 mt-2">Média: 65.0</p>
+            <button onclick="startSim()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-bold text-lg shadow-lg transition-all">Iniciar Treinamento</button>
+        </div>
+
+        <!-- SIMULATION PAGE -->
+        <div id="page-sim" class="page-transition page-hidden">
+            <div class="grid lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="glass rounded-2xl p-6">
+                        <div class="flex justify-between mb-6">
+                            <span id="qSubject" class="text-blue-400 font-bold uppercase text-xs tracking-widest">Disciplina</span>
+                            <span id="qIndex" class="font-mono text-slate-400">Questão 1/80</span>
+                        </div>
+                        <div id="questionText" class="text-lg text-white leading-relaxed mb-8">Carregando questão...</div>
+                        <div id="optionsContainer" class="space-y-3">
+                            <!-- Opções aparecem aqui -->
+                        </div>
+                        <div class="flex justify-between mt-8 pt-6 border-t border-slate-800">
+                            <button onclick="changeQ(-1)" class="text-slate-400 hover:text-white">Anterior</button>
+                            <button onclick="confirmAnswer()" class="bg-blue-600 px-8 py-2 rounded-lg font-bold">Confirmar Resposta</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl text-center">
-                    <p class="text-xs text-slate-500 uppercase font-bold mb-2">Taxa de Acerto</p>
-                    <p id="hitRate" class="text-5xl font-black text-blue-500">0%</p>
-                    <p id="hitCount" class="text-xs text-slate-400 mt-2">0 de 80 questões</p>
-                </div>
-                <div class="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl text-center">
-                    <p class="text-xs text-slate-500 uppercase font-bold mb-2">Eliminado?</p>
-                    <p id="eliminatedStatus" class="text-5xl font-black text-green-500">NÃO</p>
-                    <p class="text-xs text-slate-400 mt-2">Critérios do Edital</p>
+                <div class="lg:col-span-1">
+                    <div class="glass rounded-2xl p-4 sticky top-24">
+                        <h4 class="text-xs font-bold text-slate-500 mb-3 uppercase">Mapa de Questões</h4>
+                        <div id="questionGrid" class="grid grid-cols-5 gap-2"></div>
+                    </div>
                 </div>
             </div>
-
-            <div class="bg-slate-900 p-8 rounded-3xl border border-slate-800">
-                <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10m14 0a2 2 0 002-2v-3a2 2 0 00-2-2h-2a2 2 0 00-2 2v3a2 2 0 002 2h2zm-7 0a2 2 0 002-2v-5a2 2 0 00-2-2h-2a2 2 0 00-2 2v5a2 2 0 002 2h2z" /></svg>
-                    Análise por Disciplina
-                </h3>
-                <canvas id="resultChart" class="max-h-[300px]"></canvas>
-            </div>
-
-            <button onclick="location.reload()" class="w-full py-6 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all uppercase tracking-widest">
-                Voltar para Base de Treinamento
-            </button>
-        </section>
-
+        </div>
     </main>
 
     <script>
-    // ===== CONFIGURAÇÃO DE BANCAS E DISCIPLINAS =====
-    const CONFIG = {
-        'pmba': {
-            banca: 'FCC',
-            total: 80,
-            corte: 62.0,
-            tempo: 16200, // 4.5h
-            hasRedacao: true,
-            estilo: 'ABCDE',
-            pesos: { 'Português': 1.5, 'Direito Constitucional': 1.0, 'Direito Penal': 1.0, 'Direito Administrativo': 1.0, 'Informática': 0.8, 'RLM': 1.2 }
-        },
-        'pmal': {
-            banca: 'CEBRASPE',
-            total: 120,
-            corte: 75.0,
-            tempo: 12600, // 3.5h
-            hasRedacao: false,
-            estilo: 'CE',
-            pesos: { 'Conhecimentos Básicos': 1.0, 'Conhecimentos Específicos': 1.0 }
-        }
-    };
+        const db = [
+            { id: 1, sub: "Direito Constitucional", txt: "A respeito dos direitos fundamentais na CF/88, é correto afirmar que:", opts: ["A propriedade atenderá a função social", "O direito à vida é apenas biológico", "Ninguém pode ser preso em flagrante", "A casa é asilo inviolável apenas de dia", "O voto é facultativo para analfabetos"], ans: 0 },
+            { id: 2, sub: "Direito Penal", txt: "O crime de peculato-furto ocorre quando o funcionário público:", opts: ["Subtrai o bem valendo-se da facilidade do cargo", "Apropria-se de valor que tem a posse", "Exige vantagem indevida", "Solicita propina", "Retarda ato de ofício"], ans: 0 }
+        ];
 
-    // ===== BANCO DE QUESTÕES (ESTRUTURA PARA MILHARES) =====
-    // Você pode expandir este array livremente com milhares de questões reais.
-    const DB_QUESTOES = [
-        // PMBA
-        { id: 1, car: 'pmba', disc: 'Direito Constitucional', e: 'A respeito dos direitos e deveres individuais e coletivos, a casa é asilo inviolável do indivíduo, nela ninguém podendo penetrar sem consentimento do morador, salvo:', opt: ['Por determinação judicial, a qualquer hora.', 'Em caso de flagrante delito ou desastre, ou para prestar socorro.', 'Somente durante o dia, para cumprimento de ordem policial.', 'Para fins de investigação criminal, mesmo sem ordem judicial.'], c: 1 },
-        { id: 2, car: 'pmba', disc: 'Português', e: 'Assinale a alternativa em que a concordância verbal está inteiramente correta:', opt: ['Haviam muitos candidatos no local de prova.', 'Fazem dez anos que o edital foi publicado.', 'Devem haver soluções melhores para a segurança.', 'Tratam-se de questões complexas de direito.'], c: 2 },
-        { id: 3, car: 'pmba', disc: 'Direito Penal', e: 'No que tange ao crime tentado, o Código Penal Brasileiro adota a teoria:', opt: ['Subjetiva.', 'Objetiva (ou Realística).', 'Sintomática.', 'Da Impunidade.'], c: 1 },
-        { id: 4, car: 'pmba', disc: 'RLM', e: 'A negação da proposição "Todo policial é honesto" é:', opt: ['Nenhum policial é honesto.', 'Algum policial não é honesto.', 'Todos os policiais são desonestos.', 'Pelo menos um policial é honesto.'], c: 1 },
-        
-        // PMAL
-        { id: 5, car: 'pmal', disc: 'Conhecimentos Básicos', e: 'O poder de polícia administrativa é sempre vinculado e não admite discricionariedade quanto ao momento de sua aplicação.', opt: ['Certo', 'Errado'], c: 1 },
-        { id: 6, car: 'pmal', disc: 'Conhecimentos Específicos', e: 'Compete à Polícia Militar a polícia ostensiva e a preservação da ordem pública.', opt: ['Certo', 'Errado'], c: 0 }
-    ];
+        let state = {
+            career: 'pmba',
+            current: 0,
+            answers: {}, // {index: selectedOptionIndex}
+            finished: false
+        };
 
-    // ===== MOTOR DO SITE =====
-    let state = {
-        career: null,
-        questoes: [],
-        currentIdx: 0,
-        respostas: {}, // { index: choiceIdx }
-        doubts: new Set(),
-        timer: null,
-        timeLeft: 0,
-        streak: 1
-    };
-
-    function selectCareer(id) {
-        state.career = id;
-        const c = CONFIG[id];
-        
-        // UI Update
-        document.querySelectorAll('.career-card').forEach(el => el.classList.remove('career-active'));
-        document.getElementById(`card-${id}`).classList.add('career-active');
-        
-        document.getElementById('totalQDisplay').innerText = c.total;
-        document.getElementById('bancaEstilo').innerText = c.estilo === 'CE' ? 'C/E' : 'M.E.';
-        document.getElementById('redacaoDisplay').innerText = c.hasRedacao ? 'SIM' : 'NÃO';
-        document.getElementById('setup-details').classList.remove('hidden');
-        
-        // Filtrar questões
-        state.questoes = DB_QUESTOES.filter(q => q.car === id);
-    }
-
-    function startSimulation() {
-        if(state.questoes.length === 0) {
-            alert("Estamos carregando mais questões reais para este cargo. Tente PMBA como exemplo agora!");
-            return;
+        function switchPage(id) {
+            document.querySelectorAll('.page-transition').forEach(p => {
+                p.classList.remove('page-active');
+                p.classList.add('page-hidden');
+            });
+            const active = document.getElementById(id);
+            active.classList.remove('page-hidden');
+            active.classList.add('page-active');
         }
 
-        const c = CONFIG[state.career];
-        state.timeLeft = c.tempo;
-        state.currentIdx = 0;
-        state.respostas = {};
-        state.doubts.clear();
-
-        // UI Transição
-        document.getElementById('page-config').classList.remove('page-active');
-        document.getElementById('page-sim').classList.add('page-active');
-        document.getElementById('totalNum').innerText = state.questoes.length;
-        
-        loadQuestion();
-        initGrid();
-        startTimer();
-    }
-
-    function loadQuestion() {
-        const q = state.questoes[state.currentIdx];
-        document.getElementById('currentNum').innerText = state.currentIdx + 1;
-        document.getElementById('subjectLabel').innerText = q.disc;
-        document.getElementById('enunciado').innerText = q.e;
-        
-        const list = document.getElementById('optionsList');
-        list.innerHTML = '';
-        
-        q.opt.forEach((o, i) => {
-            const btn = document.createElement('button');
-            btn.className = `option-btn p-5 rounded-2xl flex items-center gap-4 ${state.respostas[state.currentIdx] === i ? 'option-selected' : ''}`;
-            const label = CONFIG[state.career].estilo === 'CE' ? (i === 0 ? 'C' : 'E') : String.fromCharCode(65 + i);
-            btn.innerHTML = `<span class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-lg font-bold text-blue-400 border border-slate-700">${label}</span> <span class="text-lg">${o}</span>`;
-            btn.onclick = () => selectOption(i);
-            list.appendChild(btn);
-        });
-
-        // Update Grid Active
-        updateGridUI();
-    }
-
-    function selectOption(idx) {
-        state.respostas[state.currentIdx] = idx;
-        loadQuestion();
-    }
-
-    function nextQ() {
-        if(state.currentIdx < state.questoes.length - 1) {
-            state.currentIdx++;
-            loadQuestion();
-        } else {
-            if(confirm("Deseja finalizar o simulado e ver seu resultado oficial?")) {
-                finish();
-            }
+        function selectCareer(c) {
+            state.career = c;
+            document.querySelectorAll('.career-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + c).classList.add('active');
         }
-    }
 
-    function prevQ() {
-        if(state.currentIdx > 0) {
-            state.currentIdx--;
+        function startSim() {
+            switchPage('page-sim');
+            document.getElementById('simTimerNav').classList.remove('hidden');
+            renderGrid();
             loadQuestion();
         }
-    }
 
-    function markDoubt() {
-        if(state.doubts.has(state.currentIdx)) state.doubts.delete(state.currentIdx);
-        else state.doubts.add(state.currentIdx);
-        updateGridUI();
-    }
-
-    function initGrid() {
-        const grid = document.getElementById('gridMap');
-        grid.innerHTML = '';
-        state.questoes.forEach((_, i) => {
-            const div = document.createElement('div');
-            div.id = `dot-${i}`;
-            div.className = "w-2 h-2 rounded-full bg-slate-800 transition-all";
-            grid.appendChild(div);
-        });
-    }
-
-    function updateGridUI() {
-        state.questoes.forEach((_, i) => {
-            const dot = document.getElementById(`dot-${i}`);
-            if(state.respostas[i] !== undefined) dot.className = "w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]";
-            else if(state.doubts.has(i)) dot.className = "w-2 h-2 rounded-full bg-amber-500";
-            else dot.className = "w-2 h-2 rounded-full bg-slate-800";
-            
-            if(i === state.currentIdx) dot.classList.add('ring-4', 'ring-white/20', 'scale-150');
-        });
-    }
-
-    function startTimer() {
-        if(state.timer) clearInterval(state.timer);
-        const start = state.timeLeft;
-        state.timer = setInterval(() => {
-            state.timeLeft--;
-            const h = Math.floor(state.timeLeft / 3600);
-            const m = Math.floor((state.timeLeft % 3600) / 60);
-            const s = state.timeLeft % 60;
-            document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            document.getElementById('progressTimer').style.width = (state.timeLeft / start * 100) + '%';
-            
-            if(state.timeLeft <= 0) finish();
-        }, 1000);
-    }
-
-    function finish() {
-        clearInterval(state.timer);
-        document.getElementById('page-sim').classList.remove('page-active');
-        document.getElementById('page-results').classList.add('page-active');
-        calculate();
-    }
-
-    function calculate() {
-        const c = CONFIG[state.career];
-        let score = 0;
-        let hits = 0;
-        const discStats = {};
-
-        state.questoes.forEach((q, i) => {
-            const resp = state.respostas[i];
-            const weight = c.pesos[q.disc] || 1.0;
-            
-            if(!discStats[q.disc]) discStats[q.disc] = { h: 0, t: 0 };
-            discStats[q.disc].t++;
-
-            if(resp === q.c) {
-                score += weight;
-                hits++;
-                discStats[q.disc].h++;
-            } else if(resp !== undefined && c.banca === 'CEBRASPE') {
-                score -= 1.0; // Penalidade CEBRASPE
-            }
-        });
-
-        const isAprovado = score >= c.corte;
-        
-        // Update UI
-        document.getElementById('scoreVal').innerText = score.toFixed(1);
-        document.getElementById('hitRate').innerText = Math.round((hits/state.questoes.length)*100) + '%';
-        document.getElementById('hitCount').innerText = `${hits} de ${state.questoes.length} questões`;
-        document.getElementById('scoreCompare').innerText = `Corte Estimado: ${c.corte}`;
-        
-        const statusBox = document.getElementById('statusBox');
-        const finalStatus = document.getElementById('finalStatus');
-        
-        if(isAprovado) {
-            statusBox.className = "text-center p-12 rounded-[40px] border-4 border-dashed border-green-500 bg-green-500/5 relative overflow-hidden";
-            finalStatus.innerText = "APROVADO";
-            finalStatus.className = "text-7xl font-black mb-4 tracking-tighter uppercase text-green-500";
-            document.getElementById('eliminatedStatus').innerText = "NÃO";
-            document.getElementById('eliminatedStatus').className = "text-5xl font-black text-green-500";
-        } else {
-            statusBox.className = "text-center p-12 rounded-[40px] border-4 border-dashed border-red-500 bg-red-500/5 relative overflow-hidden";
-            finalStatus.innerText = "REPROVADO";
-            finalStatus.className = "text-7xl font-black mb-4 tracking-tighter uppercase text-red-500";
-            document.getElementById('eliminatedStatus').innerText = "SIM";
-            document.getElementById('eliminatedStatus').className = "text-5xl font-black text-red-500";
+        function renderGrid() {
+            const grid = document.getElementById('questionGrid');
+            grid.innerHTML = db.map((_, i) => `
+                <div onclick="jumpTo(${i})" class="qgrid-btn ${state.answers[i] !== undefined ? 'answered' : ''} ${state.current === i ? 'current' : ''}">
+                    ${i + 1}
+                </div>
+            `).join('');
         }
 
-        renderChart(discStats);
-    }
+        function loadQuestion() {
+            const q = db[state.current];
+            document.getElementById('qSubject').innerText = q.sub;
+            document.getElementById('qIndex').innerText = `Questão ${state.current + 1}/${db.length}`;
+            document.getElementById('questionText').innerText = q.txt;
 
-    function renderChart(stats) {
-        const labels = Object.keys(stats);
-        const data = labels.map(l => (stats[l].h / stats[l].t) * 100);
-        
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '% de Acertos',
-                    data: data,
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                scales: { x: { beginAtZero: true, max: 100, grid: { color: '#1e293b' } }, y: { grid: { display: false } } },
-                plugins: { legend: { display: false } }
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = q.opts.map((opt, i) => `
+                <div onclick="selectOption(${i})" class="option-card p-4 rounded-xl bg-slate-800/40 border-2 ${state.answers[state.current] === i ? 'selected' : 'border-transparent'}" id="opt-${i}">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-xs font-bold">${String.fromCharCode(65 + i)}</span>
+                        <span class="text-slate-200">${opt}</span>
+                    </div>
+                </div>
+            `).join('');
+            renderGrid();
+        }
+
+        function selectOption(index) {
+            // Remove seleção visual de todos
+            document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
+            // Adiciona ao selecionado
+            document.getElementById('opt-' + index).classList.add('selected');
+            // Salva no estado
+            state.answers[state.current] = index;
+        }
+
+        function confirmAnswer() {
+            if (state.answers[state.current] === undefined) {
+                alert("Selecione uma opção primeiro!");
+                return;
             }
-        });
-    }
+            if (state.current < db.length - 1) {
+                state.current++;
+                loadQuestion();
+            } else {
+                alert("Simulado finalizado! (Lógica de resultado pode ser adicionada aqui)");
+            }
+        }
 
-    // Streak System
-    window.onload = () => {
-        let s = localStorage.getItem('delta_streak') || 1;
-        document.getElementById('streakHeader').innerText = s + " Dias";
-    };
+        function jumpTo(i) {
+            state.current = i;
+            loadQuestion();
+        }
+
+        function changeQ(dir) {
+            let next = state.current + dir;
+            if (next >= 0 && next < db.length) {
+                state.current = next;
+                loadQuestion();
+            }
+        }
+
+        // Inicializa com PMBA selecionada
+        selectCareer('pmba');
     </script>
 </body>
 </html>
