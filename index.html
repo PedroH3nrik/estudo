@@ -1,215 +1,271 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Questões - Simulador Policial Realista</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Inter', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0B1120; }
-        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #2d5a8a; }
+<meta charset="UTF-8">
+<title>Simulador PMBA</title>
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .glass-strong { background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+<style>
+body{font-family:Arial;background:#0f172a;color:#fff;padding:20px}
+button{padding:10px;margin:5px;border:none;border-radius:5px;cursor:pointer}
+.opcao{padding:10px;border:1px solid #ccc;margin:5px 0;cursor:pointer}
+</style>
 
-        .option-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 2px solid transparent; }
-        .option-card:hover { transform: translateX(8px); border-color: #3B82F6; background: rgba(59, 130, 246, 0.1); }
-        .option-card.selected { border-color: #3B82F6 !important; background: rgba(59, 130, 246, 0.15) !important; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
-        .option-card.correct { border-color: #10B981 !important; background: rgba(16, 185, 129, 0.15) !important; }
-        .option-card.wrong { border-color: #EF4444 !important; background: rgba(239, 68, 68, 0.15) !important; }
-
-        .page-transition { transition: opacity 0.4s ease, transform 0.4s ease; }
-        .page-hidden { opacity: 0; pointer-events: none; transform: scale(0.95); position: absolute; width: 100%; top: 0; display: none; }
-        .page-active { opacity: 1; pointer-events: all; transform: scale(1); position: relative; display: block; }
-
-        .career-btn.active { border-color: #3B82F6 !important; background: rgba(59, 130, 246, 0.15) !important; }
-        .career-btn.active .check-indicator div { opacity: 1 !important; }
-        
-        .qgrid-btn { width: 100%; aspect-ratio: 1; border-radius: 6px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #334155; background: #1e293b; }
-        .qgrid-btn.answered { background: #3B82F6; color: white; border-color: #3B82F6; }
-        .qgrid-btn.current { border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); }
-    </style>
 </head>
-<body class="bg-[#0B1120] text-[#F1F5F9] min-h-screen">
+<body>
 
-    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-white">Δ</div>
-                <div>
-                    <h1 class="text-lg font-bold text-white">Delta Questões</h1>
-                    <p class="text-xs text-slate-400">Simulador de Elite</p>
-                </div>
-            </div>
-            <div id="simTimerNav" class="hidden font-mono text-blue-400 font-bold bg-slate-800/50 px-4 py-1.5 rounded-full border border-slate-700">00:00:00</div>
-        </div>
-    </nav>
+<h1>Simulador PMBA</h1>
 
-    <main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
-        <!-- CONFIG PAGE -->
-        <div id="page-config" class="page-transition page-active space-y-8">
-            <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-white">Configure seu Simulado Realista</h2>
-            </div>
-            
-            <div class="glass rounded-2xl p-6">
-                <h3 class="mb-4 font-semibold text-blue-400">1. Selecione a Carreira</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button onclick="selectCareer('pmba')" class="career-btn p-4 rounded-xl border-2 border-slate-700 bg-slate-800/50 text-left relative" id="btn-pmba">
-                        <div class="text-xl">🚔</div>
-                        <div class="font-bold">PMBA</div>
-                        <div class="text-xs text-slate-400">FCC - 80 Qs</div>
-                        <div class="check-indicator absolute top-2 right-2 w-4 h-4 border border-slate-600 rounded-full flex items-center justify-center"><div class="w-2 h-2 bg-blue-500 rounded-full opacity-0"></div></div>
-                    </button>
-                    <button onclick="selectCareer('prf')" class="career-btn p-4 rounded-xl border-2 border-slate-700 bg-slate-800/50 text-left relative" id="btn-prf">
-                        <div class="text-xl">🛣️</div>
-                        <div class="font-bold">PRF</div>
-                        <div class="text-xs text-slate-400">Cebraspe - 120 Qs</div>
-                    </button>
-                </div>
-            </div>
+<div id="menu">
+<button onclick="iniciarProvaReal()">Iniciar Prova</button>
+<button onclick="iniciarRevisao()">Revisar Erros</button>
+</div>
 
-            <button onclick="startSim()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-bold text-lg shadow-lg transition-all">Iniciar Treinamento</button>
-        </div>
+<h2 id="timer"></h2>
 
-        <!-- SIMULATION PAGE -->
-        <div id="page-sim" class="page-transition page-hidden">
-            <div class="grid lg:grid-cols-4 gap-6">
-                <div class="lg:col-span-3 space-y-6">
-                    <div class="glass rounded-2xl p-6">
-                        <div class="flex justify-between mb-6">
-                            <span id="qSubject" class="text-blue-400 font-bold uppercase text-xs tracking-widest">Disciplina</span>
-                            <span id="qIndex" class="font-mono text-slate-400">Questão 1/80</span>
-                        </div>
-                        <div id="questionText" class="text-lg text-white leading-relaxed mb-8">Carregando questão...</div>
-                        <div id="optionsContainer" class="space-y-3">
-                            <!-- Opções aparecem aqui -->
-                        </div>
-                        <div class="flex justify-between mt-8 pt-6 border-t border-slate-800">
-                            <button onclick="changeQ(-1)" class="text-slate-400 hover:text-white">Anterior</button>
-                            <button onclick="confirmAnswer()" class="bg-blue-600 px-8 py-2 rounded-lg font-bold">Confirmar Resposta</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="lg:col-span-1">
-                    <div class="glass rounded-2xl p-4 sticky top-24">
-                        <h4 class="text-xs font-bold text-slate-500 mb-3 uppercase">Mapa de Questões</h4>
-                        <div id="questionGrid" class="grid grid-cols-5 gap-2"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+<div id="quiz">
+<h3 id="pergunta"></h3>
+<div id="opcoes"></div>
 
-    <script>
-        const db = [
-            { id: 1, sub: "Direito Constitucional", txt: "A respeito dos direitos fundamentais na CF/88, é correto afirmar que:", opts: ["A propriedade atenderá a função social", "O direito à vida é apenas biológico", "Ninguém pode ser preso em flagrante", "A casa é asilo inviolável apenas de dia", "O voto é facultativo para analfabetos"], ans: 0 },
-            { id: 2, sub: "Direito Penal", txt: "O crime de peculato-furto ocorre quando o funcionário público:", opts: ["Subtrai o bem valendo-se da facilidade do cargo", "Apropria-se de valor que tem a posse", "Exige vantagem indevida", "Solicita propina", "Retarda ato de ofício"], ans: 0 }
-        ];
+<button onclick="voltar()">⬅ Voltar</button>
+<button onclick="proxima()">➡ Próxima</button>
+<button onclick="marcarQuestao()">📌 Marcar</button>
+<button onclick="confirmar()">✔ Confirmar</button>
+</div>
 
-        let state = {
-            career: 'pmba',
-            current: 0,
-            answers: {}, // {index: selectedOptionIndex}
-            finished: false
-        };
+<script>
 
-        function switchPage(id) {
-            document.querySelectorAll('.page-transition').forEach(p => {
-                p.classList.remove('page-active');
-                p.classList.add('page-hidden');
-            });
-            const active = document.getElementById(id);
-            active.classList.remove('page-hidden');
-            active.classList.add('page-active');
-        }
+// ================= ESTADO =================
+let state={prova:[],respostas:{},atual:0};
+let desempenho=JSON.parse(localStorage.getItem("desempenho"))||{};
+let bancoErros=JSON.parse(localStorage.getItem("bancoErros"))||[];
+let marcadas=[];
+let tempoProva=0;
+let timerInterval;
 
-        function selectCareer(c) {
-            state.career = c;
-            document.querySelectorAll('.career-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + c).classList.add('active');
-        }
+// ================= EDITAL =================
+const EDITAL={
+disciplinas:[
+{nome:"Português",peso:10,topicos:["interpretação","crase"]},
+{nome:"Matemática",peso:8,topicos:["porcentagem"]},
+{nome:"Direito Penal",peso:5,topicos:["crime"]},
+{nome:"Constitucional",peso:5,topicos:["art 5"]}
+]
+};
 
-        function startSim() {
-            switchPage('page-sim');
-            document.getElementById('simTimerNav').classList.remove('hidden');
-            renderGrid();
-            loadQuestion();
-        }
+// ================= DIFICULDADE =================
+function nivel(m){
+let d=desempenho[m]||{acertos:0,erros:0};
+let t=d.acertos+d.erros;
+let taxa=t?d.acertos/t*100:50;
+if(taxa<60)return "FACIL";
+if(taxa<75)return "MEDIO";
+return "DIFICIL";
+}
 
-        function renderGrid() {
-            const grid = document.getElementById('questionGrid');
-            grid.innerHTML = db.map((_, i) => `
-                <div onclick="jumpTo(${i})" class="qgrid-btn ${state.answers[i] !== undefined ? 'answered' : ''} ${state.current === i ? 'current' : ''}">
-                    ${i + 1}
-                </div>
-            `).join('');
-        }
+// ================= QUESTÃO =================
+function gerarQuestao(m,top){
 
-        function loadQuestion() {
-            const q = db[state.current];
-            document.getElementById('qSubject').innerText = q.sub;
-            document.getElementById('qIndex').innerText = `Questão ${state.current + 1}/${db.length}`;
-            document.getElementById('questionText').innerText = q.txt;
+let n=nivel(m);
 
-            const container = document.getElementById('optionsContainer');
-            container.innerHTML = q.opts.map((opt, i) => `
-                <div onclick="selectOption(${i})" class="option-card p-4 rounded-xl bg-slate-800/40 border-2 ${state.answers[state.current] === i ? 'selected' : 'border-transparent'}" id="opt-${i}">
-                    <div class="flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-xs font-bold">${String.fromCharCode(65 + i)}</span>
-                        <span class="text-slate-200">${opt}</span>
-                    </div>
-                </div>
-            `).join('');
-            renderGrid();
-        }
+return{
+materia:m,
+topico:top,
+nivel:n,
+pergunta:n==="DIFICIL"?
+`Texto longo sobre ${top}. Assinale a correta.`:
+`Sobre ${top}, marque a correta.`,
+alternativas:[
+"Correta",
+"Errada 1",
+"Errada 2",
+"Errada 3",
+"Errada 4"
+],
+correta:0
+};
 
-        function selectOption(index) {
-            // Remove seleção visual de todos
-            document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
-            // Adiciona ao selecionado
-            document.getElementById('opt-' + index).classList.add('selected');
-            // Salva no estado
-            state.answers[state.current] = index;
-        }
+}
 
-        function confirmAnswer() {
-            if (state.answers[state.current] === undefined) {
-                alert("Selecione uma opção primeiro!");
-                return;
-            }
-            if (state.current < db.length - 1) {
-                state.current++;
-                loadQuestion();
-            } else {
-                alert("Simulado finalizado! (Lógica de resultado pode ser adicionada aqui)");
-            }
-        }
+// ================= GERAR PROVA =================
+function gerarProva(){
 
-        function jumpTo(i) {
-            state.current = i;
-            loadQuestion();
-        }
+let prova=[];
 
-        function changeQ(dir) {
-            let next = state.current + dir;
-            if (next >= 0 && next < db.length) {
-                state.current = next;
-                loadQuestion();
-            }
-        }
+EDITAL.disciplinas.forEach(d=>{
+for(let i=0;i<d.peso;i++){
+let top=d.topicos[Math.floor(Math.random()*d.topicos.length)];
+prova.push(gerarQuestao(d.nome,top));
+}
+});
 
-        // Inicializa com PMBA selecionada
-        selectCareer('pmba');
-    </script>
+state.prova=prova.sort(()=>Math.random()-0.5);
+state.respostas={};
+state.atual=0;
+
+carregarQuestao();
+
+}
+
+// ================= RENDER =================
+function carregarQuestao(){
+
+let q=state.prova[state.atual];
+
+document.getElementById("pergunta").innerText=
+`${q.pergunta} (${q.materia} - ${q.nivel})`;
+
+let op=document.getElementById("opcoes");
+op.innerHTML="";
+
+q.alternativas.forEach((a,i)=>{
+let d=document.createElement("div");
+d.className="opcao";
+d.innerText=a;
+d.onclick=()=>state.respostas[state.atual]=i;
+op.appendChild(d);
+});
+
+}
+
+// ================= NAV =================
+function proxima(){
+if(state.atual<state.prova.length-1){
+state.atual++;
+carregarQuestao();
+}
+}
+
+function voltar(){
+if(state.atual>0){
+state.atual--;
+carregarQuestao();
+}
+}
+
+// ================= MARCAR =================
+function marcarQuestao(){
+if(!marcadas.includes(state.atual)){
+marcadas.push(state.atual);
+alert("Marcada!");
+}
+}
+
+// ================= CONFIRMAR =================
+function confirmar(){
+
+let q=state.prova[state.atual];
+let r=state.respostas[state.atual];
+
+if(!desempenho[q.materia]) desempenho[q.materia]={acertos:0,erros:0};
+
+if(r==q.correta){
+desempenho[q.materia].acertos++;
+}else{
+desempenho[q.materia].erros++;
+bancoErros.push(q);
+}
+
+localStorage.setItem("desempenho",JSON.stringify(desempenho));
+localStorage.setItem("bancoErros",JSON.stringify(bancoErros));
+
+proxima();
+
+}
+
+// ================= FINAL =================
+function finalizar(){
+
+clearInterval(timerInterval);
+
+let acertos=0;
+let resumo={};
+let erros=[];
+
+state.prova.forEach((q,i)=>{
+
+let ok=state.respostas[i]==q.correta;
+
+if(ok) acertos++;
+else erros.push(q);
+
+if(!resumo[q.materia]) resumo[q.materia]={a:0,t:0};
+
+resumo[q.materia].t++;
+if(ok) resumo[q.materia].a++;
+
+});
+
+let html=`<h2>Resultado</h2>
+<p>${acertos}/${state.prova.length}</p>
+<hr><h3>Por matéria</h3>`;
+
+for(let m in resumo){
+let r=resumo[m];
+let tx=(r.a/r.t*100).toFixed(1);
+html+=`<p>${m}: ${tx}%</p>`;
+}
+
+html+=`<hr><h3>Erros</h3>`;
+erros.forEach(q=>{
+html+=`<p>${q.materia} - ${q.topico}</p>`;
+});
+
+html+=`<button onclick="iniciarRevisao()">Revisar erros</button>`;
+
+document.body.innerHTML=html;
+
+}
+
+// ================= REVISÃO =================
+function iniciarRevisao(){
+
+if(bancoErros.length==0){
+alert("Sem erros!");
+return;
+}
+
+state.prova=bancoErros.sort(()=>Math.random()-0.5);
+state.respostas={};
+state.atual=0;
+
+carregarQuestao();
+
+}
+
+// ================= TIMER =================
+function iniciarTimer(){
+
+tempoProva=4*60*60;
+
+timerInterval=setInterval(()=>{
+
+tempoProva--;
+
+let h=Math.floor(tempoProva/3600);
+let m=Math.floor((tempoProva%3600)/60);
+let s=tempoProva%60;
+
+document.getElementById("timer").innerText=
+`${h}:${m}:${s}`;
+
+if(tempoProva<=0){
+finalizar();
+}
+
+},1000);
+
+}
+
+// ================= START =================
+function iniciarProvaReal(){
+marcadas=[];
+gerarProva();
+iniciarTimer();
+}
+
+</script>
+
 </body>
 </html>
