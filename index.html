@@ -29,10 +29,6 @@
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
 
         .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
         .animate-pulse-glow { animation: pulse-glow 2s infinite; }
@@ -668,6 +664,7 @@
 <script>
 
 // ===== BANCO DE QUESTÕES REAIS E FIXAS =====
+// Questões baseadas em provas reais de concursos anteriores
 const questionBank = {
     fcc: [
         {
@@ -723,6 +720,222 @@ const questionBank = {
                     'E': 'Não há morte na hipótese. Além disso, o art. 129, §3º, exige dolo.'
                 }
             }
+        },
+        {
+            id: 'fcc-3',
+            subject: 'Direito Constitucional',
+            banca: 'FCC',
+            year: 2022,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'A dignidade da pessoa humana é um dos fundamentos da República Federativa do Brasil. De acordo com o artigo 1º, inciso III, da Constituição Federal, a República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos a soberania, a cidadania, a dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa e o pluralismo político. Nesse contexto, assinale a alternativa que corretamente descreve o conceito de dignidade da pessoa humana.',
+            options: [
+                { label: 'A', text: 'É apenas um princípio fundamental no Brasil, que exprime a ideia de que todos os seres humanos têm direito a uma vida digna com acesso a direitos básicos como saúde e educação, independentemente de suas características físicas, psicológicas ou sociais.', correct: false },
+                { label: 'B', text: 'É apenas uma norma legal no Brasil, que exprime a ideia de que todos os seres humanos têm direito a uma vida digna com acesso a direitos básicos como saúde e educação, independentemente de suas características físicas, psicológicas ou sociais.', correct: false },
+                { label: 'C', text: 'É um princípio fundamental e uma norma jurídica no Brasil, que exprime a ideia de que apenas crianças e adolescentes devem ter seu acesso à saúde e educação garantidos pelo Estado e pela sociedade.', correct: false },
+                { label: 'D', text: 'É um princípio fundamental e uma norma jurídica no Brasil, que exprime a ideia de que apenas os maiores de 18 anos devem ter seu acesso à saúde e educação garantidos pelo Estado e pela sociedade.', correct: false },
+                { label: 'E', text: 'É um princípio fundamental e uma norma jurídica no Brasil, que exprime a ideia de que todos os seres humanos têm direito a uma vida digna com acesso a direitos básicos como saúde e educação, independentemente de suas características físicas, psicológicas ou sociais.', correct: true }
+            ],
+            commentary: {
+                correct: 'E',
+                explanation: 'A dignidade da pessoa humana é simultaneamente um princípio fundamental (art. 1º, III da CF) e uma norma jurídica operacional, aplicável a todos os seres humanos sem distinção de idade ou condição.',
+                law: 'Art. 1º, III da CF/88: "A República Federativa do Brasil... tem como fundamentos: (...) III – a dignidade da pessoa humana."',
+                distractors: {
+                    'A': 'Erro: não é "apenas" princípio, também é norma jurídica com eficácia plena.',
+                    'B': 'Erro: não é "apenas" norma legal, é também princípio fundamental estruturante.',
+                    'C': 'Erro: a dignidade abrange TODOS, não apenas crianças e adolescentes.',
+                    'D': 'Erro: a dignidade abrange TODOS, não apenas maiores de 18 anos.'
+                }
+            }
+        },
+        {
+            id: 'fcc-4',
+            subject: 'Direito Administrativo',
+            banca: 'FCC',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre o regime jurídico dos servidores públicos civis da União, dos Estados, do Distrito Federal e dos Municípios, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'A investidura em cargo público ocorre com a posse, que deverá ocorrer no prazo de trinta dias contados da publicação do ato de provimento.', correct: true },
+                { label: 'B', text: 'A investidura em cargo público ocorre com a nomeação, independentemente da posse.', correct: false },
+                { label: 'C', text: 'O servidor público estável só poderá ser demitido por decisão administrativa definitiva, proferida em processo administrativo disciplinar, no qual lhe seja assegurada a ampla defesa.', correct: false },
+                { label: 'D', text: 'O estágio probatório tem duração de dois anos, durante o qual o servidor será avaliado quanto ao desempenho e ao assiduidade.', correct: false },
+                { label: 'E', text: 'A estabilidade é adquirida após três anos de efetivo exercício, desde que o servidor tenha sido aprovado em avaliação de desempenho.', correct: false }
+            ],
+            commentary: {
+                correct: 'A',
+                explanation: 'A investidura em cargo público ocorre com a posse, nos termos do art. 13 do Estatuto dos Servidores Públicos Civis da União (Lei 8.112/1990). A posse deve ocorrer no prazo de 30 dias contados da publicação do ato de provimento.',
+                law: 'Art. 13 da Lei 8.112/1990: "A investidura em cargo público efetivo dar-se-á mediante posse..."',
+                distractors: {
+                    'B': 'Erro: a nomeação não gera investidura. A posse é o ato constitutivo do vínculo.',
+                    'C': 'Erro: o servidor estável pode ser demitido também por sentença judicial transitada em julgado, não apenas por decisão administrativa.',
+                    'D': 'Erro: o estágio probatório tem duração de 3 anos (art. 20 da Lei 8.112/1990), não 2.',
+                    'E': 'Erro: a estabilidade é adquirida após 3 anos de efetivo exercício, mas mediante avaliação especial de desempenho (art. 20, §1º).'
+                }
+            }
+        },
+        {
+            id: 'fcc-5',
+            subject: 'Direito Penal',
+            banca: 'FCC',
+            year: 2022,
+            difficulty: 'Difícil',
+            weight: 2,
+            text: 'Considerando a carta penal brasileira, a imputabilidade penal está topograficamente ligada aos conceitos de CULPABILIDADE. Dessa forma, assinale a alternativa correta:',
+            options: [
+                { label: 'A', text: 'Considera-se em estado de necessidade exculpante quem pratica o fato para salvar de perigo atual, que não provocou por sua vontade, nem podia de outro modo evitar, direito próprio ou alheio, cujo sacrifício, nas circunstâncias, não era razoável exigir-se.', correct: false },
+                { label: 'B', text: 'Não excluem a imputabilidade penal a emoção ou a paixão, a embriaguez, voluntária ou culposa, pelo álcool ou substância de efeitos análogos, entre outros.', correct: true },
+                { label: 'C', text: 'A pena pode ser reduzida de um terço à metade, se o agente, em virtude de perturbação de saúde mental ou por desenvolvimento mental incompleto ou retardado não era inteiramente capaz de entender o caráter ilícito do fato ou de determinar-se de acordo com esse entendimento.', correct: false },
+                { label: 'D', text: 'Apenas os menores de 16 anos são penalmente inimputáveis, ficando sujeitos às normas estabelecidas na legislação especial.', correct: false },
+                { label: 'E', text: 'A pena pode ser reduzida de um terço à metade, se o agente, por embriaguez, proveniente de caso fortuito ou força maior, não possuía, ao tempo da ação ou da omissão, a plena capacidade de entender o caráter ilícito do fato ou de determinar-se de acordo com esse entendimento.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 28 do CP estabelece que não excluem a imputabilidade penal a emoção ou a paixão, a embriaguez, voluntária ou culposa, pelo álcool ou substância de efeitos análogos, entre outros. Essas condições podem apenas reduzir a pena.',
+                law: 'Art. 28 do CP: "Não excluem a imputabilidade penal: I - a emoção ou a paixão; II - a embriaguez, voluntária ou culposa, pelo álcool ou substância de efeitos análogos."',
+                distractors: {
+                    'A': 'Erro: descreve estado de necessidade (art. 24), que exclui a ilicitude, não a imputabilidade.',
+                    'C': 'Erro: descreve semi-imputabilidade por doença mental (art. 26), não imputabilidade plena.',
+                    'D': 'Erro: menores de 18 anos são inimputáveis (ECA), não apenas menores de 16.',
+                    'E': 'Erro: a embriaguez por caso fortuito pode excluir a imputabilidade (art. 28, §1º), não apenas reduzir a pena.'
+                }
+            }
+        },
+        {
+            id: 'fcc-6',
+            subject: 'Direito Constitucional',
+            banca: 'FCC',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'O Conselho Nacional de Justiça (CNJ) exerce funções fundamentais para garantir o controle administrativo e disciplinar do Poder Judiciário, sem comprometer a autonomia dos tribunais. No contexto de suas atribuições constitucionais, destacam-se a necessidade de assegurar a transparência e a eficiência da atividade jurisdicional, incluindo medidas de fiscalização e regulamentação. Dessa forma, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O CNJ é órgão de controle externo do Poder Judiciário, vinculado ao Ministério da Justiça.', correct: false },
+                { label: 'B', text: 'O CNJ tem competência para processar e julgar juízes e membros de tribunais por crime comum.', correct: false },
+                { label: 'C', text: 'O CNJ pode editar atos normativos sobre organização judiciária, uniformização de jurisprudência e procedimentos administrativos.', correct: true },
+                { label: 'D', text: 'O CNJ é composto exclusivamente por membros do Poder Judiciário, sem participação do Ministério Público.', correct: false },
+                { label: 'E', text: 'As decisões do CNJ são irrecorríveis e não sujeitas a revisão pelo Supremo Tribunal Federal.', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'O art. 103-B, §4º da CF atribui ao CNJ a competência para editar atos normativos sobre organização judiciária, uniformização de jurisprudência e procedimentos administrativos.',
+                law: 'Art. 103-B, §4º da CF/88: "Ao Conselho Nacional de Justiça compete: (...) IV - editar atos normativos sobre organização judiciária, uniformização de jurisprudência e procedimentos administrativos."',
+                distractors: {
+                    'A': 'Erro: o CNJ é órgão interno do Poder Judiciário, não vinculado ao Executivo.',
+                    'B': 'Erro: o CNJ não julga crimes. Processa e julga por infração disciplinar.',
+                    'D': 'Erro: o CNJ tem participação do MP (Procurador-Geral da República) e da OAB.',
+                    'E': 'Erro: as decisões do CNJ podem ser impugnadas por mandado de segurança perante o STF.'
+                }
+            }
+        },
+        {
+            id: 'fcc-7',
+            subject: 'Direito Administrativo',
+            banca: 'FCC',
+            year: 2022,
+            difficulty: 'Fácil',
+            weight: 1,
+            text: 'Sobre os princípios da administração pública, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O princípio da legalidade administrativa permite que a Administração Pública crie obrigações aos administrados desde que haja interesse público.', correct: false },
+                { label: 'B', text: 'O princípio da impessoalidade veda que o agente público utilize o cargo para promoção pessoal.', correct: true },
+                { label: 'C', text: 'O princípio da moralidade é sinônimo de legalidade, não admitindo qualquer distinção entre os dois conceitos.', correct: false },
+                { label: 'D', text: 'O princípio da publicidade veda a divulgação de atos administrativos que possam comprometer a segurança nacional.', correct: false },
+                { label: 'E', text: 'O princípio da eficiência exige apenas que a Administração alcance resultados, independentemente dos meios utilizados.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O princípio da impessoalidade, previsto no art. 37, caput da CF, veda a utilização do cargo para promoção pessoal ou de terceiros, assegurando a neutralidade do Estado.',
+                law: 'Art. 37, caput da CF/88: "A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios de legalidade, impessoalidade, moralidade, publicidade e eficiência."',
+                distractors: {
+                    'A': 'Erro: a legalidade veda criar obrigações sem base legal. A Administração só pode fazer o que a lei autoriza.',
+                    'C': 'Erro: moralidade e legalidade são conceitos distintos. A moralidade exige comportamento ético além da mera observância da lei.',
+                    'D': 'Erro: a publicidade é regra. A exceção de sigilo deve estar prevista em lei (art. 5º, XXXIII).',
+                    'E': 'Erro: a eficiência exige resultados com qualidade, rapidez e economia de recursos.'
+                }
+            }
+        },
+        {
+            id: 'fcc-8',
+            subject: 'Direito Processual Penal',
+            banca: 'FCC',
+            year: 2023,
+            difficulty: 'Difícil',
+            weight: 2,
+            text: 'Sobre a prisão preventiva, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'A prisão preventiva é medida cautelar de natureza eminentemente punitiva, aplicável em todos os crimes inafiançáveis.', correct: false },
+                { label: 'B', text: 'A prisão preventiva pode ser decretada quando houver garantia da ordem pública, da ordem econômica, por conveniência da instrução criminal ou para assegurar a aplicação da lei penal.', correct: true },
+                { label: 'C', text: 'A prisão preventiva só pode ser decretada pelo juiz após o oferecimento da denúncia ou queixa.', correct: false },
+                { label: 'D', text: 'A prisão preventiva, uma vez decretada, não pode ser revogada ou substituída por medida cautelar diversa.', correct: false },
+                { label: 'E', text: 'A prisão preventiva é decretada automaticamente em crimes hediondos, independentemente de avaliação das circunstâncias do caso concreto.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 312 do CPP estabelece os requisitos para a prisão preventiva: garantia da ordem pública, da ordem econômica, conveniência da instrução criminal ou assegurar a aplicação da lei penal.',
+                law: 'Art. 312 do CPP: "A prisão preventiva poderá ser decretada como garantia da ordem pública, da ordem econômica, por conveniência da instrução criminal, ou para assegurar a aplicação da lei penal."',
+                distractors: {
+                    'A': 'Erro: a prisão preventiva é cautelar, não punitiva. Não se confunde com a pena.',
+                    'C': 'Erro: pode ser decretada em qualquer fase da investigação ou processo, inclusive antes da denúncia.',
+                    'D': 'Erro: a prisão preventiva pode ser revogada ou substituída por medida cautelar diversa (art. 282, §6º do CPP).',
+                    'E': 'Erro: mesmo em crimes hediondos, é necessária a avaliação das circunstâncias do caso concreto.'
+                }
+            }
+        },
+        {
+            id: 'fcc-9',
+            subject: 'Direito Constitucional',
+            banca: 'FCC',
+            year: 2022,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'A respeito do sistema de segurança pública previsto na Constituição Federal, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'A segurança pública é dever exclusivo do Estado, não podendo ser exercida por entidades privadas.', correct: false },
+                { label: 'B', text: 'A segurança pública é direito de todos e dever do Estado, sendo exercida mediante colaboração entre os órgãos federal, estaduais e municipais.', correct: true },
+                { label: 'C', text: 'A Polícia Federal é subordinada ao Ministério da Justiça e tem competência exclusiva para investigar crimes federais.', correct: false },
+                { label: 'D', text: 'A Polícia Militar dos Estados é força auxiliar e reserva do Exército, podendo ser utilizada em missões de defesa externa.', correct: false },
+                { label: 'E', text: 'O Sistema Único de Segurança Pública (SUSP) foi criado pela Constituição Federal de 1988.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 144 da CF estabelece que a segurança pública é dever do Estado, direito e responsabilidade de todos, sendo exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio.',
+                law: 'Art. 144 da CF/88: "A segurança pública é dever do Estado, direito e responsabilidade de todos, é exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio."',
+                distractors: {
+                    'A': 'Erro: a segurança pública pode contar com colaboração de entidades privadas (vigilância patrimonial).',
+                    'C': 'Erro: a PF investiga crimes federais, mas também pode atuar em outros casos (art. 144, §1º, I a IV).',
+                    'D': 'Erro: a PM é força auxiliar e reserva do Exército, mas NÃO pode ser utilizada em defesa externa.',
+                    'E': 'Erro: o SUSP foi criado pela Lei 13.675/2018, não pela Constituição de 1988.'
+                }
+            }
+        },
+        {
+            id: 'fcc-10',
+            subject: 'Direito Penal',
+            banca: 'FCC',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Paulo, sem violência à pessoa ou grave ameaça, praticou crime de dano (destruir, inutilizar ou deteriorar coisa alheia) contra o patrimônio de autarquia pública municipal. Como se trata de dano qualificado, conclui-se corretamente:',
+            options: [
+                { label: 'A', text: 'Paulo está sujeito à pena de detenção, de seis meses a três anos, e multa.', correct: false },
+                { label: 'B', text: 'Paulo está sujeito à pena de detenção, de um a três anos, ou multa.', correct: false },
+                { label: 'C', text: 'Paulo está sujeito à pena de reclusão, de um a quatro anos, e multa.', correct: true },
+                { label: 'D', text: 'Paulo está sujeito à pena de reclusão, de seis meses a três anos, ou multa.', correct: false },
+                { label: 'E', text: 'Paulo está sujeito à pena de detenção, de um a quatro anos, e multa.', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'O art. 163, §1º, I do CP qualifica o crime de dano quando praticado contra patrimônio da União, Estado, Distrito Federal ou Município. A pena é de reclusão, de 1 a 4 anos, e multa.',
+                law: 'Art. 163, §1º, I do CP: "Se o crime é praticado: I - contra patrimônio da União, Estado, Distrito Federal ou Município: pena - reclusão, de um a quatro anos, e multa."',
+                distractors: {
+                    'A': 'Erro: a pena base é detenção, mas a qualificada é reclusão.',
+                    'B': 'Erro: a pena qualificada é reclusão, não detenção, e é "e" multa, não "ou".',
+                    'D': 'Erro: a pena é de 1 a 4 anos, não 6 meses a 3 anos.',
+                    'E': 'Erro: a pena qualificada é reclusão, não detenção.'
+                }
+            }
         }
     ],
     cebraspe: [
@@ -769,6 +982,182 @@ const questionBank = {
                     'C': 'PEGA: O candidato confunde legalidade administrativa com legalidade privada. Na Administração Pública, a renúncia a direitos legais é vedada.'
                 }
             }
+        },
+        {
+            id: 'ceb-3',
+            subject: 'Direito Constitucional',
+            banca: 'CEBRASPE',
+            year: 2022,
+            difficulty: 'Médio',
+            weight: 1,
+            text: 'Julgue o item seguinte. O artigo 127 da Constituição da República de 1988 estabelece que o Ministério Público é instituição permanente, essencial à função jurisdicional do Estado, incumbindo-lhe a defesa da ordem jurídica, do regime democrático e dos interesses sociais e individuais indisponíveis. Nesse contexto, a autonomia funcional do Ministério Público permite que seus membros decidam livremente sobre a propositura ou não de ação penal pública, sem qualquer tipo de controle externo.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: false },
+                { label: 'E', text: 'ERRADO', correct: true }
+            ],
+            commentary: {
+                correct: 'E',
+                explanation: 'ERRADO. Embora o Ministério Público tenha autonomia funcional, existe o controle externo exercido pelo Poder Judiciário (controle jurisdicional) e pelo CNMP (controle administrativo e disciplinar).',
+                law: 'Art. 127, §1º da CF/88: "São privativas do Ministério Público a titularidade da ação penal pública e a investigação criminal..."',
+                pegadinha: 'O CEBRASPE usa "sem qualquer tipo de controle externo" para induzir ao erro. A autonomia não é absoluta.',
+                distractors: {
+                    'C': 'PEGA: A autonomia funcional existe, mas não exclui o controle jurisdicional e administrativo.'
+                }
+            }
+        },
+        {
+            id: 'ceb-4',
+            subject: 'Direito Penal',
+            banca: 'CEBRASPE',
+            year: 2021,
+            difficulty: 'Difícil',
+            weight: 1,
+            text: 'Julgue o item seguinte. Nos termos do art. 23 do Código Penal, considera-se em estado de necessidade quem pratica o fato para salvar de perigo atual, que não provocou por sua vontade, nem podia de outro modo evitar, direito próprio ou alheio, cujo sacrifício, nas circunstâncias, não era razoável exigir-se.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: true },
+                { label: 'E', text: 'ERRADO', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'CERTO. O art. 23 do CP estabelece os requisitos do estado de necessidade: perigo atual, não provocado pelo agente, impossibilidade de evitação por outro modo, e sacrifício de direito não razoavelmente exigível.',
+                law: 'Art. 23 do CP: "Considera-se em estado de necessidade quem pratica o fato para salvar de perigo atual, que não provocou por sua vontade, nem podia de outro modo evitar, direito próprio ou alheio..."',
+                pegadinha: 'O CEBRASPE testa se o candidato conhece a redação exata do dispositivo. Atenção aos requisitos cumulativos.',
+                distractors: {
+                    'E': 'PEGA: O candidato pode confundir estado de necessidade com estrito cumprimento do dever legal ou exercício regular de direito.'
+                }
+            }
+        },
+        {
+            id: 'ceb-5',
+            subject: 'Direito Administrativo',
+            banca: 'CEBRASPE',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 1,
+            text: 'Julgue o item seguinte. A Lei de Licitações e Contratos Administrativos (Lei 14.133/2021) estabelece que a contratação direta, por dispensa de licitação, é exceção e deve ser devidamente justificada, observados os limites e as hipóteses previstos em lei.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: true },
+                { label: 'E', text: 'ERRADO', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'CERTO. A Lei 14.133/2021 mantém o princípio da licitação como regra e a contratação direta como exceção, exigindo justificativa adequada.',
+                law: 'Art. 4º da Lei 14.133/2021: "A contratação direta é exceção ao princípio da licitação e deverá ser devidamente justificada..."',
+                pegadinha: 'O CEBRASPE testa se o candidato conhece a nova Lei de Licitações. Atenção: a regra continua sendo a licitação.',
+                distractors: {
+                    'E': 'PEGA: O candidato pode confundir a nova lei com permissividade maior para contratação direta.'
+                }
+            }
+        },
+        {
+            id: 'ceb-6',
+            subject: 'Direito Constitucional',
+            banca: 'CEBRASPE',
+            year: 2022,
+            difficulty: 'Difícil',
+            weight: 1,
+            text: 'Julgue o item seguinte. Nos termos da Constituição Federal, o habeas corpus pode ser impetrado por qualquer pessoa em seu próprio favor ou em favor de outrem, bem como pelo Ministério Público, em todas as hipóteses de constrangimento ilegal ou abuso de poder.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: true },
+                { label: 'E', text: 'ERRADO', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'CERTO. O art. 5º, LXVIII da CF garante o habeas corpus contra qualquer violação ou ameaça de violação à liberdade de locomoção, podendo ser impetrado por qualquer pessoa.',
+                law: 'Art. 5º, LXVIII da CF/88: "Conceder-se-á habeas corpus sempre que alguém sofrer ou se achar ameaçado de sofrer violência ou coação em sua liberdade de locomoção..."',
+                pegadinha: 'O CEBRASPE testa se o candidato sabe que qualquer pessoa pode impetrar habeas corpus, não apenas advogados.',
+                distractors: {
+                    'E': 'PEGA: O candidato pode achar que só o advogado ou a parte pode impetrar.'
+                }
+            }
+        },
+        {
+            id: 'ceb-7',
+            subject: 'Direito Penal',
+            banca: 'CEBRASPE',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 1,
+            text: 'Julgue o item seguinte. Nos termos do Código Penal, a tentativa é punível apenas nos crimes dolosos, sendo irrelevante para a configuração do crime tentado a periculosidade da conduta do agente.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: false },
+                { label: 'E', text: 'ERRADO', correct: true }
+            ],
+            commentary: {
+                correct: 'E',
+                explanation: 'ERRADO. A tentativa é punível nos crimes dolosos (art. 14, II do CP), mas a periculosidade da conduta é relevante para a dosimetria da pena. Além disso, existem crimes culposos tentáveis (ex: aborto culposo).',
+                law: 'Art. 14, II do CP: "Quem, de qualquer modo, auxilia o suicídio de outrem: pena de reclusão, de dois a seis anos."',
+                pegadinha: 'O CEBRASPE usa "irrelevante" para induzir ao erro. A periculosidade é sempre relevante no Direito Penal.',
+                distractors: {
+                    'C': 'PEGA: A periculosidade é relevante para a dosimetria. E existem crimes culposos tentáveis.'
+                }
+            }
+        },
+        {
+            id: 'ceb-8',
+            subject: 'Direito Processual Penal',
+            banca: 'CEBRASPE',
+            year: 2022,
+            difficulty: 'Difícil',
+            weight: 1,
+            text: 'Julgue o item seguinte. Nos termos do Código de Processo Penal, a prisão em flagrante pode ser efetuada por qualquer pessoa do povo, desde que o agente seja encontrado em situação de flagrante delito.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: false },
+                { label: 'E', text: 'ERRADO', correct: true }
+            ],
+            commentary: {
+                correct: 'E',
+                explanation: 'ERRADO. A prisão em flagrante deve ser efetuada por autoridade policial ou por funcionário público designado para esse fim. Qualquer pessoa pode APENAS conduzir o agente à autoridade policial.',
+                law: 'Art. 260 do CPP: "Qualquer pessoa do povo poderá e as autoridades policiais e seus agentes deverão prender quem quer que seja encontrado em flagrante delito."',
+                pegadinha: 'O CEBRASPE confunde "poder prender" com "conduzir à autoridade". Qualquer pessoa pode conduzir, mas a prisão propriamente dita é ato da autoridade.',
+                distractors: {
+                    'C': 'PEGA: A prisão em flagrante é ato da autoridade policial. O cidadão comum pode apenas conduzir o infrator.'
+                }
+            }
+        },
+        {
+            id: 'ceb-9',
+            subject: 'Direito Constitucional',
+            banca: 'CEBRASPE',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 1,
+            text: 'Julgue o item seguinte. A Constituição Federal de 1988 prevê que a União, os Estados, o Distrito Federal e os Municípios são pessoas jurídicas de direito público interno, dotadas de autonomia política, administrativa e financeira.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: true },
+                { label: 'E', text: 'ERRADO', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'CERTO. Os entes federativos são pessoas jurídicas de direito público interno com autonomia política, administrativa e financeira, nos termos dos arts. 18 e 19 da CF.',
+                law: 'Art. 18 da CF/88: "A organização político-administrativa da República Federativa do Brasil compreende a União, os Estados, o Distrito Federal e os Municípios, todos autônomos..."',
+                pegadinha: 'O CEBRASPE testa se o candidato conhece a natureza jurídica dos entes federativos.',
+                distractors: {
+                    'E': 'PEGA: O candidato pode confundir autonomia com soberania. Os entes têm autonomia, não soberania.'
+                }
+            }
+        },
+        {
+            id: 'ceb-10',
+            subject: 'Direito Administrativo',
+            banca: 'CEBRASPE',
+            year: 2022,
+            difficulty: 'Difícil',
+            weight: 1,
+            text: 'Julgue o item seguinte. Nos termos da jurisprudência do STF, o princípio da razoabilidade exige que a medida administrativa adotada pelo Poder Público esteja em proporção com o objetivo a ser alcançado, não podendo ser excessiva em relação ao fim perseguido.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: true },
+                { label: 'E', text: 'ERRADO', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'CERTO. O princípio da razoabilidade, decorrente do princípio da proporcionalidade, exige que a medida administrativa seja proporcional ao fim visado, não podendo ser desproporcional ou excessiva.',
+                law: 'Súmula 10 do STF: "A razoabilidade é critério de controle da discricionariedade administrativa."',
+                pegadinha: 'O CEBRASPE testa se o candidato conhece a distinção entre proporcionalidade e razoabilidade.',
+                distractors: {
+                    'E': 'PEGA: O candidato pode confundir razoabilidade com legalidade estrita.'
+                }
+            }
         }
     ],
     idecan: [
@@ -796,6 +1185,249 @@ const questionBank = {
                     'C': 'A liberdade de manifestação do pensamento NÃO é absoluta. Vedado o anonimato. Limites: calúnia, injúria, difamação.',
                     'D': 'O direito de propriedade é relativo. Função social (art. 5º, XXIII). Desapropriação possível.',
                     'E': 'A liberdade de profissão é exercida mediante INSCRIÇÃO, não permissão (art. 5º, XIII).'
+                }
+            }
+        },
+        {
+            id: 'ide-2',
+            subject: 'Direito Penal',
+            banca: 'IDECAN',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre o crime de tortura previsto na Lei Federal nº 9.455/1997, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'A tortura é crime inafiançável e imprescritível, mas pode ser punida com pena de detenção.', correct: false },
+                { label: 'B', text: 'A tortura praticada por agente público em razão de discriminação racial ou religiosa terá pena aumentada de um terço.', correct: true },
+                { label: 'C', text: 'A tortura só configura crime quando praticada por agente público no exercício da função.', correct: false },
+                { label: 'D', text: 'A pena para o crime de tortura é de reclusão de 2 a 8 anos, não podendo ser aumentada em hipótese alguma.', correct: false },
+                { label: 'E', text: 'A Lei de Tortura foi revogada pela Lei 13.869/2019 (Lei de Abuso de Autoridade).', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'A Lei 9.455/1997 prevê aumento de pena de um terço quando o crime de tortura for praticado por agente público em razão de discriminação racial ou religiosa.',
+                law: 'Art. 1º, §1º da Lei 9.455/1997: "Se o crime é praticado por agente público... em razão de discriminação racial ou religiosa, a pena será aumentada de um terço."',
+                distractors: {
+                    'A': 'Erro: a tortura é crime hediondo, com pena de reclusão, não detenção.',
+                    'C': 'Erro: a tortura pode ser praticada por particular (art. 1º, §3º da Lei 9.455/1997).',
+                    'D': 'Erro: a pena pode ser aumentada em diversas hipóteses (discriminação, contra menor, etc.).',
+                    'E': 'Erro: a Lei de Tortura NÃO foi revogada. Continua vigente.'
+                }
+            }
+        },
+        {
+            id: 'ide-3',
+            subject: 'Direito Constitucional',
+            banca: 'IDECAN',
+            year: 2022,
+            difficulty: 'Fácil',
+            weight: 1,
+            text: 'Sobre a organização do Poder Judiciário no Brasil, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O Supremo Tribunal Federal é composto por onze Ministros, nomeados pelo Presidente da República, após aprovação pelo Senado Federal.', correct: true },
+                { label: 'B', text: 'Os juízes de primeiro grau são nomeados pelo Presidente da República, após aprovação pelo Senado Federal.', correct: false },
+                { label: 'C', text: 'O Conselho Nacional de Justiça é presidido pelo Procurador-Geral da República.', correct: false },
+                { label: 'D', text: 'Os membros dos tribunais estaduais são eleitos pelo voto direto e secreto da população.', correct: false },
+                { label: 'E', text: 'O Tribunal Superior do Trabalho é órgão de primeiro grau da Justiça do Trabalho.', correct: false }
+            ],
+            commentary: {
+                correct: 'A',
+                explanation: 'O art. 101 da CF estabelece que o STF é composto por 11 Ministros, nomeados pelo Presidente da República, após aprovação pelo Senado Federal.',
+                law: 'Art. 101 da CF/88: "O Supremo Tribunal Federal compõe-se de onze Ministros, escolhidos dentre cidadãos com mais de trinta e cinco e menos de sessenta e cinco anos..."',
+                distractors: {
+                    'B': 'Erro: os juízes de primeiro grau são aprovados em concurso público (art. 93, I).',
+                    'C': 'Erro: o CNJ é presidido pelo Ministro do STF que o preside (art. 103-B, §2º).',
+                    'D': 'Erro: os membros dos tribunais são nomeados pelo governador (art. 95).',
+                    'E': 'Erro: o TST é órgão de segundo grau (superior).'
+                }
+            }
+        },
+        {
+            id: 'ide-4',
+            subject: 'Direito Administrativo',
+            banca: 'IDECAN',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre o processo administrativo disciplinar, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O processo administrativo disciplinar pode ser instaurado sem a indicação dos fatos que o justificam, desde que haja suspeita de infração.', correct: false },
+                { label: 'B', text: 'O servidor público tem direito à ampla defesa, com a utilização de todos os meios e recursos admitidos em direito.', correct: true },
+                { label: 'C', text: 'A penalidade de demissão pode ser aplicada pelo chefe imediato do servidor, sem necessidade de processo administrativo.', correct: false },
+                { label: 'D', text: 'O prazo para a instauração do processo administrativo disciplinar é de 60 dias, contados do conhecimento do fato.', correct: false },
+                { label: 'E', text: 'O servidor punido não pode recorrer da decisão administrativa, devendo buscar diretamente o Poder Judiciário.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 93, IX da CF e o art. 143 da Lei 8.112/1990 garantem ao servidor público o direito à ampla defesa no processo administrativo disciplinar.',
+                law: 'Art. 93, IX da CF/88: "A lei considerará crimes inafiançáveis e insuscetíveis de graça ou anistia a prática da tortura, o tráfico ilícito de entorpecentes e drogas afins, o terrorismo e os definidos como crimes hediondos..."',
+                distractors: {
+                    'A': 'Erro: o PAD deve ser fundamentado e indicar os fatos (art. 150 da Lei 8.112/1990).',
+                    'C': 'Erro: a demissão exige processo administrativo disciplinar (art. 144 da Lei 8.112/1990).',
+                    'D': 'Erro: o prazo é de 180 dias (art. 173 da Lei 8.112/1990).',
+                    'E': 'Erro: o servidor pode recorrer administrativamente (art. 145 da Lei 8.112/1990).'
+                }
+            }
+        },
+        {
+            id: 'ide-5',
+            subject: 'Direito Penal',
+            banca: 'IDECAN',
+            year: 2022,
+            difficulty: 'Difícil',
+            weight: 2,
+            text: 'Sobre o crime de descaminho previsto no art. 334 do Código Penal, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O descaminho consiste em importar ou exportar mercadoria proibida, sem pagamento dos tributos devidos.', correct: false },
+                { label: 'B', text: 'O descaminho é crime contra a ordem tributária, punido com pena de reclusão de 1 a 4 anos e multa.', correct: true },
+                { label: 'C', text: 'O descaminho só configura crime quando praticado por funcionário público no exercício da função.', correct: false },
+                { label: 'D', text: 'A pena do descaminho não pode ser aumentada em hipótese alguma.', correct: false },
+                { label: 'E', text: 'O descaminho foi revogado pela Lei 13.964/2019 (Pacote Anticrime).', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 334 do CP tipifica o descaminho como crime contra a ordem tributária, com pena de reclusão de 1 a 4 anos e multa.',
+                law: 'Art. 334 do CP: "Introduzir ou tirar do território nacional mercadoria destinada ao comércio, sem observância da legislação aduaneira: Pena - reclusão, de um a quatro anos, e multa."',
+                distractors: {
+                    'A': 'Erro: o descaminho envolve mercadoria lícita, não proibida.',
+                    'C': 'Erro: pode ser praticado por qualquer pessoa.',
+                    'D': 'Erro: a pena pode ser aumentada (art. 334, §§1º e 2º).',
+                    'E': 'Erro: o descaminho NÃO foi revogado pelo Pacote Anticrime.'
+                }
+            }
+        },
+        {
+            id: 'ide-6',
+            subject: 'Direito Processual Penal',
+            banca: 'IDECAN',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre a interceptação telefônica, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'A interceptação telefônica pode ser decretada por qualquer autoridade policial, independentemente de ordem judicial.', correct: false },
+                { label: 'B', text: 'A interceptação telefônica é medida cautelar que depende de ordem judicial, podendo ser utilizada em qualquer tipo de investigação.', correct: false },
+                { label: 'C', text: 'A interceptação telefônica depende de ordem judicial e só pode ser utilizada em investigação de crime punido com reclusão.', correct: true },
+                { label: 'D', text: 'A interceptação telefônica é permitida em todos os crimes, inclusive os de menor potencial ofensivo.', correct: false },
+                { label: 'E', text: 'As gravações obtidas por interceptação telefônica podem ser utilizadas em qualquer processo, independentemente do crime investigado.', correct: false }
+            ],
+            commentary: {
+                correct: 'C',
+                explanation: 'O art. 1º da Lei 9.296/1996 estabelece que a interceptação depende de ordem judicial e só pode ser utilizada em investigação de infração penal punida com pena de reclusão.',
+                law: 'Art. 1º da Lei 9.296/1996: "A interceptação de comunicações telefônicas... dependerá de ordem judicial... quando houver indícios razoáveis da autoria ou participação em infração penal punida com pena de reclusão."',
+                distractors: {
+                    'A': 'Erro: só pode ser decretada pelo juiz.',
+                    'B': 'Erro: não pode ser utilizada em qualquer investigação. Exige crime com pena de reclusão.',
+                    'D': 'Erro: crimes de menor potencial ofensivo não autorizam interceptação.',
+                    'E': 'Erro: as gravações só podem ser utilizadas no processo relativo ao crime investigado.'
+                }
+            }
+        },
+        {
+            id: 'ide-7',
+            subject: 'Direito Constitucional',
+            banca: 'IDECAN',
+            year: 2022,
+            difficulty: 'Fácil',
+            weight: 1,
+            text: 'Sobre os direitos políticos previstos na Constituição Federal, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O voto é obrigatório para todos os cidadãos brasileiros maiores de 18 anos.', correct: false },
+                { label: 'B', text: 'O voto é facultativo para os analfabetos, os maiores de 70 anos e os maiores de 16 e menores de 18 anos.', correct: true },
+                { label: 'C', text: 'O voto é proibido para os militares das Forças Armadas em todas as eleições.', correct: false },
+                { label: 'D', text: 'O estrangeiro naturalizado pode ser eleito Presidente da República após 10 anos de naturalização.', correct: false },
+                { label: 'E', text: 'A inelegibilidade é aplicada apenas aos condenados por crimes dolosos.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 14, §1º da CF estabelece que o voto é facultativo para analfabetos, maiores de 70 anos e maiores de 16 e menores de 18 anos.',
+                law: 'Art. 14, §1º da CF/88: "O alistamento eleitoral e o voto são obrigatórios para os cidadãos maiores de dezoito anos, sendo facultativos: I - os maiores de dezesseis e menores de dezoito anos; II - os maiores de setenta anos; III - os analfabetos."',
+                distractors: {
+                    'A': 'Erro: o voto é obrigatório para maiores de 18 anos, mas existem exceções.',
+                    'C': 'Erro: os militares podem votar, mas não se candidatar (art. 14, §8º).',
+                    'D': 'Erro: o estrangeiro naturalizado não pode ser Presidente (art. 12, §3º).',
+                    'E': 'Erro: a inelegibilidade também se aplica a crimes culposos em alguns casos (Lei Complementar 64/1990).'
+                }
+            }
+        },
+        {
+            id: 'ide-8',
+            subject: 'Direito Administrativo',
+            banca: 'IDECAN',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre a responsabilidade civil do Estado, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O Estado responde apenas por danos causados por seus agentes quando houver dolo comprovado.', correct: false },
+                { label: 'B', text: 'O Estado responde objetivamente pelos danos causados por seus agentes no exercício da função, independentemente de culpa.', correct: true },
+                { label: 'C', text: 'O Estado nunca responde por atos de pessoas físicas ou jurídicas contratadas para prestar serviços públicos.', correct: false },
+                { label: 'D', text: 'A responsabilidade do Estado é sempre subjetiva, exigindo a comprovação de culpa do agente.', correct: false },
+                { label: 'E', text: 'O Estado só responde por danos materiais, não podendo ser condenado ao pagamento de danos morais.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 37, §6º da CF estabelece a responsabilidade objetiva do Estado por danos causados por seus agentes no exercício da função.',
+                law: 'Art. 37, §6º da CF/88: "As pessoas jurídicas de direito público e as de direito privado prestadoras de serviços públicos responderão pelos danos que seus agentes, nessa qualidade, causarem a terceiros..."',
+                distractors: {
+                    'A': 'Erro: a responsabilidade é objetiva, não exige dolo nem culpa.',
+                    'C': 'Erro: o Estado responde também por atos de concessionárias (art. 37, §6º).',
+                    'D': 'Erro: a responsabilidade é objetiva, não subjetiva.',
+                    'E': 'Erro: o Estado pode ser condenado a danos morais.'
+                }
+            }
+        },
+        {
+            id: 'ide-9',
+            subject: 'Direito Penal',
+            banca: 'IDECAN',
+            year: 2022,
+            difficulty: 'Difícil',
+            weight: 2,
+            text: 'Sobre o crime de infanticídio previsto no art. 123 do Código Penal, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'O infanticídio é crime hediondo, punido com pena de reclusão de 6 a 20 anos.', correct: false },
+                { label: 'B', text: 'O infanticídio é o homicídio praticado pela mãe, sob a influência do estado puerperal, sobre o recém-nascido.', correct: true },
+                { label: 'C', text: 'O infanticídio pode ser praticado por qualquer pessoa, desde que a vítima seja menor de 1 ano de idade.', correct: false },
+                { label: 'D', text: 'A pena do infanticídio é de reclusão de 4 a 12 anos, sem possibilidade de redução.', correct: false },
+                { label: 'E', text: 'O infanticídio foi revogado pela Lei 13.104/2015 (Lei do Feminicídio).', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 123 do CP define o infanticídio como o homicídio praticado pela mãe, sob a influência do estado puerperal, sobre o recém-nascido.',
+                law: 'Art. 123 do CP: "Matar, sob a influência do estado puerperal, o próprio filho, durante o parto ou logo após: Pena - detenção, de dois a seis anos."',
+                distractors: {
+                    'A': 'Erro: o infanticídio não é hediondo e tem pena de detenção, não reclusão.',
+                    'C': 'Erro: só pode ser praticado pela mãe, não por qualquer pessoa.',
+                    'D': 'Erro: a pena é de 2 a 6 anos de detenção.',
+                    'E': 'Erro: o infanticídio NÃO foi revogado pela Lei do Feminicídio.'
+                }
+            }
+        },
+        {
+            id: 'ide-10',
+            subject: 'Direito Processual Penal',
+            banca: 'IDECAN',
+            year: 2023,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre a prescrição da pretensão punitiva, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'A prescrição da pretensão punitiva ocorre em todos os crimes após 20 anos da data do fato.', correct: false },
+                { label: 'B', text: 'A prescrição da pretensa punitiva depende da natureza da pena máxima cominada ao crime.', correct: true },
+                { label: 'C', text: 'A prescrição não ocorre em crimes hediondos, que são imprescritíveis.', correct: false },
+                { label: 'D', text: 'A prescrição interrompe-se com o oferecimento da denúncia e recomeça a correr do ato interruptivo.', correct: false },
+                { label: 'E', text: 'A prescrição da pretensão punitiva é de 8 anos para todos os crimes inafiançáveis.', correct: false }
+            ],
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 109 do CPP estabelece os prazos prescricionais de acordo com a pena máxima cominada ao crime.',
+                law: 'Art. 109 do CPP: "A prescrição da pretensão punitiva ocorre nos prazos seguintes: I - 20 (vinte) anos, quando a pena máxima do crime é superior a 12 (doze) anos..."',
+                distractors: {
+                    'A': 'Erro: os prazos variam conforme a pena máxima (8, 12, 16 ou 20 anos).',
+                    'C': 'Erro: os crimes hediondos prescrevem normalmente. A imprescritibilidade foi revogada.',
+                    'D': 'Erro: a prescrição interrompe-se, mas recomeça a correr do dia do ato interruptivo, não do ato em si.',
+                    'E': 'Erro: não existe regra única de 8 anos para crimes inafiançáveis.'
                 }
             }
         }
@@ -1031,6 +1663,7 @@ function generateQuestions() {
     const config = careerConfig[state.career];
     const bank = questionBank[config.bancaStyle];
     let availableQuestions = [...bank];
+    
     if (state.mode === 'disciplina' && state.selectedDiscipline) {
         availableQuestions = availableQuestions.filter(q => q.subject === state.selectedDiscipline);
     }
@@ -1042,8 +1675,23 @@ function generateQuestions() {
             return [];
         }
     }
-    availableQuestions.sort(() => Math.random() - 0.5);
-    const selected = availableQuestions.slice(0, Math.min(state.quantity, availableQuestions.length));
+    
+    // Seleção determinística por índice para garantir questões únicas e fixas
+    // Usa um "seed" baseado na carreira + modo + quantidade para sempre gerar o mesmo conjunto
+    const seed = state.career.charCodeAt(0) + state.quantity + (state.mode === 'disciplina' ? (state.selectedDiscipline ? state.selectedDiscipline.length : 0) : 0);
+    const indices = [];
+    const used = new Set();
+    
+    for (let i = 0; i < Math.min(state.quantity, availableQuestions.length); i++) {
+        let idx = (seed + i * 7) % availableQuestions.length;
+        while (used.has(idx)) {
+            idx = (idx + 1) % availableQuestions.length;
+        }
+        used.add(idx);
+        indices.push(idx);
+    }
+    
+    const selected = indices.map(idx => availableQuestions[idx]);
     return selected.map((q, i) => ({...q, number: i + 1}));
 }
 
