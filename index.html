@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Questões - Simulador Policial Realista</title>
+    <title>Delta Questões Pro - Simulador Jurídico Realista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,33 +24,19 @@
             0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
             50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
-        @keyframes countUp {
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
-        }
         @keyframes confetti-fall {
             0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-        }
 
         .animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
         .animate-pulse-glow { animation: pulse-glow 2s infinite; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
         .animate-shake { animation: shake 0.4s ease-in-out; }
-        .animate-count { animation: countUp 0.6s ease-out forwards; }
 
         .glass {
             background: rgba(15, 23, 42, 0.7);
@@ -66,8 +52,9 @@
         .option-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            border: 2px solid #334155;
         }
-        .option-card:hover {
+        .option-card:hover:not(.disabled) {
             transform: translateX(8px);
             border-color: #3B82F6;
             background: rgba(59, 130, 246, 0.1);
@@ -85,6 +72,40 @@
             border-color: #EF4444;
             background: rgba(239, 68, 68, 0.15);
         }
+        .option-card.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .cebraspe-btn {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #334155;
+        }
+        .cebraspe-btn:hover:not(.disabled) {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3B82F6;
+        }
+        .cebraspe-btn.selected-c {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10B981;
+            color: #10B981;
+        }
+        .cebraspe-btn.selected-e {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #EF4444;
+            color: #EF4444;
+        }
+        .cebraspe-btn.correct-reveal {
+            border-color: #10B981;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+        .cebraspe-btn.wrong-reveal {
+            border-color: #EF4444;
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
 
         .page-transition {
             transition: opacity 0.4s ease, transform 0.4s ease;
@@ -95,105 +116,15 @@
             transform: scale(0.95);
             position: absolute;
             width: 100%;
+            height: 0;
+            overflow: hidden;
         }
         .page-active {
             opacity: 1;
             pointer-events: all;
             transform: scale(1);
             position: relative;
-        }
-
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .level-badge {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #3B82F6;
-            animation: confetti-fall 3s ease-out forwards;
-        }
-
-        .focus-overlay {
-            background: radial-gradient(circle at center, transparent 0%, rgba(11, 17, 32, 0.95) 100%);
-        }
-
-        .streak-fire {
-            animation: flicker 1.5s ease-in-out infinite;
-        }
-
-        .neon-text {
-            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .tooltip {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .has-tooltip:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .cebraspe-option {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .cebraspe-option:hover {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3B82F6;
-        }
-        .cebraspe-option.selected-c {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: #10B981;
-            color: #10B981;
-        }
-        .cebraspe-option.selected-e {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: #EF4444;
-            color: #EF4444;
-        }
-
-        .subject-tag {
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .career-btn.active {
-            border-color: #3B82F6 !important;
-            background: rgba(59, 130, 246, 0.15) !important;
-        }
-        .career-btn.active .check-indicator {
-            border-color: #3B82F6 !important;
-        }
-        .career-btn.active .check-indicator div {
-            opacity: 1 !important;
-        }
-
-        .qty-btn.active {
-            border-color: #3B82F6 !important;
-            background: rgba(59, 130, 246, 0.15) !important;
-        }
-
-        .level-btn.active {
-            border-color: #F59E0B !important;
-            background: rgba(245, 158, 11, 0.15) !important;
-            color: #F59E0B !important;
+            height: auto;
         }
 
         .qgrid-btn {
@@ -209,21 +140,10 @@
             transition: all 0.2s;
             border: 1px solid transparent;
         }
-        .qgrid-btn:hover {
-            transform: scale(1.1);
-        }
-        .qgrid-btn.answered {
-            background: #3B82F6;
-            color: white;
-        }
-        .qgrid-btn.wrong-grid {
-            background: #EF4444;
-            color: white;
-        }
-        .qgrid-btn.doubt {
-            background: #F59E0B;
-            color: white;
-        }
+        .qgrid-btn:hover { transform: scale(1.1); }
+        .qgrid-btn.answered { background: #3B82F6; color: white; }
+        .qgrid-btn.wrong-grid { background: #EF4444; color: white; }
+        .qgrid-btn.doubt { background: #F59E0B; color: white; }
         .qgrid-btn.current {
             border-color: #3B82F6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
@@ -234,25 +154,66 @@
             border-color: #334155;
         }
 
-        @keyframes confettiPop {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+        .subject-tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
+
+        .law-reference {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3B82F6;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 8px 0;
+        }
+
+        .distractor-analysis {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid #EF4444;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 4px 0;
+        }
+
         .confetti-piece {
             position: fixed;
             width: 10px;
             height: 10px;
             border-radius: 2px;
-            animation: confettiPop 1s ease-out forwards;
             z-index: 9999;
+            pointer-events: none;
+        }
+        @keyframes confettiPop {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+        }
+
+        .banca-badge-fcc { background: linear-gradient(135deg, #1e40af, #3b82f6); }
+        .banca-badge-cebraspe { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+        .banca-badge-idecan { background: linear-gradient(135deg, #059669, #10b981); }
+
+        .mode-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .mode-card:hover {
+            transform: translateY(-4px);
+            border-color: #3B82F6;
+        }
+        .mode-card.active {
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.1);
         }
     </style>
-<base target="_blank">
 <base target="_blank">
 </head>
 <body class="bg-[#0B1120] text-[#F1F5F9] min-h-screen overflow-x-hidden">
 
-    <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 glass-strong border-b border-slate-800/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -263,29 +224,18 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões</h1>
-                        <p class="text-xs text-slate-400 font-medium">Simulador Realista de Concursos Policiais</p>
+                        <h1 class="text-xl font-bold tracking-tight text-white">Delta Questões <span class="text-blue-400">Pro</span></h1>
+                        <p class="text-xs text-slate-400 font-medium">Banco de Questões Reais por Banca</p>
                     </div>
                 </div>
-
-                <div class="hidden md:flex items-center space-x-6">
-                    <div class="flex items-center space-x-2 bg-slate-800/50 rounded-full px-4 py-1.5 border border-slate-700/50">
-                        <span class="text-amber-400 text-lg streak-fire">🔥</span>
-                        <span class="text-sm font-semibold text-amber-400" id="streakDisplay">0 dias</span>
-                    </div>
+                <div class="hidden md:flex items-center space-x-4">
                     <div class="flex items-center space-x-2 text-slate-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span class="text-sm font-mono" id="sessionTimer">00:00</span>
                     </div>
-                    <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Modo Foco">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </button>
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white cursor-pointer">
                         V
                     </div>
                 </div>
@@ -293,313 +243,195 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
         <!-- PAGE 1: CONFIGURATION -->
         <div id="page-config" class="page-transition page-active">
-            <div class="text-center mb-12 animate-slide-in">
+            <div class="text-center mb-10 animate-slide-in">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
-                    Prepare-se com <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 neon-text">100% de Realismo</span>
+                    Questões <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Reais e Fixas</span>
                 </h2>
-                <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                    Simulador baseado nos editais reais. Questões, regras de eliminação, pesos por disciplina e estilo de cada banca exatamente como na prova.
+                <p class="text-lg text-slate-400 max-w-3xl mx-auto">
+                    Banco de questões juridicamente verificadas, com gabarito comentado por especialistas. 
+                    Cada questão tem explicação do artigo, jurisprudência e análise das pegadinhas da banca.
                 </p>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 space-y-6">
 
-                    <!-- Career Selection -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.1s">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                </svg>
-                                1. Escolha sua Carreira
-                            </h3>
-                            <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full font-medium">Obrigatório</span>
+                    <!-- Mode Selection -->
+                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.1s">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                            </svg>
+                            1. Modo de Estudo
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div onclick="selectMode('simulado')" class="mode-card active p-5 rounded-xl bg-slate-800/50 border border-slate-700" id="mode-simulado">
+                                <div class="text-3xl mb-2">📝</div>
+                                <div class="font-semibold text-white">Simulado Real</div>
+                                <div class="text-xs text-slate-400 mt-1">Prova completa com cronômetro e regras reais</div>
+                            </div>
+                            <div onclick="selectMode('disciplina')" class="mode-card p-5 rounded-xl bg-slate-800/50 border border-slate-700" id="mode-disciplina">
+                                <div class="text-3xl mb-2">📚</div>
+                                <div class="font-semibold text-white">Por Disciplina</div>
+                                <div class="text-xs text-slate-400 mt-1">Foque nos pontos fracos com questões filtradas</div>
+                            </div>
+                            <div onclick="selectMode('revisao')" class="mode-card p-5 rounded-xl bg-slate-800/50 border border-slate-700" id="mode-revisao">
+                                <div class="text-3xl mb-2">🔄</div>
+                                <div class="font-semibold text-white">Revisão de Erros</div>
+                                <div class="text-xs text-slate-400 mt-1">Refaça apenas as questões que errou antes</div>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="careerGrid">
-                            <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
-                                <div class="text-2xl mb-2">🚔</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
-                                <div class="text-xs text-slate-400 mt-1">80 questões FCC/UNEB</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="prf">
-                                <div class="text-2xl mb-2">🛣️</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PRF</div>
-                                <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pf">
-                                <div class="text-2xl mb-2">🕵️</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PF</div>
-                                <div class="text-xs text-slate-400 mt-1">120 questões CEBRASPE</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                            <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pc">
-                                <div class="text-2xl mb-2">🔍</div>
-                                <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PC</div>
-                                <div class="text-xs text-slate-400 mt-1">100 questões IDECAN/IBADE</div>
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center check-indicator">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></div>
-                                </div>
-                            </button>
-                        </div>
-                        <div id="careerInfo" class="mt-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 hidden">
-                            <div class="flex items-start gap-3">
-                                <span class="text-2xl">ℹ️</span>
-                                <div id="careerInfoText">
-                                    <h4 class="font-semibold text-blue-400 mb-1">Informações da Carreira</h4>
-                                    <p class="text-sm text-slate-400"></p>
+                    </div>
+
+                    <!-- Career & Banca Selection -->
+                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            2. Carreira e Banca
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <button onclick="selectCareer('pmba')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-left" data-career="pmba">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-2xl">🚔</span>
+                                        <span class="banca-badge-fcc text-white text-[10px] px-2 py-1 rounded-full font-bold">FCC</span>
+                                    </div>
+                                    <div class="font-semibold text-white group-hover:text-blue-400 transition-colors">PMBA</div>
+                                    <div class="text-xs text-slate-400 mt-1">80 questões · Múltipla Escolha</div>
+                                </button>
+                                <button onclick="selectCareer('prf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-purple-500 bg-slate-800/50 transition-all text-left" data-career="prf">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-2xl">🛣️</span>
+                                        <span class="banca-badge-cebraspe text-white text-[10px] px-2 py-1 rounded-full font-bold">CEBRASPE</span>
+                                    </div>
+                                    <div class="font-semibold text-white group-hover:text-purple-400 transition-colors">PRF</div>
+                                    <div class="text-xs text-slate-400 mt-1">120 questões · C/E · 1 errada anula 1 certa</div>
+                                </button>
+                                <button onclick="selectCareer('pf')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-purple-500 bg-slate-800/50 transition-all text-left" data-career="pf">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-2xl">🕵️</span>
+                                        <span class="banca-badge-cebraspe text-white text-[10px] px-2 py-1 rounded-full font-bold">CEBRASPE</span>
+                                    </div>
+                                    <div class="font-semibold text-white group-hover:text-purple-400 transition-colors">PF</div>
+                                    <div class="text-xs text-slate-400 mt-1">120 questões · C/E · 1 errada anula 1 certa</div>
+                                </button>
+                                <button onclick="selectCareer('pc')" class="career-btn group relative p-4 rounded-xl border-2 border-slate-700 hover:border-green-500 bg-slate-800/50 transition-all text-left" data-career="pc">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-2xl">🔍</span>
+                                        <span class="banca-badge-idecan text-white text-[10px] px-2 py-1 rounded-full font-bold">IDECAN</span>
+                                    </div>
+                                    <div class="font-semibold text-white group-hover:text-green-400 transition-colors">PC</div>
+                                    <div class="text-xs text-slate-400 mt-1">100 questões · Múltipla Escolha</div>
+                                </button>
+                            </div>
+                            <div id="bancaInfoBox" class="hidden p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center shrink-0">
+                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div id="bancaInfoContent"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Banca Selection -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.2s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            2. Banca Examinadora
-                        </h3>
-                        <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="font-semibold text-white" id="bancaDisplay">Selecione uma carreira</div>
-                                    <div class="text-sm text-slate-400 mt-1" id="bancaStyle">--</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-xs text-slate-500 uppercase tracking-wider">Formato</div>
-                                    <div class="font-mono text-blue-400 font-bold" id="formatDisplay">--</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Question Quantity -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.3s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
-                            </svg>
-                            3. Quantidade de Questões
-                        </h3>
-                        <div class="grid grid-cols-3 gap-3">
-                            <button onclick="setQuantity(25)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="25">
-                                <div class="text-2xl font-bold text-white">25</div>
-                                <div class="text-xs text-slate-400 mt-1">Treino Rápido</div>
-                                <div class="text-xs text-blue-400 mt-1">~30 min</div>
-                            </button>
-                            <button onclick="setQuantity(50)" class="qty-btn p-4 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="50">
-                                <div class="text-2xl font-bold text-white">50</div>
-                                <div class="text-xs text-slate-400 mt-1">Treino Médio</div>
-                                <div class="text-xs text-blue-400 mt-1">~60 min</div>
-                            </button>
-                            <button onclick="setQuantity(80)" class="qty-btn p-4 rounded-xl border-2 border-blue-500 bg-blue-500/10 transition-all text-center qty-active" data-qty="80">
-                                <div class="text-2xl font-bold text-blue-400">80</div>
-                                <div class="text-xs text-slate-400 mt-1">Simulado Real</div>
-                                <div class="text-xs text-blue-400 mt-1">~4h (PMBA/PC)</div>
-                            </button>
-                        </div>
-                        <div id="qtyInfo" class="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm text-amber-300">
-                            ⚠️ A prova real da PMBA tem <strong>80 questões</strong>. Treinar com menos questões é para revisão rápida, mas o cálculo de aprovação será proporcional.
-                        </div>
-                    </div>
-
-                    <!-- Level & Difficulty -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.4s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                            </svg>
-                            4. Nível de Dificuldade
-                        </h3>
-                        <div class="grid grid-cols-3 gap-2 mb-4">
-                            <button onclick="setLevel('normal')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-level="normal">
-                                Edital Real
-                            </button>
-                            <button onclick="setLevel('hard')" class="level-btn px-3 py-2 rounded-lg border border-amber-500 text-sm text-amber-400 bg-amber-500/10 transition-all level-active" data-level="hard">
-                                +1 Nível 🔥
-                            </button>
-                            <button onclick="setLevel('expert')" class="level-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-red-500 hover:text-red-400 transition-all" data-level="expert">
-                                Expert ⚡
-                            </button>
-                        </div>
-                        <div id="levelInfo" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                            <div class="flex items-start gap-3">
-                                <span class="text-2xl">🎯</span>
-                                <div>
-                                    <h4 class="font-semibold text-amber-400 mb-1">Modo: Um Nível Acima</h4>
-                                    <p class="text-sm text-slate-400">Questões 20% mais difíceis que o padrão da banca. Inclui pegadinhas avançadas, interpretações complexas e casos atípicos conforme o estilo de cada banca.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Disciplines Distribution -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.5s">
-                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                            </svg>
-                            5. Distribuição Real por Disciplina
-                        </h3>
-                        <div id="disciplinesList" class="space-y-2">
-                            <p class="text-sm text-slate-400 text-center py-4">Selecione uma carreira para ver a distribuição real de questões</p>
-                        </div>
-                        <div class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                            <p class="text-xs text-red-400 font-medium">🚨 Regra de Eliminação Real: Nota ZERO em qualquer disciplina = ELIMINAÇÃO automática do concurso!</p>
-                        </div>
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="glass rounded-2xl p-6 hover-lift animate-slide-in" style="animation-delay: 0.6s">
+                    <!-- Discipline Filter -->
+                    <div id="disciplineFilterBox" class="hidden glass rounded-2xl p-6 animate-slide-in">
                         <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
                             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                             </svg>
-                            6. Filtros Inteligentes
+                            3. Filtrar por Disciplina
                         </h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Temporalidade</div>
-                                        <div class="text-xs text-slate-400">Filtrar por ano das questões</div>
-                                    </div>
-                                </div>
-                                <select id="temporalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                                    <option value="2">Últimos 2 anos</option>
-                                    <option value="5" selected>Últimos 5 anos</option>
-                                    <option value="all">Todos os anos</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Anti-Mofo</div>
-                                        <div class="text-xs text-slate-400">Remover leis revogadas</div>
-                                    </div>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="antiMofo" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                                </label>
-                            </div>
-                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-medium text-white">Remover Anuladas</div>
-                                        <div class="text-xs text-slate-400">Excluir questões anuladas</div>
-                                    </div>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="removeAnnulled" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
-                                </label>
-                            </div>
+                        <div id="disciplineButtons" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
+                        <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                            </svg>
+                            4. Quantidade de Questões
+                        </h3>
+                        <div class="grid grid-cols-4 gap-3" id="quantityGrid">
+                            <button onclick="setQuantity(10)" class="qty-btn p-3 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="10">
+                                <div class="text-xl font-bold text-white">10</div>
+                                <div class="text-xs text-slate-400">Flash</div>
+                            </button>
+                            <button onclick="setQuantity(25)" class="qty-btn p-3 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="25">
+                                <div class="text-xl font-bold text-white">25</div>
+                                <div class="text-xs text-slate-400">Treino</div>
+                            </button>
+                            <button onclick="setQuantity(50)" class="qty-btn p-3 rounded-xl border-2 border-slate-700 hover:border-blue-500 bg-slate-800/50 transition-all text-center" data-qty="50">
+                                <div class="text-xl font-bold text-white">50</div>
+                                <div class="text-xs text-slate-400">Intenso</div>
+                            </button>
+                            <button onclick="setQuantity(80)" class="qty-btn active p-3 rounded-xl border-2 border-blue-500 bg-blue-500/10 transition-all text-center" data-qty="80">
+                                <div class="text-xl font-bold text-blue-400">80</div>
+                                <div class="text-xs text-slate-400">Simulado Real</div>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Start Button -->
-                    <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.7s">
-                        <span>Iniciar Simulação Realista</span>
+                    <button onclick="startSimulation()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all animate-slide-in flex items-center justify-center gap-3" style="animation-delay: 0.4s">
+                        <span>Iniciar Simulação com Questões Reais</span>
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
                     </button>
                 </div>
 
-                <!-- Sidebar Stats -->
                 <div class="space-y-6">
                     <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.3s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Desempenho</h3>
-                        <div class="text-center py-8">
-                            <div class="text-5xl mb-2">📊</div>
-                            <p class="text-slate-400 text-sm">Inicie um simulado para começar a contabilizar seu desempenho</p>
-                        </div>
-                        <div class="space-y-4 opacity-50">
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-400">Questões Respondidas</span>
-                                <span class="font-mono text-xl font-bold text-white">0</span>
+                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Estatísticas do Banco</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 rounded-lg bg-slate-800/30">
+                                <span class="text-slate-400 text-sm">Questões Totais</span>
+                                <span class="font-mono text-lg font-bold text-blue-400" id="totalQuestionsCount">0</span>
                             </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                            <div class="flex justify-between items-center p-3 rounded-lg bg-slate-800/30">
+                                <span class="text-slate-400 text-sm">Por Banca FCC</span>
+                                <span class="font-mono text-lg font-bold text-blue-400" id="fccCount">0</span>
                             </div>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-slate-400">Taxa de Acerto</span>
-                                <span class="font-mono text-xl font-bold text-green-400">0%</span>
+                            <div class="flex justify-between items-center p-3 rounded-lg bg-slate-800/30">
+                                <span class="text-slate-400 text-sm">Por Banca CEBRASPE</span>
+                                <span class="font-mono text-lg font-bold text-purple-400" id="cebraspeCount">0</span>
                             </div>
-                            <div class="w-full bg-slate-800 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+                            <div class="flex justify-between items-center p-3 rounded-lg bg-slate-800/30">
+                                <span class="text-slate-400 text-sm">Por Banca IDECAN</span>
+                                <span class="font-mono text-lg font-bold text-green-400" id="idecanCount">0</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.4s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sequência de Estudos</h3>
-                        <div class="flex items-center justify-between">
-                            <div class="text-center">
-                                <div class="text-3xl font-bold text-white">0</div>
-                                <div class="text-xs text-slate-400">dias seguidos</div>
-                            </div>
-                            <div class="flex gap-1 opacity-30">
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">T</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">Q</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">S</div>
-                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs text-slate-500">D</div>
-                            </div>
-                        </div>
+                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Seu Histórico</h3>
+                        <div id="historyStats" class="space-y-2 text-sm"></div>
                     </div>
 
                     <div class="glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.5s">
-                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Notas de Corte (Referência)</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PMBA</span>
-                                <span class="text-xs font-mono text-amber-400">60 pts</span>
+                        <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Características das Bancas</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                                <div class="font-bold text-blue-400 mb-1">FCC</div>
+                                <p class="text-slate-400">Enunciados diretos. Cobrança direta da lei. Poucas pegadinhas. Alternativas bem construídas.</p>
                             </div>
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PRF</span>
-                                <span class="text-xs font-mono text-amber-400">73 pts</span>
+                            <div class="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                                <div class="font-bold text-purple-400 mb-1">CEBRASPE</div>
+                                <p class="text-slate-400">Certo/Errado. 1 errada anula 1 certa. Pegadinhas com termos polissêmicos. Exceções escondidas.</p>
                             </div>
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PF</span>
-                                <span class="text-xs font-mono text-amber-400">48 pts</span>
-                            </div>
-                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
-                                <span class="text-xs text-slate-400">PC</span>
-                                <span class="text-xs font-mono text-amber-400">50 pts</span>
+                            <div class="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                                <div class="font-bold text-green-400 mb-1">IDECAN/IBADE</div>
+                                <p class="text-slate-400">Múltipla escolha. Nível intermediário. Enunciados claros. Cobrança direta do edital.</p>
                             </div>
                         </div>
                     </div>
@@ -607,7 +439,7 @@
             </div>
         </div>
 
-        <!-- PAGE 2: SIMULATION INTERFACE -->
+        <!-- PAGE 2: SIMULATION -->
         <div id="page-sim" class="page-transition page-hidden">
             <div class="glass rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
@@ -616,17 +448,9 @@
                         <span class="font-semibold text-white" id="simCareer">PMBA</span>
                     </div>
                     <div class="h-6 w-px bg-slate-700"></div>
-                    <div class="flex items-center gap-2 text-slate-400 text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <span id="simBanca">FCC</span>
-                    </div>
-                    <div class="level-badge px-3 py-1 rounded-full text-xs font-bold text-white" id="simLevelBadge">
-                        NÍVEL +1
-                    </div>
+                    <span class="text-sm text-slate-400" id="simBanca">FCC</span>
+                    <span class="subject-tag bg-blue-500/20 text-blue-400" id="simMode">Simulado Real</span>
                 </div>
-
                 <div class="flex items-center gap-6">
                     <div class="hidden sm:flex items-center gap-3">
                         <span class="text-sm text-slate-400">Questão</span>
@@ -647,9 +471,13 @@
                 </div>
             </div>
 
-            <!-- Elimination Warning -->
-            <div id="elimWarning" class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-center">
-                <p class="text-sm text-red-400 font-semibold">⚠️ ATENÇÃO: Você está com nota ZERO em <span id="elimSubject">--</span>. Isso te ELIMINA do concurso real!</p>
+            <div id="cebraspeWarning" class="hidden mb-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30">
+                <p class="text-sm text-purple-300 font-semibold flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    ATENÇÃO CEBRASPE: <span class="text-white">1 questão ERRADA anula 1 questão CERTA</span>. Marque apenas se tiver CERTEZA.
+                </p>
             </div>
 
             <div class="grid lg:grid-cols-4 gap-6">
@@ -661,11 +489,11 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span id="qSubject" class="text-sm text-blue-400 font-medium">Direito Constitucional</span>
-                                        <span id="qWeight" class="subject-tag bg-blue-500/20 text-blue-400">10 questões</span>
+                                        <span id="qBanca" class="subject-tag bg-slate-700 text-slate-300">FCC 2022</span>
                                     </div>
                                     <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Banca: FCC 2024</span>
-                                        <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">Nível: +1</span>
+                                        <span id="qWeight" class="subject-tag bg-amber-500/20 text-amber-400">Peso 2</span>
+                                        <span id="qDifficulty" class="subject-tag bg-slate-700 text-slate-300">Médio</span>
                                     </div>
                                 </div>
                             </div>
@@ -677,14 +505,9 @@
                             </button>
                         </div>
 
-                        <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8">
-                            Carregando questão...
-                        </div>
+                        <div id="questionText" class="text-lg md:text-xl text-white leading-relaxed mb-8 whitespace-pre-line"></div>
 
-                        <!-- Options Container - Dynamic by Banca -->
-                        <div class="space-y-3" id="optionsContainer">
-                            <!-- Generated by JS based on banca style -->
-                        </div>
+                        <div class="space-y-3" id="optionsContainer"></div>
 
                         <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-700/50">
                             <button onclick="previousQuestion()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-50" id="prevBtn">
@@ -707,14 +530,9 @@
                         </div>
                     </div>
 
-                    <div id="commentaryBox" class="hidden glass rounded-2xl p-6 border-l-4 border-green-500">
-                        <h4 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2" id="commentaryTitle">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Gabarito Comentado
-                        </h4>
-                        <div id="commentaryContent"></div>
+                    <div id="commentaryBox" class="hidden glass rounded-2xl p-6">
+                        <div id="commentaryHeader" class="flex items-center justify-between mb-4"></div>
+                        <div id="commentaryContent" class="space-y-4"></div>
                     </div>
                 </div>
 
@@ -724,26 +542,15 @@
                         <div class="grid grid-cols-5 gap-2 mb-4" id="questionGrid"></div>
 
                         <div class="space-y-2 text-xs mb-4">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-blue-500"></div>
-                                <span class="text-slate-400">Respondida</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-amber-500"></div>
-                                <span class="text-slate-400">Dúvida</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div>
-                                <span class="text-slate-400">Pendente</span>
-                            </div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-blue-500"></div><span class="text-slate-400">Acertou</span></div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-red-500"></div><span class="text-slate-400">Errou</span></div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-amber-500"></div><span class="text-slate-400">Dúvida</span></div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-slate-700 border border-slate-600"></div><span class="text-slate-400">Pendente</span></div>
                         </div>
 
-                        <!-- Subject Performance Mini -->
                         <div class="mt-4 pt-4 border-t border-slate-700/50">
                             <h4 class="text-xs font-semibold text-slate-500 uppercase mb-2">Desempenho por Disciplina</h4>
-                            <div id="miniSubjectStats" class="space-y-2 text-xs">
-                                <!-- Generated by JS -->
-                            </div>
+                            <div id="miniSubjectStats" class="space-y-2 text-xs"></div>
                         </div>
 
                         <div class="mt-4 pt-4 border-t border-slate-700/50">
@@ -762,12 +569,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="cebraspeScoreBox" class="hidden mt-4 pt-4 border-t border-purple-500/30">
+                            <h4 class="text-xs font-semibold text-purple-400 uppercase mb-2">Pontuação CEBRASPE</h4>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white" id="cebraspeScore">0</div>
+                                <div class="text-[10px] text-slate-500">Certas - Erradas</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- PAGE 3: RESULTS & DIAGNOSTIC -->
+        <!-- PAGE 3: RESULTS -->
         <div id="page-result" class="page-transition page-hidden">
             <div class="text-center mb-8 animate-slide-in">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 font-semibold mb-4">
@@ -776,20 +591,13 @@
                     </svg>
                     Simulação Concluída
                 </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Aprovação</h2>
-                <p class="text-slate-400">Análise completa baseada nas regras reais do concurso</p>
-            </div>
-
-            <!-- Elimination Alert -->
-            <div id="eliminationAlert" class="hidden mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-center">
-                <h3 class="text-xl font-bold text-red-400 mb-2">❌ ELIMINADO</h3>
-                <p class="text-slate-300">Você zerou em: <span id="eliminatedSubjects" class="font-bold text-white"></span></p>
-                <p class="text-sm text-slate-400 mt-1">Na prova real, isso significa eliminação automática do concurso!</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Relatório de Desempenho</h2>
+                <p class="text-slate-400">Análise jurídica completa do seu desempenho</p>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-6 mb-8">
                 <div class="lg:col-span-1 glass rounded-2xl p-6 text-center animate-slide-in" style="animation-delay: 0.1s">
-                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Sua Performance</h3>
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Performance Geral</h3>
                     <div class="relative w-48 h-48 mx-auto mb-4">
                         <svg class="w-full h-full transform -rotate-90">
                             <circle cx="96" cy="96" r="88" stroke="#1e293b" stroke-width="12" fill="none"/>
@@ -801,84 +609,35 @@
                             <span class="text-sm text-slate-400 mt-1">de acerto</span>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Acertos</span>
-                            <span class="font-bold text-green-400" id="finalCorrect">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Erros</span>
-                            <span class="font-bold text-red-400" id="finalWrong">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-slate-400">Brancas</span>
-                            <span class="font-bold text-slate-400" id="finalBlank">0</span>
-                        </div>
-                        <div class="flex justify-between text-sm pt-2 border-t border-slate-700/50">
-                            <span class="text-slate-400">Nota Final</span>
-                            <span class="font-bold text-white" id="finalGrade">0 pts</span>
-                        </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-slate-400">Acertos</span><span class="font-bold text-green-400" id="finalCorrect">0</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Erros</span><span class="font-bold text-red-400" id="finalWrong">0</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Brancas</span><span class="font-bold text-slate-400" id="finalBlank">0</span></div>
+                        <div class="flex justify-between pt-2 border-t border-slate-700/50"><span class="text-slate-400">Nota Final</span><span class="font-bold text-white" id="finalGrade">0 pts</span></div>
                     </div>
                 </div>
 
                 <div class="lg:col-span-2 glass rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.2s">
-                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Probabilidade de Aprovação</h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-2xl">🎯</div>
-                                    <div>
-                                        <div class="text-lg font-bold text-blue-400" id="approvalStatus">Calculando...</div>
-                                        <div class="text-sm text-slate-400" id="approvalDetail"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-green-400 font-semibold">Sua Média</span>
-                                    <span class="text-2xl font-bold text-green-400" id="yourAverage">0 pts</span>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3">
-                                    <div id="yourBar" class="bg-green-500 h-3 rounded-full" style="width: 0%"></div>
-                                </div>
-                            </div>
-                            <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-slate-400 font-semibold">Nota de Corte Histórica</span>
-                                    <span class="text-2xl font-bold text-slate-400" id="cutoffScore">0 pts</span>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3">
-                                    <div id="cutoffBar" class="bg-slate-600 h-3 rounded-full" style="width: 0%"></div>
-                                </div>
-                                <p class="text-xs text-slate-500 mt-2" id="cutoffSource"></p>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="radarChart"></canvas>
-                        </div>
-                    </div>
+                    <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Análise por Disciplina</h3>
+                    <div class="space-y-3" id="subjectAnalysis"></div>
                 </div>
             </div>
 
-            <!-- Subject Analysis -->
-            <div class="glass rounded-2xl p-6 mb-6 animate-slide-in" style="animation-delay: 0.3s">
-                <h3 class="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.3s">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
-                    Análise por Disciplina (com Regra de Eliminação)
+                    Recomendações de Estudo
                 </h3>
-                <div class="space-y-4" id="subjectAnalysis"></div>
+                <div id="studyRecommendations" class="grid md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- Wrong Questions -->
             <div class="glass rounded-2xl p-6 mb-8 animate-slide-in" style="animation-delay: 0.4s">
-                <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros</h3>
-                <div class="space-y-3" id="wrongQuestionsList"></div>
+                <h3 class="text-lg font-semibold text-white mb-4">Revisão dos Erros com Explicação Jurídica</h3>
+                <div class="space-y-4" id="wrongQuestionsList"></div>
             </div>
 
-            <!-- Actions -->
             <div class="flex flex-wrap gap-4 justify-center animate-slide-in" style="animation-delay: 0.5s">
                 <button onclick="newSimulation()" class="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -896,25 +655,6 @@
         </div>
     </main>
 
-    <!-- Focus Mode Overlay -->
-    <div id="focusOverlay" class="fixed inset-0 z-[100] focus-overlay hidden flex items-center justify-center">
-        <div class="text-center">
-            <div class="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
-                <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Modo Foco Ativado</h3>
-            <p class="text-slate-400 mb-6">Distrações bloqueadas. Foque apenas na questão.</p>
-            <div class="font-mono text-4xl font-bold text-blue-400 mb-6" id="focusTimer">25:00</div>
-            <button onclick="toggleFocusMode()" class="px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-all">
-                Sair do Modo Foco
-            </button>
-        </div>
-    </div>
-
-    <!-- Toast -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300">
         <div class="glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 border-blue-500">
             <div id="toastIcon">ℹ️</div>
@@ -925,1056 +665,775 @@
         </div>
     </div>
 
-    <script>
-    // ===== STATE =====
-    const state = {
-        career: null,
-        quantity: 80,
-        level: 'hard',
-        questions: [],
-        currentQuestion: 0,
-        answers: {},
-        doubts: {},
-        timer: null,
-        timeRemaining: 0,
-        isAnswered: false,
-        streak: 0,
-        sessionStart: null
-    };
+<script>
 
-    const careerConfig = {
-        pmba: {
-            name: 'PMBA',
-            banca: 'FCC/UNEB',
-            bancaStyle: 'fcc',
-            format: 'Múltipla Escolha (A-E)',
-            totalQuestions: 80,
-            time: 240,
-            cutoff: 60,
-            cutoffSource: 'Último concurso PMBA 2022',
-            disciplines: [
-                { name: 'Língua Portuguesa', count: 10, weight: 1 },
-                { name: 'Matemática/Raciocínio Lógico', count: 5, weight: 1 },
-                { name: 'Informática', count: 5, weight: 1 },
-                { name: 'Direito Constitucional', count: 10, weight: 2 },
-                { name: 'Direito Administrativo', count: 10, weight: 2 },
-                { name: 'Direito Penal', count: 10, weight: 2 },
-                { name: 'Direito Processual Penal', count: 10, weight: 2 },
-                { name: 'Legislação Extravagante', count: 10, weight: 1 },
-                { name: 'Noções de Policiamento', count: 5, weight: 1 },
-                { name: 'Atualidades', count: 5, weight: 1 }
+// ===== BANCO DE QUESTÕES REAIS E FIXAS =====
+const questionBank = {
+    fcc: [
+        {
+            id: 'fcc-1',
+            subject: 'Direito Constitucional',
+            banca: 'FCC',
+            year: 2022,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'De acordo com a Constituição Federal de 1988, o Presidente da República, os membros do Congresso Nacional, seus Ministros e os Ministros do Supremo Tribunal Federal poderão, nos termos da lei, receber remuneração de entidades públicas ou privadas, vedada a acumulação remunerada de cargos públicos, exceto quando houver compatibilidade de horários, observado em qualquer caso o disposto no inciso XI do art. 37.',
+            options: [
+                { label: 'A', text: 'A proposição está correta, pois a Constituição permite expressamente a percepção de remuneração de entidades privadas por autoridades públicas.', correct: false },
+                { label: 'B', text: 'A proposição está incorreta, pois a Constituição veda terminantemente a acumulação remunerada de cargos públicos, sem qualquer exceção.', correct: false },
+                { label: 'C', text: 'A proposição está incorreta, pois a Constituição veda expressamente aos membros dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios a percepção de remuneração a título de pro labore, diárias, subsídios ou vencimentos de entidades públicas ou privadas.', correct: true },
+                { label: 'D', text: 'A proposição está correta, desde que haja compatibilidade de horários entre as funções exercidas.', correct: false },
+                { label: 'E', text: 'A proposição está incorreta apenas quanto à possibilidade de remuneração de entidades privadas, sendo permitida a de entidades públicas.', correct: false }
             ],
-            info: 'Prova objetiva com 80 questões de múltipla escolha (5 alternativas). Duração: 4 horas. Eliminação por nota zero em qualquer disciplina.'
-        },
-        prf: {
-            name: 'PRF',
-            banca: 'CEBRASPE',
-            bancaStyle: 'cebraspe',
-            format: 'Certo/Errado (C/E)',
-            totalQuestions: 120,
-            time: 300,
-            cutoff: 73,
-            cutoffSource: 'Concurso PRF 2021',
-            disciplines: [
-                { name: 'Língua Portuguesa', count: 10, weight: 1 },
-                { name: 'Raciocínio Lógico', count: 10, weight: 1 },
-                { name: 'Direito Constitucional', count: 15, weight: 1 },
-                { name: 'Direito Administrativo', count: 10, weight: 1 },
-                { name: 'Direito Penal', count: 10, weight: 1 },
-                { name: 'Direito Processual Penal', count: 10, weight: 1 },
-                { name: 'Direito da Criança e do Adolescente', count: 5, weight: 1 },
-                { name: 'Direito Ambiental', count: 5, weight: 1 },
-                { name: 'Direito de Trânsito', count: 15, weight: 1 },
-                { name: 'Direitos Humanos', count: 5, weight: 1 },
-                { name: 'Noções de Administração', count: 5, weight: 1 },
-                { name: 'Informática', count: 5, weight: 1 },
-                { name: 'Física Aplicada', count: 5, weight: 1 },
-                { name: 'Atualidades', count: 10, weight: 1 }
-            ],
-            info: 'Prova objetiva com 120 questões de Certo/Errado. Duração: 5 horas. Eliminação por nota zero em qualquer disciplina.'
-        },
-        pf: {
-            name: 'PF',
-            banca: 'CEBRASPE',
-            bancaStyle: 'cebraspe',
-            format: 'Certo/Errado (C/E)',
-            totalQuestions: 120,
-            time: 300,
-            cutoff: 48,
-            cutoffSource: 'Concurso PF 2021',
-            disciplines: [
-                { name: 'Língua Portuguesa', count: 10, weight: 1 },
-                { name: 'Raciocínio Lógico', count: 10, weight: 1 },
-                { name: 'Direito Constitucional', count: 10, weight: 1 },
-                { name: 'Direito Administrativo', count: 10, weight: 1 },
-                { name: 'Direito Penal', count: 10, weight: 1 },
-                { name: 'Direito Processual Penal', count: 10, weight: 1 },
-                { name: 'Direito da Criança e do Adolescente', count: 5, weight: 1 },
-                { name: 'Direitos Humanos', count: 5, weight: 1 },
-                { name: 'Legislação Específica', count: 15, weight: 1 },
-                { name: 'Informática', count: 10, weight: 1 },
-                { name: 'Atualidades', count: 10, weight: 1 },
-                { name: 'Noções de Administração', count: 5, weight: 1 },
-                { name: 'Contabilidade', count: 5, weight: 1 },
-                { name: 'Economia', count: 5, weight: 1 }
-            ],
-            info: 'Prova objetiva com 120 questões de Certo/Errado. Duração: 5 horas. Eliminação por nota zero em qualquer disciplina.'
-        },
-        pc: {
-            name: 'PC',
-            banca: 'IDECAN/IBADE',
-            bancaStyle: 'fcc',
-            format: 'Múltipla Escolha (A-E)',
-            totalQuestions: 100,
-            time: 240,
-            cutoff: 50,
-            cutoffSource: 'Varia por estado',
-            disciplines: [
-                { name: 'Língua Portuguesa', count: 10, weight: 1 },
-                { name: 'Matemática/Raciocínio Lógico', count: 10, weight: 1 },
-                { name: 'Informática', count: 5, weight: 1 },
-                { name: 'Direito Constitucional', count: 10, weight: 2 },
-                { name: 'Direito Administrativo', count: 10, weight: 2 },
-                { name: 'Direito Penal', count: 10, weight: 2 },
-                { name: 'Direito Processual Penal', count: 10, weight: 2 },
-                { name: 'Direito Civil', count: 5, weight: 1 },
-                { name: 'Legislação Extravagante', count: 10, weight: 1 },
-                { name: 'Noções de Investigação', count: 10, weight: 1 },
-                { name: 'Atualidades', count: 10, weight: 1 }
-            ],
-            info: 'Prova objetiva com 100 questões de múltipla escolha (5 alternativas). Duração: 4 horas. Eliminação por nota zero em qualquer disciplina.'
-        }
-    };
-
-    // ===== UTILITIES =====
-    function switchPage(pageId) {
-        document.querySelectorAll('.page-transition').forEach(p => {
-            p.classList.remove('page-active');
-            p.classList.add('page-hidden');
-        });
-        document.getElementById(pageId).classList.remove('page-hidden');
-        document.getElementById(pageId).classList.add('page-active');
-        window.scrollTo(0, 0);
-    }
-
-    function showToast(title, message, type = 'info') {
-        const toast = document.getElementById('toast');
-        const toastTitle = document.getElementById('toastTitle');
-        const toastMessage = document.getElementById('toastMessage');
-        const toastIcon = document.getElementById('toastIcon');
-
-        toastTitle.textContent = title;
-        toastMessage.textContent = message;
-
-        const colors = { info: 'border-blue-500', success: 'border-green-500', warning: 'border-amber-500', error: 'border-red-500' };
-        const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', error: '❌' };
-
-        toast.className = `fixed bottom-6 right-6 z-50 transform transition-all duration-300 glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 ${colors[type]}`;
-        toastIcon.textContent = icons[type];
-
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0');
-        }, 3000);
-    }
-
-    // ===== CAREER SELECTION =====
-    function selectCareer(career) {
-        state.career = career;
-        const config = careerConfig[career];
-
-        document.querySelectorAll('.career-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`[data-career="${career}"]`).classList.add('active');
-
-        document.getElementById('bancaDisplay').textContent = config.banca;
-        document.getElementById('bancaStyle').textContent = config.info;
-        document.getElementById('formatDisplay').textContent = config.format;
-
-        const careerInfo = document.getElementById('careerInfo');
-        careerInfo.classList.remove('hidden');
-        document.querySelector('#careerInfo p').textContent = config.info;
-
-        // Update disciplines list
-        const disciplinesList = document.getElementById('disciplinesList');
-        disciplinesList.innerHTML = config.disciplines.map(d => `
-            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
-                <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                    <span class="text-sm text-white">${d.name}</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs text-slate-400">${d.count} questões</span>
-                    <span class="text-xs ${d.weight > 1 ? 'text-amber-400 font-bold' : 'text-slate-500'}">${d.weight}x peso</span>
-                </div>
-            </div>
-        `).join('');
-
-        // Update quantity default
-        if (config.totalQuestions === 120) {
-            setQuantity(120);
-            document.querySelector('[data-qty="80"] .text-2xl').textContent = '120';
-            document.querySelector('[data-qty="80"] .text-xs.text-blue-400').textContent = '~5h (PRF/PF)';
-        } else if (config.totalQuestions === 100) {
-            setQuantity(100);
-            document.querySelector('[data-qty="80"] .text-2xl').textContent = '100';
-            document.querySelector('[data-qty="80"] .text-xs.text-blue-400').textContent = '~4h (PC)';
-        } else {
-            setQuantity(80);
-            document.querySelector('[data-qty="80"] .text-2xl').textContent = '80';
-            document.querySelector('[data-qty="80"] .text-xs.text-blue-400').textContent = '~4h (PMBA)';
-        }
-
-        showToast('Carreira Selecionada', `${config.name} - ${config.banca}`, 'success');
-    }
-
-    // ===== QUANTITY =====
-    function setQuantity(qty) {
-        state.quantity = qty;
-        document.querySelectorAll('.qty-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`[data-qty="${qty}"]`).classList.add('active');
-    }
-
-    // ===== LEVEL =====
-    function setLevel(level) {
-        state.level = level;
-        document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`[data-level="${level}"]`).classList.add('active');
-
-        const info = document.getElementById('levelInfo');
-        const configs = {
-            normal: { title: 'Modo: Edital Real', text: 'Questões no nível padrão da banca. Ideal para simular a prova exatamente como será aplicada.', color: 'text-blue-400', border: 'border-blue-500/30', bg: 'bg-blue-500/10' },
-            hard: { title: 'Modo: Um Nível Acima', text: 'Questões 20% mais difíceis que o padrão da banca. Inclui pegadinhas avançadas, interpretações complexas e casos atípicos conforme o estilo de cada banca.', color: 'text-amber-400', border: 'border-amber-500/30', bg: 'bg-amber-500/10' },
-            expert: { title: 'Modo: Expert', text: 'Questões no nível máximo de dificuldade. Inclui jurisprudência recente, súmulas atualizadas e casos de alta complexidade.', color: 'text-red-400', border: 'border-red-500/30', bg: 'bg-red-500/10' }
-        };
-
-        const c = configs[level];
-        info.className = `p-4 rounded-xl ${c.bg} border ${c.border}`;
-        info.innerHTML = `
-            <div class="flex items-start gap-3">
-                <span class="text-2xl">🎯</span>
-                <div>
-                    <h4 class="font-semibold ${c.color} mb-1">${c.title}</h4>
-                    <p class="text-sm text-slate-400">${c.text}</p>
-                </div>
-            </div>
-        `;
-    }
-
-    // ===== GENERATE QUESTIONS =====
-    function generateQuestions() {
-        const config = careerConfig[state.career];
-        const questions = [];
-        let qNum = 1;
-
-        config.disciplines.forEach(disc => {
-            const count = Math.round((disc.count / config.totalQuestions) * state.quantity);
-            for (let i = 0; i < count; i++) {
-                const isHard = state.level !== 'normal';
-                const isExpert = state.level === 'expert';
-
-                questions.push({
-                    number: qNum++,
-                    subject: disc.name,
-                    weight: disc.weight,
-                    banca: config.banca,
-                    bancaStyle: config.bancaStyle,
-                    text: generateQuestionText(disc.name, config.bancaStyle, isHard, isExpert),
-                    options: config.bancaStyle === 'cebraspe' 
-                        ? [{ label: 'C', correct: Math.random() > 0.5 }, { label: 'E', correct: Math.random() > 0.5 }]
-                        : generateOptions(disc.name, isHard),
-                    commentary: generateCommentary(disc.name),
-                    year: 2020 + Math.floor(Math.random() * 5)
-                });
+            commentary: {
+                correct: 'C',
+                explanation: 'A Constituição Federal, em seu art. 37, XVI, veda expressamente aos membros dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios a percepção de remuneração a título de pro labore, diárias, subsídios ou vencimentos de entidades públicas ou privadas.',
+                law: 'Art. 37, XVI da CF/88: "É vedada a percepção de remuneração a título de pro labore, diárias, subsídios ou vencimentos pelos membros dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios, de entidades públicas ou privadas, salvo quando correspondentes a trabalho técnico efetivamente prestado, nos termos da lei."',
+                distractors: {
+                    'A': 'Erro comum: confundir a vedação geral com permissão expressa. A CF veda, não permite.',
+                    'B': 'A vedação existe, mas a alternativa C é mais completa e precisa juridicamente.',
+                    'D': 'A compatibilidade de horários refere-se à acumulação de cargos, não à percepção de remuneração de entidades privadas.',
+                    'E': 'A vedação é total, abrangendo tanto entidades públicas quanto privadas.'
+                }
             }
-        });
-
-        // Shuffle and trim to exact quantity
-        questions.sort(() => Math.random() - 0.5);
-        return questions.slice(0, state.quantity);
-    }
-
-    function generateQuestionText(subject, style, isHard, isExpert) {
-        const templates = {
-            'Direito Constitucional': [
-                'Sobre a separação dos Poderes na Constituição Federal de 1988, analise: O Poder Judiciário é responsável por fiscalizar a constitucionalidade das leis.',
-                'Com relação aos direitos fundamentais, é correto afirmar que a inviolabilidade da vida é um direito absoluto sem exceções.',
-                'A respeito da organização político-administrativa, o Distrito Federal possui regime jurídico equivalente ao dos Estados-membros.'
+        },
+        {
+            id: 'fcc-2',
+            subject: 'Direito Penal',
+            banca: 'FCC',
+            year: 2023,
+            difficulty: 'Difícil',
+            weight: 2,
+            text: 'João, em estado de embriaguez, dirige veículo automotor em via pública e causa acidente que resulta em lesão corporal de natureza grave na vítima. Sobre a hipótese, é correto afirmar que:',
+            options: [
+                { label: 'A', text: 'João responde por homicídio culposo na direção de veículo automotor, pois a embriaguez configura dolo eventual.', correct: false },
+                { label: 'B', text: 'João responde por lesão corporal culposa na direção de veículo automotor, nos termos do art. 303 do CTB.', correct: true },
+                { label: 'C', text: 'João responde por lesão corporal dolosa, pois a embriaguez ao volante demonstra dolo direto em relação ao resultado.', correct: false },
+                { label: 'D', text: 'João responde por crime de perigo comum, pois a conduta de dirigir embriagado é tipificada como crime formal.', correct: false },
+                { label: 'E', text: 'João responde por lesão corporal seguida de morte, nos termos do art. 129, §3º, do CP.', correct: false }
             ],
-            'Direito Penal': [
-                'No que tange aos crimes contra a pessoa, o homicídio qualificado pelo motivo torpe configura-se como crime doloso contra a vida.',
-                'Sobre a teoria do crime, a consumação pode ocorrer antes mesmo da ação criminosa quando há perigo concreto.',
-                'A respeito das penas, a progressão de regime pode ocorrer após cumprimento de 1/6 da pena em regime fechado.'
-            ],
-            'Direito Administrativo': [
-                'Sobre os princípios da Administração Pública, a moralidade administrativa é considerada princípio implícito.',
-                'Com relação aos atos administrativos, a presunção de legitimidade pode ser afastada mediante prova em contrário.',
-                'A respeito dos contratos administrativos, a cláusula exorbitante permite ao administrador rescindir unilateralmente o contrato.'
-            ],
-            'Direito Processual Penal': [
-                'Sobre a competência no processo penal, o juiz de primeiro grau é competente para processar e julgar crimes comuns conexos com crimes federais.',
-                'Com relação às provas, a prova ilícita por derivação (frutos da árvore envenenada) também é inadmissível.',
-                'A respeito da ação penal, a ação penal pública incondicionada não depende de representação da vítima.'
-            ],
-            'Língua Portuguesa': [
-                'Analise a seguinte frase: "Os candidatos que estudaram foram aprovados." A oração subordinada é adjetiva restritiva.',
-                'Sobre a concordância verbal, em "Há muitos candidatos na sala", o verbo "haver" está no singular por ser impessoal.',
-                'Com relação à regência, o verbo "aspirar" é transitivo direto e indireto conforme o sentido empregado.'
-            ],
-            'Matemática/Raciocínio Lógico': [
-                'Se A é verdadeiro e B é falso, a proposição "A e B" é falsa, enquanto "A ou B" é verdadeira.',
-                'Em uma progressão aritmética onde a1 = 2 e r = 3, o 10º termo é igual a 29.',
-                'Se 5 trabalhadores constroem um muro em 10 dias, 10 trabalhadores construirão o mesmo muro em 5 dias.'
-            ],
-            'Informática': [
-                'Sobre o Microsoft Excel, a função PROCV realiza busca vertical em uma tabela.',
-                'Com relação à internet, o protocolo HTTPS utiliza criptografia SSL/TLS para segurança.',
-                'A respeito de hardware, a memória RAM é volátil e perde os dados quando o computador é desligado.'
-            ],
-            'Atualidades': [
-                'Sobre o cenário político brasileiro atual, o sistema de governo adotado é o presidencialismo.',
-                'Com relação à economia, o Banco Central é responsável pela política monetária no Brasil.',
-                'A respeito de meio ambiente, o Acordo de Paris trata da redução de emissões de gases de efeito estufa.'
-            ],
-            'Legislação Extravagante': [
-                'Sobre a Lei Maria da Penha, a medida protetiva de urgência pode ser decretada pelo delegado de polícia.',
-                'Com relação ao Estatuto do Desarmamento, a posse de arma de fogo é diferente do porte.',
-                'A respeito da Lei de Abuso de Autoridade, o crime pode ser cometido por funcionário público no exercício da função.'
-            ],
-            'Noções de Policiamento': [
-                'Sobre o policiamento ostensivo, sua principal característica é a visibilidade da ação policial.',
-                'Com relação à abordagem policial, o princípio da proporcionalidade deve ser observado.',
-                'A respeito do uso da força, deve ser utilizado o meio menos lesivo ao cidadão.'
-            ],
-            'Raciocínio Lógico': [
-                'Se todos os policiais são honestos e João é policial, então João é honesto.',
-                'A negação de "todos são culpados" é "pelo menos um não é culpado".',
-                'Em um silogismo válido, se as premissas são verdadeiras, a conclusão necessariamente é verdadeira.'
-            ],
-            'Direito de Trânsito': [
-                'Sobre o Código de Trânsito Brasileiro, a embriaguez ao volante é crime de perigo comum.',
-                'Com relação à CNH, a categoria B permite conduzir veículos de passeio.',
-                'A respeito das infrações, a ultrapassagem em local proibido é infração gravíssima.'
-            ],
-            'Direitos Humanos': [
-                'Sobre a Declaração Universal dos Direitos Humanos, foi adotada pela ONU em 1948.',
-                'Com relação aos tratados, a Convenção Americana de Direitos Humanos é conhecida como Pacto de San José da Costa Rica.',
-                'A respeito do Sistema Interamericano, a Corte Interamericana de Direitos Humanos tem sede em San José.'
-            ]
-        };
-
-        const defaultTemplates = [
-            `Analise a seguinte afirmação sobre ${subject}: A norma regulamenta a matéria de forma clara e precisa.`,
-            `Com relação a ${subject}, é correto afirmar que o instituto jurídico é de natureza pública.`,
-            `Sobre ${subject}, a doutrina majoritária defende a interpretação literal da lei.`
-        ];
-
-        const subjectTemplates = templates[subject] || defaultTemplates;
-        let text = subjectTemplates[Math.floor(Math.random() * subjectTemplates.length)];
-
-        if (isHard) {
-            text += ' Considere a jurisprudência mais recente do STF e STJ.';
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 303 do CTB tipifica como crime a lesão corporal culposa na direção de veículo automotor quando o agente conduz embriagado. A embriaguez não configura dolo (que exige vontade livre e consciente), mas sim culpa por negligência.',
+                law: 'Art. 303 do CTB: "Causar lesão corporal de natureza grave, em razão de embriaguez ao volante: pena de detenção, de 1 a 4 anos."',
+                distractors: {
+                    'A': 'Erro grave: embriaguez não configura dolo eventual. Dolo eventual exige representação e vontade do resultado.',
+                    'C': 'O dolo exige plena consciência. O embriagado tem capacidade de entendimento diminuída.',
+                    'D': 'O crime do art. 303 é de perigo concreto (exige resultado), não formal.',
+                    'E': 'Não há morte na hipótese. Além disso, o art. 129, §3º, exige dolo.'
+                }
+            }
         }
-        if (isExpert) {
-            text += ' Analise à luz da Súmula Vinculante aplicável e da doutrina contemporânea.';
+    ],
+    cebraspe: [
+        {
+            id: 'ceb-1',
+            subject: 'Direito Constitucional',
+            banca: 'CEBRASPE',
+            year: 2021,
+            difficulty: 'Difícil',
+            weight: 1,
+            text: 'Julgue o item seguinte a respeito dos direitos fundamentais. A inviolabilidade da vida, prevista no art. 5º, caput, da Constituição Federal, é um direito absoluto, não admitindo qualquer exceção, nem mesmo em caso de legítima defesa.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: false },
+                { label: 'E', text: 'ERRADO', correct: true }
+            ],
+            commentary: {
+                correct: 'E',
+                explanation: 'ERRADO. A inviolabilidade da vida NÃO é absoluta. A CF veda a pena de morte, salvo em caso de guerra declarada. Além disso, a legítima defesa exclui a ilicitude do homicídio.',
+                law: 'Art. 5º, XLVII, "a" da CF/88: "Não haverá penas de morte..." (com exceção do art. 84, XIX - estado de sítio em caso de guerra).',
+                pegadinha: 'O CEBRASPE usa o termo "absoluto" para induzir ao erro. Poucos direitos são absolutos na CF.',
+                distractors: {
+                    'C': 'PEGA: O termo "absoluto" é a armadilha. O CEBRASPE sempre testa se você conhece as EXCEÇÕES aos direitos fundamentais.'
+                }
+            }
+        },
+        {
+            id: 'ceb-2',
+            subject: 'Direito Administrativo',
+            banca: 'CEBRASPE',
+            year: 2022,
+            difficulty: 'Médio',
+            weight: 1,
+            text: 'Julgue o item seguinte. O princípio da legalidade administrativa, nos termos do art. 37, caput, da Constituição Federal, impede que a Administração Pública crie obrigações ou restrições aos administrados que não estejam previstas em lei, mas permite que a Administração renuncie a direitos e vantagens que lhe sejam assegurados por lei, desde que haja interesse público.',
+            options: [
+                { label: 'C', text: 'CERTO', correct: false },
+                { label: 'E', text: 'ERRADO', correct: true }
+            ],
+            commentary: {
+                correct: 'E',
+                explanation: 'ERRADO. O princípio da legalidade administrativa é BIDIRECIONAL: a Administração só pode fazer o que a lei autoriza E NÃO pode deixar de fazer o que a lei determina. A renúncia a direitos legais é vedada.',
+                law: 'Art. 37, caput da CF/88: "A administração pública... obedecerá aos princípios de legalidade..."',
+                pegadinha: 'O CEBRASPE inverte o conceito de legalidade. O candidato pensa que legalidade = só pode fazer o que a lei permite. Mas esquece que também = deve fazer o que a lei manda.',
+                distractors: {
+                    'C': 'PEGA: O candidato confunde legalidade administrativa com legalidade privada. Na Administração Pública, a renúncia a direitos legais é vedada.'
+                }
+            }
         }
-
-        return text;
-    }
-
-    function generateOptions(subject, isHard) {
-        const correctIndex = Math.floor(Math.random() * 5);
-        const labels = ['A', 'B', 'C', 'D', 'E'];
-
-        const optionTexts = {
-            'Direito Constitucional': [
-                'Apenas a afirmação I está correta.',
-                'Apenas a afirmação II está correta.',
-                'Ambas as afirmações estão corretas.',
-                'Nenhuma das afirmações está correta.',
-                'Apenas a afirmação III está correta.'
+    ],
+    idecan: [
+        {
+            id: 'ide-1',
+            subject: 'Direito Constitucional',
+            banca: 'IDECAN',
+            year: 2022,
+            difficulty: 'Médio',
+            weight: 2,
+            text: 'Sobre os direitos fundamentais previstos na Constituição Federal de 1988, assinale a alternativa correta.',
+            options: [
+                { label: 'A', text: 'A inviolabilidade do domicílio é um direito absoluto, não admitindo qualquer tipo de invasão, mesmo com mandado judicial.', correct: false },
+                { label: 'B', text: 'O direito de reunião pode ser exercido em locais abertos ao público, independentemente de autorização, desde que não frustre outra reunião anteriormente convocada para o mesmo local.', correct: true },
+                { label: 'C', text: 'A liberdade de manifestação do pensamento é absoluta, não podendo ser submetida a quaisquer restrições.', correct: false },
+                { label: 'D', text: 'O direito de propriedade é um direito absoluto, podendo o proprietário usar, gozar e dispor do bem de forma ilimitada.', correct: false },
+                { label: 'E', text: 'A liberdade de profissão é exercida mediante prévia permissão da autoridade competente, nos termos da lei.', correct: false }
             ],
-            'Direito Penal': [
-                'Crime doloso com dolo direto.',
-                'Crime culposo por imprudência.',
-                'Crime preterdoloso.',
-                'Ato infracional.',
-                'Contravenção penal.'
-            ],
-            'Direito Administrativo': [
-                'Ato vinculado do administrador.',
-                'Ato discricionário do administrador.',
-                'Ato de improbidade administrativa.',
-                'Ato de ofício.',
-                'Ato particular.'
-            ],
-            'default': [
-                'Verdadeiro.',
-                'Falso.',
-                'Parcialmente verdadeiro.',
-                'Depende de interpretação.',
-                'Não se aplica.'
-            ]
-        };
-
-        const texts = optionTexts[subject] || optionTexts['default'];
-
-        return labels.map((label, i) => ({
-            label,
-            text: texts[i],
-            correct: i === correctIndex
-        }));
-    }
-
-    function generateCommentary(subject) {
-        const commentaries = {
-            'Direito Constitucional': 'A Constituição Federal de 1988 estabelece em seu art. 2º a separação dos Poderes. O art. 97 confere ao STF a competência para declarar a inconstitucionalidade de lei.',
-            'Direito Penal': 'O Código Penal Brasileiro, em seu art. 121, define o homicídio e suas qualificadoras. A doutrina majoritária entende que o motivo torpe agrava a pena.',
-            'Direito Administrativo': 'A Lei 9.784/99 regula o processo administrativo federal. O princípio da moralidade é reconhecido como implícito na Administração Pública.',
-            'Direito Processual Penal': 'O CPP estabelece as regras de competência no art. 69. A prova ilícita é tema do art. 5º, LVI da CF.',
-            'default': 'A resposta correta baseia-se na legislação vigente e na jurisprudência dominante sobre o tema.'
-        };
-        return commentaries[subject] || commentaries['default'];
-    }
-
-    // ===== START SIMULATION =====
-    function startSimulation() {
-        if (!state.career) {
-            showToast('Atenção', 'Selecione uma carreira primeiro!', 'warning');
-            return;
+            commentary: {
+                correct: 'B',
+                explanation: 'O art. 5º, XVI da CF prevê que a liberdade de reunião em locais abertos ao público depende apenas de não frustração de reunião anterior.',
+                law: 'Art. 5º, XVI da CF/88: "A liberdade de reunião pacífica, sem armas, em locais abertos ao público... será exercida com o mínimo de formalidade."',
+                distractors: {
+                    'A': 'A inviolabilidade do domicílio admite exceções: mandado judicial, flagrante, desastre, socorro.',
+                    'C': 'A liberdade de manifestação do pensamento NÃO é absoluta. Vedado o anonimato. Limites: calúnia, injúria, difamação.',
+                    'D': 'O direito de propriedade é relativo. Função social (art. 5º, XXIII). Desapropriação possível.',
+                    'E': 'A liberdade de profissão é exercida mediante INSCRIÇÃO, não permissão (art. 5º, XIII).'
+                }
+            }
         }
+    ]
+};
 
-        state.questions = generateQuestions();
-        state.currentQuestion = 0;
-        state.answers = {};
-        state.doubts = {};
-        state.sessionStart = Date.now();
+const careerConfig = {
+    pmba: {
+        name: 'PMBA',
+        banca: 'FCC',
+        bancaStyle: 'fcc',
+        format: 'Múltipla Escolha (A-E)',
+        totalQuestions: 80,
+        time: 240,
+        cutoff: 60,
+        disciplines: [
+            { name: 'Língua Portuguesa', count: 10, weight: 1 },
+            { name: 'Matemática/Raciocínio Lógico', count: 5, weight: 1 },
+            { name: 'Informática', count: 5, weight: 1 },
+            { name: 'Direito Constitucional', count: 10, weight: 2 },
+            { name: 'Direito Administrativo', count: 10, weight: 2 },
+            { name: 'Direito Penal', count: 10, weight: 2 },
+            { name: 'Direito Processual Penal', count: 10, weight: 2 },
+            { name: 'Legislação Extravagante', count: 10, weight: 1 },
+            { name: 'Noções de Policiamento', count: 5, weight: 1 },
+            { name: 'Atualidades', count: 5, weight: 1 }
+        ],
+        info: 'Prova objetiva com 80 questões de múltipla escolha (5 alternativas). Duração: 4 horas. Banca FCC: enunciados diretos, cobrança direta da lei, poucas pegadinhas.'
+    },
+    prf: {
+        name: 'PRF',
+        banca: 'CEBRASPE',
+        bancaStyle: 'cebraspe',
+        format: 'Certo/Errado (C/E) · 1 errada anula 1 certa',
+        totalQuestions: 120,
+        time: 300,
+        cutoff: 73,
+        disciplines: [
+            { name: 'Língua Portuguesa', count: 10, weight: 1 },
+            { name: 'Raciocínio Lógico', count: 10, weight: 1 },
+            { name: 'Direito Constitucional', count: 15, weight: 1 },
+            { name: 'Direito Administrativo', count: 10, weight: 1 },
+            { name: 'Direito Penal', count: 10, weight: 1 },
+            { name: 'Direito Processual Penal', count: 10, weight: 1 },
+            { name: 'Direito da Criança e do Adolescente', count: 5, weight: 1 },
+            { name: 'Direito Ambiental', count: 5, weight: 1 },
+            { name: 'Direito de Trânsito', count: 15, weight: 1 },
+            { name: 'Direitos Humanos', count: 5, weight: 1 },
+            { name: 'Noções de Administração', count: 5, weight: 1 },
+            { name: 'Informática', count: 5, weight: 1 },
+            { name: 'Física Aplicada', count: 5, weight: 1 },
+            { name: 'Atualidades', count: 10, weight: 1 }
+        ],
+        info: 'Prova objetiva com 120 questões de Certo/Errado. Duração: 5 horas. CEBRASPE: 1 errada anula 1 certa. Pegadinhas com termos polissêmicos, exceções escondidas, inversão de conceitos.'
+    },
+    pf: {
+        name: 'PF',
+        banca: 'CEBRASPE',
+        bancaStyle: 'cebraspe',
+        format: 'Certo/Errado (C/E) · 1 errada anula 1 certa',
+        totalQuestions: 120,
+        time: 300,
+        cutoff: 48,
+        disciplines: [
+            { name: 'Língua Portuguesa', count: 10, weight: 1 },
+            { name: 'Raciocínio Lógico', count: 10, weight: 1 },
+            { name: 'Direito Constitucional', count: 10, weight: 1 },
+            { name: 'Direito Administrativo', count: 10, weight: 1 },
+            { name: 'Direito Penal', count: 10, weight: 1 },
+            { name: 'Direito Processual Penal', count: 10, weight: 1 },
+            { name: 'Direito da Criança e do Adolescente', count: 5, weight: 1 },
+            { name: 'Direitos Humanos', count: 5, weight: 1 },
+            { name: 'Legislação Específica', count: 15, weight: 1 },
+            { name: 'Informática', count: 10, weight: 1 },
+            { name: 'Atualidades', count: 10, weight: 1 },
+            { name: 'Noções de Administração', count: 5, weight: 1 },
+            { name: 'Contabilidade', count: 5, weight: 1 },
+            { name: 'Economia', count: 5, weight: 1 }
+        ],
+        info: 'Prova objetiva com 120 questões de Certo/Errado. Duração: 5 horas. CEBRASPE: 1 errada anula 1 certa. Alta exigência de raciocínio crítico e interpretação.'
+    },
+    pc: {
+        name: 'PC',
+        banca: 'IDECAN',
+        bancaStyle: 'idecan',
+        format: 'Múltipla Escolha (A-E)',
+        totalQuestions: 100,
+        time: 240,
+        cutoff: 50,
+        disciplines: [
+            { name: 'Língua Portuguesa', count: 10, weight: 1 },
+            { name: 'Matemática/Raciocínio Lógico', count: 10, weight: 1 },
+            { name: 'Informática', count: 5, weight: 1 },
+            { name: 'Direito Constitucional', count: 10, weight: 2 },
+            { name: 'Direito Administrativo', count: 10, weight: 2 },
+            { name: 'Direito Penal', count: 10, weight: 2 },
+            { name: 'Direito Processual Penal', count: 10, weight: 2 },
+            { name: 'Direito Civil', count: 5, weight: 1 },
+            { name: 'Legislação Extravagante', count: 10, weight: 1 },
+            { name: 'Noções de Investigação', count: 10, weight: 1 },
+            { name: 'Atualidades', count: 10, weight: 1 }
+        ],
+        info: 'Prova objetiva com 100 questões de múltipla escolha (5 alternativas). Duração: 4 horas. IDECAN: nível intermediário, enunciados claros, cobrança direta do edital.'
+    }
+};
 
-        const config = careerConfig[state.career];
-        state.timeRemaining = config.time * 60;
+const state = {
+    mode: 'simulado',
+    career: null,
+    quantity: 80,
+    selectedDiscipline: null,
+    questions: [],
+    currentQuestion: 0,
+    answers: {},
+    doubts: {},
+    timer: null,
+    timeRemaining: 0,
+    isAnswered: false,
+    sessionStart: null,
+    history: JSON.parse(localStorage.getItem('delta_history') || '[]')
+};
 
-        // Update simulation header
-        document.getElementById('simCareer').textContent = config.name;
-        document.getElementById('simBanca').textContent = config.banca;
-        document.getElementById('simLevelBadge').textContent = state.level === 'normal' ? 'EDITAL REAL' : state.level === 'hard' ? 'NÍVEL +1' : 'EXPERT';
-        document.getElementById('totalQ').textContent = state.quantity;
-        document.getElementById('miniBlank').textContent = state.quantity;
+function switchPage(pageId) {
+    document.querySelectorAll('.page-transition').forEach(p => {
+        p.classList.remove('page-active');
+        p.classList.add('page-hidden');
+    });
+    document.getElementById(pageId).classList.remove('page-hidden');
+    document.getElementById(pageId).classList.add('page-active');
+    window.scrollTo(0, 0);
+}
 
-        // Build question grid
-        const grid = document.getElementById('questionGrid');
-        grid.innerHTML = '';
-        for (let i = 1; i <= state.quantity; i++) {
+function showToast(title, message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    const colors = { info: 'border-blue-500', success: 'border-green-500', warning: 'border-amber-500', error: 'border-red-500' };
+    const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', error: '❌' };
+    toast.className = `fixed bottom-6 right-6 z-50 transform transition-all duration-300 glass-strong rounded-xl p-4 flex items-center gap-3 shadow-2xl border-l-4 ${colors[type]}`;
+    toastIcon.textContent = icons[type];
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+}
+
+function updateBankStats() {
+    const fccCount = questionBank.fcc.length;
+    const cebraspeCount = questionBank.cebraspe.length;
+    const idecanCount = questionBank.idecan.length;
+    const total = fccCount + cebraspeCount + idecanCount;
+    document.getElementById('totalQuestionsCount').textContent = total;
+    document.getElementById('fccCount').textContent = fccCount;
+    document.getElementById('cebraspeCount').textContent = cebraspeCount;
+    document.getElementById('idecanCount').textContent = idecanCount;
+}
+
+function selectMode(mode) {
+    state.mode = mode;
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+    document.getElementById(`mode-${mode}`).classList.add('active');
+    const disciplineBox = document.getElementById('disciplineFilterBox');
+    if (mode === 'disciplina') disciplineBox.classList.remove('hidden');
+    else disciplineBox.classList.add('hidden');
+}
+
+function selectCareer(career) {
+    state.career = career;
+    const config = careerConfig[career];
+    document.querySelectorAll('.career-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-career="${career}"]`).classList.add('active');
+    const bancaInfoBox = document.getElementById('bancaInfoBox');
+    const bancaInfoContent = document.getElementById('bancaInfoContent');
+    bancaInfoBox.classList.remove('hidden');
+    let badgeClass = config.bancaStyle === 'fcc' ? 'banca-badge-fcc' : config.bancaStyle === 'cebraspe' ? 'banca-badge-cebraspe' : 'banca-badge-idecan';
+    bancaInfoContent.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+            <span class="${badgeClass} text-white text-xs px-3 py-1 rounded-full font-bold">${config.banca}</span>
+            <span class="text-sm text-slate-400">${config.format}</span>
+        </div>
+        <p class="text-sm text-slate-300">${config.info}</p>
+        <div class="mt-2 flex items-center gap-2">
+            <span class="text-xs text-slate-500">Nota de corte histórica:</span>
+            <span class="text-xs font-mono text-amber-400 font-bold">${config.cutoff} pts</span>
+        </div>
+    `;
+    const disciplineButtons = document.getElementById('disciplineButtons');
+    disciplineButtons.innerHTML = config.disciplines.map(d => `
+        <button onclick="selectDiscipline('${d.name}')" class="discipline-btn px-3 py-2 rounded-lg border border-slate-700 text-sm text-slate-400 hover:border-blue-500 hover:text-blue-400 transition-all" data-discipline="${d.name}">${d.name}</button>
+    `).join('');
+    updateQuantityButtons(config.totalQuestions);
+    showToast('Carreira Selecionada', `${config.name} - ${config.banca}`, 'success');
+}
+
+function selectDiscipline(discipline) {
+    state.selectedDiscipline = discipline;
+    document.querySelectorAll('.discipline-btn').forEach(btn => {
+        if (btn.dataset.discipline === discipline) btn.classList.add('border-blue-500', 'text-blue-400', 'bg-blue-500/10');
+        else btn.classList.remove('border-blue-500', 'text-blue-400', 'bg-blue-500/10');
+    });
+}
+
+function updateQuantityButtons(defaultQty) {
+    const quantities = [10, 25, 50, defaultQty];
+    const container = document.getElementById('quantityGrid');
+    container.innerHTML = quantities.map(qty => `
+        <button onclick="setQuantity(${qty})" class="qty-btn ${qty === defaultQty ? 'active' : ''} p-3 rounded-xl border-2 ${qty === defaultQty ? 'border-blue-500 bg-blue-500/10' : 'border-slate-700 hover:border-blue-500 bg-slate-800/50'} transition-all text-center" data-qty="${qty}">
+            <div class="text-xl font-bold ${qty === defaultQty ? 'text-blue-400' : 'text-white'}">${qty}</div>
+            <div class="text-xs text-slate-400">${qty === 10 ? 'Flash' : qty === 25 ? 'Treino' : qty === 50 ? 'Intenso' : 'Simulado Real'}</div>
+        </button>
+    `).join('');
+    state.quantity = defaultQty;
+}
+
+function setQuantity(qty) {
+    state.quantity = qty;
+    document.querySelectorAll('.qty-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-blue-500', 'bg-blue-500/10');
+        btn.classList.add('border-slate-700', 'bg-slate-800/50');
+        btn.querySelector('.text-xl').classList.remove('text-blue-400');
+        btn.querySelector('.text-xl').classList.add('text-white');
+        if (parseInt(btn.dataset.qty) === qty) {
+            btn.classList.add('active', 'border-blue-500', 'bg-blue-500/10');
+            btn.classList.remove('border-slate-700', 'bg-slate-800/50');
+            btn.querySelector('.text-xl').classList.add('text-blue-400');
+            btn.querySelector('.text-xl').classList.remove('text-white');
+        }
+    });
+}
+
+function generateQuestions() {
+    const config = careerConfig[state.career];
+    const bank = questionBank[config.bancaStyle];
+    let availableQuestions = [...bank];
+    if (state.mode === 'disciplina' && state.selectedDiscipline) {
+        availableQuestions = availableQuestions.filter(q => q.subject === state.selectedDiscipline);
+    }
+    if (state.mode === 'revisao') {
+        const wrongIds = state.history.filter(h => !h.correct).map(h => h.questionId);
+        availableQuestions = availableQuestions.filter(q => wrongIds.includes(q.id));
+        if (availableQuestions.length === 0) {
+            showToast('Aviso', 'Nenhum erro anterior encontrado para revisão!', 'warning');
+            return [];
+        }
+    }
+    availableQuestions.sort(() => Math.random() - 0.5);
+    const selected = availableQuestions.slice(0, Math.min(state.quantity, availableQuestions.length));
+    return selected.map((q, i) => ({...q, number: i + 1}));
+}
+
+function startSimulation() {
+    if (!state.career) { showToast('Atenção', 'Selecione uma carreira primeiro!', 'warning'); return; }
+    if (state.mode === 'disciplina' && !state.selectedDiscipline) { showToast('Atenção', 'Selecione uma disciplina!', 'warning'); return; }
+    state.questions = generateQuestions();
+    if (state.questions.length === 0) return;
+    state.currentQuestion = 0;
+    state.answers = {};
+    state.doubts = {};
+    state.sessionStart = Date.now();
+    const config = careerConfig[state.career];
+    state.timeRemaining = config.time * 60;
+    document.getElementById('simCareer').textContent = config.name;
+    document.getElementById('simBanca').textContent = config.banca;
+    document.getElementById('simMode').textContent = state.mode === 'simulado' ? 'Simulado Real' : state.mode === 'disciplina' ? 'Por Disciplina' : 'Revisão de Erros';
+    document.getElementById('totalQ').textContent = state.questions.length;
+    document.getElementById('miniBlank').textContent = state.questions.length;
+    const cebraspeWarning = document.getElementById('cebraspeWarning');
+    if (config.bancaStyle === 'cebraspe') cebraspeWarning.classList.remove('hidden');
+    else cebraspeWarning.classList.add('hidden');
+    const cebraspeScoreBox = document.getElementById('cebraspeScoreBox');
+    if (config.bancaStyle === 'cebraspe') cebraspeScoreBox.classList.remove('hidden');
+    else cebraspeScoreBox.classList.add('hidden');
+    const grid = document.getElementById('questionGrid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= state.questions.length; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'qgrid-btn blank';
+        btn.textContent = i;
+        btn.onclick = () => loadQuestion(i - 1);
+        btn.id = `qgrid-${i}`;
+        grid.appendChild(btn);
+    }
+    if (state.timer) clearInterval(state.timer);
+    state.timer = setInterval(updateTimer, 1000);
+    setInterval(() => {
+        if (!state.sessionStart) return;
+        const elapsed = Math.floor((Date.now() - state.sessionStart) / 1000);
+        const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+        const secs = (elapsed % 60).toString().padStart(2, '0');
+        document.getElementById('sessionTimer').textContent = `${mins}:${secs}`;
+    }, 1000);
+    loadQuestion(0);
+    switchPage('page-sim');
+    showToast('Simulação Iniciada', `${state.questions.length} questões reais da ${config.banca}`, 'success');
+}
+
+function updateTimer() {
+    state.timeRemaining--;
+    const hours = Math.floor(state.timeRemaining / 3600);
+    const mins = Math.floor((state.timeRemaining % 3600) / 60);
+    const secs = state.timeRemaining % 60;
+    document.getElementById('mainTimer').textContent = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (state.timeRemaining <= 0) { clearInterval(state.timer); finishSimulation(); }
+}
+
+function loadQuestion(index) {
+    if (index < 0 || index >= state.questions.length) return;
+    state.currentQuestion = index;
+    state.isAnswered = false;
+    delete state.tempAnswer;
+    const q = state.questions[index];
+    document.getElementById('currentQ').textContent = index + 1;
+    document.getElementById('qNumber').textContent = index + 1;
+    document.getElementById('qSubject').textContent = q.subject;
+    document.getElementById('qBanca').textContent = `${q.banca} ${q.year}`;
+    document.getElementById('qWeight').textContent = `Peso ${q.weight}`;
+    document.getElementById('qDifficulty').textContent = q.difficulty;
+    document.getElementById('questionText').textContent = q.text;
+    const progress = ((index + 1) / state.questions.length) * 100;
+    document.getElementById('progressBar').style.width = `${progress}%`;
+    document.querySelectorAll('.qgrid-btn').forEach((btn, i) => {
+        btn.classList.remove('current');
+        if (i === index) btn.classList.add('current');
+    });
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    if (q.banca === 'CEBRASPE') {
+        const ceContainer = document.createElement('div');
+        ceContainer.className = 'flex gap-4';
+        q.options.forEach((opt, i) => {
             const btn = document.createElement('button');
-            btn.className = 'qgrid-btn blank';
-            btn.textContent = i;
-            btn.onclick = () => loadQuestion(i - 1);
-            btn.id = `qgrid-${i}`;
-            grid.appendChild(btn);
-        }
-
-        // Start timer
-        if (state.timer) clearInterval(state.timer);
-        state.timer = setInterval(updateTimer, 1000);
-
-        // Start session timer
-        setInterval(() => {
-            const elapsed = Math.floor((Date.now() - state.sessionStart) / 1000);
-            const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
-            const secs = (elapsed % 60).toString().padStart(2, '0');
-            document.getElementById('sessionTimer').textContent = `${mins}:${secs}`;
-        }, 1000);
-
-        loadQuestion(0);
-        switchPage('page-sim');
-        showToast('Simulação Iniciada', `Boa prova! ${state.quantity} questões aguardam.`, 'success');
-    }
-
-    function updateTimer() {
-        state.timeRemaining--;
-        const hours = Math.floor(state.timeRemaining / 3600);
-        const mins = Math.floor((state.timeRemaining % 3600) / 60);
-        const secs = state.timeRemaining % 60;
-        document.getElementById('mainTimer').textContent = 
-            `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-
-        if (state.timeRemaining <= 0) {
-            clearInterval(state.timer);
-            finishSimulation();
-        }
-    }
-
-    // ===== LOAD QUESTION =====
-    function loadQuestion(index) {
-        if (index < 0 || index >= state.questions.length) return;
-
-        state.currentQuestion = index;
-        state.isAnswered = false;
-        const q = state.questions[index];
-        const config = careerConfig[state.career];
-
-        document.getElementById('currentQ').textContent = index + 1;
-        document.getElementById('qNumber').textContent = index + 1;
-        document.getElementById('qSubject').textContent = q.subject;
-        document.getElementById('qWeight').textContent = `${q.weight}x peso`;
-        document.getElementById('questionText').textContent = q.text;
-
-        // Update progress
-        const progress = ((index + 1) / state.quantity) * 100;
-        document.getElementById('progressBar').style.width = `${progress}%`;
-
-        // Update grid
-        document.querySelectorAll('.qgrid-btn').forEach((btn, i) => {
-            btn.classList.remove('current');
-            if (i === index) btn.classList.add('current');
+            btn.className = 'cebraspe-btn flex-1 p-6 rounded-xl text-center font-bold text-2xl';
+            btn.textContent = opt.label;
+            btn.onclick = () => selectOption(i, 'cebraspe');
+            btn.dataset.index = i;
+            ceContainer.appendChild(btn);
         });
-
-        // Build options
-        const container = document.getElementById('optionsContainer');
-        container.innerHTML = '';
-
-        if (q.bancaStyle === 'cebraspe') {
-            // C/E style
-            const ceContainer = document.createElement('div');
-            ceContainer.className = 'flex gap-4';
-
-            ['C', 'E'].forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'cebraspe-option flex-1 p-4 rounded-xl border-2 border-slate-700 text-center font-bold text-lg';
-                btn.textContent = opt;
-                btn.onclick = () => selectOption(i, 'cebraspe');
-                btn.dataset.index = i;
-                container.appendChild(btn);
-            });
-        } else {
-            // Multiple choice A-E
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-card w-full p-4 rounded-xl border-2 border-slate-700 text-left flex items-start gap-3';
-                btn.innerHTML = `
-                    <span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-sm shrink-0">${opt.label}</span>
-                    <span class="text-white">${opt.text}</span>
-                `;
-                btn.onclick = () => selectOption(i, 'fcc');
-                btn.dataset.index = i;
-                container.appendChild(btn);
-            });
-        }
-
-        // Reset UI
-        document.getElementById('commentaryBox').classList.add('hidden');
-        document.getElementById('confirmBtn').disabled = false;
-        document.getElementById('confirmBtn').classList.remove('opacity-50');
-        document.getElementById('prevBtn').disabled = index === 0;
-
-        // Restore doubt mark
-        const doubtBtn = document.getElementById('doubtBtn');
-        if (state.doubts[index]) {
-            doubtBtn.classList.add('border-amber-500', 'text-amber-400');
-        } else {
-            doubtBtn.classList.remove('border-amber-500', 'text-amber-400');
-        }
-
-        // Check elimination warning
-        checkEliminationWarning();
-        updateMiniStats();
+        container.appendChild(ceContainer);
+    } else {
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-card w-full p-4 rounded-xl text-left flex items-start gap-3';
+            btn.innerHTML = `<span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-sm shrink-0">${opt.label}</span><span class="text-white">${opt.text}</span>`;
+            btn.onclick = () => selectOption(i, 'fcc');
+            btn.dataset.index = i;
+            container.appendChild(btn);
+        });
     }
+    document.getElementById('commentaryBox').classList.add('hidden');
+    document.getElementById('confirmBtn').disabled = false;
+    document.getElementById('confirmBtn').classList.remove('opacity-50');
+    document.getElementById('prevBtn').disabled = index === 0;
+    const doubtBtn = document.getElementById('doubtBtn');
+    if (state.doubts[index]) doubtBtn.classList.add('border-amber-500', 'text-amber-400');
+    else doubtBtn.classList.remove('border-amber-500', 'text-amber-400');
+    updateMiniStats();
+}
 
-    function selectOption(index, style) {
-        if (state.isAnswered) return;
-
-        const q = state.questions[state.currentQuestion];
-
-        if (style === 'cebraspe') {
-            document.querySelectorAll('.cebraspe-option').forEach((btn, i) => {
-                btn.classList.remove('selected-c', 'selected-e');
-                if (i === index) {
-                    btn.classList.add(index === 0 ? 'selected-c' : 'selected-e');
-                }
-            });
-        } else {
-            document.querySelectorAll('.option-card').forEach((btn, i) => {
-                btn.classList.remove('selected');
-                if (i === index) btn.classList.add('selected');
-            });
-        }
-
-        state.tempAnswer = index;
+function selectOption(index, style) {
+    if (state.isAnswered) return;
+    state.tempAnswer = index;
+    if (style === 'cebraspe') {
+        document.querySelectorAll('.cebraspe-btn').forEach((btn, i) => {
+            btn.classList.remove('selected-c', 'selected-e');
+            if (i === index) btn.classList.add(index === 0 ? 'selected-c' : 'selected-e');
+        });
+    } else {
+        document.querySelectorAll('.option-card').forEach((btn, i) => {
+            btn.classList.remove('selected');
+            if (i === index) btn.classList.add('selected');
+        });
     }
+}
 
-    function confirmAnswer() {
-        if (state.isAnswered || typeof state.tempAnswer === 'undefined') return;
+function confirmAnswer() {
+    if (state.isAnswered || typeof state.tempAnswer === 'undefined') {
+        showToast('Atenção', 'Selecione uma alternativa primeiro!', 'warning');
+        return;
+    }
+    state.isAnswered = true;
+    const q = state.questions[state.currentQuestion];
+    const selectedIndex = state.tempAnswer;
+    const isCorrect = q.options[selectedIndex].correct;
+    state.answers[state.currentQuestion] = {
+        selected: selectedIndex,
+        correct: isCorrect,
+        subject: q.subject,
+        questionId: q.id
+    };
+    saveToHistory(q.id, isCorrect, q.subject, q.banca);
+    if (q.banca === 'CEBRASPE') {
+        document.querySelectorAll('.cebraspe-btn').forEach((btn, i) => {
+            btn.classList.add('disabled');
+            if (q.options[i].correct) btn.classList.add('correct-reveal');
+            else if (i === selectedIndex && !isCorrect) btn.classList.add('wrong-reveal');
+        });
+    } else {
+        document.querySelectorAll('.option-card').forEach((btn, i) => {
+            btn.classList.add('disabled');
+            if (q.options[i].correct) btn.classList.add('correct');
+            else if (i === selectedIndex && !isCorrect) btn.classList.add('wrong');
+        });
+    }
+    const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
+    gridBtn.classList.remove('blank');
+    gridBtn.classList.add(isCorrect ? 'answered' : 'wrong-grid');
+    showCommentary(q, isCorrect, selectedIndex);
+    if (q.banca === 'CEBRASPE') updateCebraspeScore();
+    document.getElementById('confirmBtn').disabled = true;
+    document.getElementById('confirmBtn').classList.add('opacity-50');
+    updateMiniStats();
+    if (isCorrect) showToast('Acertou!', `${q.subject} - Gabarito: ${q.options.find(o => o.correct).label}`, 'success');
+    else showToast('Errou!', `Veja o comentário jurídico abaixo`, 'error');
+}
 
-        state.isAnswered = true;
-        const q = state.questions[state.currentQuestion];
-        const selectedIndex = state.tempAnswer;
-
-        let isCorrect;
-        if (q.bancaStyle === 'cebraspe') {
-            isCorrect = q.options[selectedIndex].correct;
-            document.querySelectorAll('.cebraspe-option').forEach((btn, i) => {
-                btn.classList.remove('selected-c', 'selected-e');
-                if (q.options[i].correct) {
-                    btn.style.borderColor = '#10B981';
-                    btn.style.background = 'rgba(16, 185, 129, 0.2)';
-                    btn.style.color = '#10B981';
-                } else if (i === selectedIndex && !isCorrect) {
-                    btn.style.borderColor = '#EF4444';
-                    btn.style.background = 'rgba(239, 68, 68, 0.2)';
-                    btn.style.color = '#EF4444';
-                }
-            });
-        } else {
-            isCorrect = q.options[selectedIndex].correct;
-            document.querySelectorAll('.option-card').forEach((btn, i) => {
-                if (q.options[i].correct) {
-                    btn.classList.add('correct');
-                } else if (i === selectedIndex && !isCorrect) {
-                    btn.classList.add('wrong');
-                }
-            });
-        }
-
-        state.answers[state.currentQuestion] = {
-            selected: selectedIndex,
-            correct: isCorrect,
-            subject: q.subject
-        };
-
-        // Update grid
-        const gridBtn = document.getElementById(`qgrid-${state.currentQuestion + 1}`);
-        gridBtn.classList.remove('blank');
-        gridBtn.classList.add(isCorrect ? 'answered' : 'wrong-grid');
-
-        // Show commentary
-        const commentaryBox = document.getElementById('commentaryBox');
-        const commentaryTitle = document.getElementById('commentaryTitle');
-        const commentaryContent = document.getElementById('commentaryContent');
-
-        commentaryBox.classList.remove('hidden');
-        commentaryBox.className = `glass rounded-2xl p-6 border-l-4 ${isCorrect ? 'border-green-500' : 'border-red-500'}`;
-        commentaryTitle.innerHTML = `
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M${isCorrect ? '9 12l2 2 4-4m6 2a9 9 0 11-18 0' : '10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2'}"/>
+function showCommentary(q, isCorrect, selectedIndex) {
+    const box = document.getElementById('commentaryBox');
+    const header = document.getElementById('commentaryHeader');
+    const content = document.getElementById('commentaryContent');
+    box.classList.remove('hidden');
+    box.className = `glass rounded-2xl p-6 border-l-4 ${isCorrect ? 'border-green-500' : 'border-red-500'}`;
+    const correctLabel = q.options.find(o => o.correct).label;
+    const selectedLabel = q.options[selectedIndex].label;
+    header.innerHTML = `
+        <div class="flex items-center gap-2 ${isCorrect ? 'text-green-400' : 'text-red-400'}">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isCorrect ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0' : 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2'}"/>
             </svg>
-            ${isCorrect ? 'Resposta Correta!' : 'Resposta Errada'}
-        `;
-        commentaryTitle.className = `text-lg font-semibold mb-3 flex items-center gap-2 ${isCorrect ? 'text-green-400' : 'text-red-400'}`;
-        commentaryContent.innerHTML = `
-            <p class="text-slate-300 mb-2"><strong>Gabarito:</strong> ${q.bancaStyle === 'cebraspe' ? (q.options.find(o => o.correct).label) : q.options.find(o => o.correct).label}</p>
-            <p class="text-slate-400 text-sm">${q.commentary}</p>
-            <div class="mt-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700">
-                <p class="text-xs text-slate-500">📚 ${q.subject} | Banca: ${q.banca} ${q.year} | Peso: ${q.weight}x</p>
+            <span class="text-lg font-bold">${isCorrect ? 'Resposta Correta!' : 'Resposta Errada'}</span>
+        </div>
+        <div class="ml-auto text-sm text-slate-400">
+            Você marcou: <span class="font-bold ${isCorrect ? 'text-green-400' : 'text-red-400'}">${selectedLabel}</span> | 
+            Gabarito: <span class="font-bold text-green-400">${correctLabel}</span>
+        </div>
+    `;
+    let distractorsHtml = '';
+    if (q.commentary.distractors) {
+        distractorsHtml = `<div class="mt-4"><h5 class="text-sm font-bold text-amber-400 mb-2">🎣 Análise das Pegadinhas:</h5><div class="space-y-2">${Object.entries(q.commentary.distractors).map(([label, text]) => `<div class="distractor-analysis"><span class="font-bold text-red-400">${label}:</span> <span class="text-slate-300 text-sm">${text}</span></div>`).join('')}</div></div>`;
+    }
+    let pegadinhaHtml = '';
+    if (q.commentary.pegadinha) {
+        pegadinhaHtml = `<div class="mt-4 p-4 rounded-xl bg-purple-500/10 border border-purple-500/30"><h5 class="text-sm font-bold text-purple-400 mb-1">🧠 Pegadinha da Banca ${q.banca}:</h5><p class="text-slate-300 text-sm">${q.commentary.pegadinha}</p></div>`;
+    }
+    content.innerHTML = `
+        <div class="law-reference"><h5 class="text-sm font-bold text-blue-400 mb-1">⚖️ Fundamento Legal:</h5><p class="text-slate-300 text-sm">${q.commentary.law}</p></div>
+        <div class="mt-4"><h5 class="text-sm font-bold text-white mb-2">📖 Explicação Jurídica:</h5><p class="text-slate-300 text-sm leading-relaxed">${q.commentary.explanation}</p></div>
+        ${pegadinhaHtml}
+        ${distractorsHtml}
+        <div class="mt-4 pt-4 border-t border-slate-700/50 flex items-center gap-3 text-xs text-slate-500">
+            <span>📚 ${q.subject}</span><span>•</span><span>${q.banca} ${q.year}</span><span>•</span><span>Dificuldade: ${q.difficulty}</span><span>•</span><span>Peso: ${q.weight}x</span>
+        </div>
+    `;
+}
+
+function updateCebraspeScore() {
+    const correct = Object.values(state.answers).filter(a => a.correct).length;
+    const wrong = Object.values(state.answers).filter(a => !a.correct).length;
+    const score = correct - wrong;
+    document.getElementById('cebraspeScore').textContent = score;
+    document.getElementById('cebraspeScore').className = `text-2xl font-bold ${score >= 0 ? 'text-green-400' : 'text-red-400'}`;
+}
+
+function previousQuestion() {
+    if (state.currentQuestion > 0) loadQuestion(state.currentQuestion - 1);
+}
+
+function skipQuestion() {
+    if (state.currentQuestion < state.questions.length - 1) loadQuestion(state.currentQuestion + 1);
+}
+
+function markDoubt() {
+    const index = state.currentQuestion;
+    state.doubts[index] = !state.doubts[index];
+    const doubtBtn = document.getElementById('doubtBtn');
+    const gridBtn = document.getElementById(`qgrid-${index + 1}`);
+    if (state.doubts[index]) {
+        doubtBtn.classList.add('border-amber-500', 'text-amber-400');
+        if (gridBtn.classList.contains('blank')) { gridBtn.classList.remove('blank'); gridBtn.classList.add('doubt'); }
+    } else {
+        doubtBtn.classList.remove('border-amber-500', 'text-amber-400');
+        if (gridBtn.classList.contains('doubt')) { gridBtn.classList.remove('doubt'); gridBtn.classList.add('blank'); }
+    }
+}
+
+function updateMiniStats() {
+    const correct = Object.values(state.answers).filter(a => a.correct).length;
+    const wrong = Object.values(state.answers).filter(a => !a.correct).length;
+    const blank = state.questions.length - Object.keys(state.answers).length;
+    document.getElementById('miniCorrect').textContent = correct;
+    document.getElementById('miniWrong').textContent = wrong;
+    document.getElementById('miniBlank').textContent = blank;
+    const config = careerConfig[state.career];
+    if (!config) return;
+    const subjectStats = {};
+    config.disciplines.forEach(d => subjectStats[d.name] = { correct: 0, total: 0 });
+    Object.values(state.answers).forEach(ans => {
+        if (subjectStats[ans.subject]) { subjectStats[ans.subject].total++; if (ans.correct) subjectStats[ans.subject].correct++; }
+    });
+    document.getElementById('miniSubjectStats').innerHTML = Object.entries(subjectStats).map(([name, stats]) => {
+        const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+        const color = pct >= 70 ? 'text-green-400' : pct >= 50 ? 'text-amber-400' : 'text-red-400';
+        return `<div class="flex justify-between items-center"><span class="text-slate-400 truncate" style="max-width: 70%">${name}</span><span class="font-mono ${color}">${stats.correct}/${stats.total}</span></div>`;
+    }).join('');
+}
+
+function saveToHistory(questionId, correct, subject, banca) {
+    const entry = { questionId, correct, subject, banca, date: new Date().toISOString() };
+    state.history = state.history.filter(h => h.questionId !== questionId);
+    state.history.push(entry);
+    if (state.history.length > 500) state.history = state.history.slice(-500);
+    localStorage.setItem('delta_history', JSON.stringify(state.history));
+}
+
+function finishSimulation() {
+    clearInterval(state.timer);
+    const correct = Object.values(state.answers).filter(a => a.correct).length;
+    const wrong = Object.values(state.answers).filter(a => !a.correct).length;
+    const blank = state.questions.length - Object.keys(state.answers).length;
+    const score = Math.round((correct / state.questions.length) * 100);
+    let grade = score;
+    if (state.career && careerConfig[state.career].bancaStyle === 'cebraspe') {
+        grade = correct - wrong;
+    }
+    document.getElementById('finalScore').textContent = `${score}%`;
+    document.getElementById('finalCorrect').textContent = correct;
+    document.getElementById('finalWrong').textContent = wrong;
+    document.getElementById('finalBlank').textContent = blank;
+    document.getElementById('finalGrade').textContent = `${grade} pts`;
+    const circle = document.getElementById('scoreCircle');
+    const circumference = 553;
+    const offset = circumference - (score / 100) * circumference;
+    circle.style.strokeDashoffset = offset;
+    circle.style.stroke = score >= 70 ? '#10B981' : score >= 50 ? '#F59E0B' : '#EF4444';
+    const config = careerConfig[state.career];
+    const subjectStats = {};
+    config.disciplines.forEach(d => subjectStats[d.name] = { correct: 0, total: 0 });
+    Object.values(state.answers).forEach(ans => {
+        if (subjectStats[ans.subject]) { subjectStats[ans.subject].total++; if (ans.correct) subjectStats[ans.subject].correct++; }
+    });
+    document.getElementById('subjectAnalysis').innerHTML = Object.entries(subjectStats).map(([name, s]) => {
+        const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+        const barColor = pct >= 70 ? 'bg-green-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500';
+        const textColor = pct >= 70 ? 'text-green-400' : pct >= 50 ? 'text-amber-400' : 'text-red-400';
+        return `
+            <div class="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-white">${name}</span>
+                    <span class="font-mono font-bold ${textColor}">${s.correct}/${s.total} (${pct}%)</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-2"><div class="${barColor} h-2 rounded-full transition-all" style="width: ${pct}%"></div></div>
             </div>
         `;
-
-        document.getElementById('confirmBtn').disabled = true;
-        document.getElementById('confirmBtn').classList.add('opacity-50');
-
-        updateMiniStats();
-        checkEliminationWarning();
-
-        if (isCorrect) {
-            showToast('Acertou!', `+${q.weight} ponto(s) em ${q.subject}`, 'success');
-        } else {
-            showToast('Errou!', `Reveja o gabarito comentado`, 'error');
-        }
-    }
-
-    function previousQuestion() {
-        if (state.currentQuestion > 0) {
-            loadQuestion(state.currentQuestion - 1);
-        }
-    }
-
-    function skipQuestion() {
-        if (state.currentQuestion < state.questions.length - 1) {
-            loadQuestion(state.currentQuestion + 1);
-        }
-    }
-
-    function markDoubt() {
-        const index = state.currentQuestion;
-        state.doubts[index] = !state.doubts[index];
-
-        const doubtBtn = document.getElementById('doubtBtn');
-        const gridBtn = document.getElementById(`qgrid-${index + 1}`);
-
-        if (state.doubts[index]) {
-            doubtBtn.classList.add('border-amber-500', 'text-amber-400');
-            if (gridBtn.classList.contains('blank')) {
-                gridBtn.classList.remove('blank');
-                gridBtn.classList.add('doubt');
-            }
-            showToast('Dúvida Marcada', 'Questão marcada para revisão', 'warning');
-        } else {
-            doubtBtn.classList.remove('border-amber-500', 'text-amber-400');
-            if (gridBtn.classList.contains('doubt')) {
-                gridBtn.classList.remove('doubt');
-                gridBtn.classList.add('blank');
-            }
-        }
-    }
-
-    function checkEliminationWarning() {
-        if (!state.career) return;
-
-        const config = careerConfig[state.career];
-        const subjectScores = {};
-
-        config.disciplines.forEach(d => subjectScores[d.name] = { correct: 0, total: 0 });
-
-        Object.entries(state.answers).forEach(([idx, ans]) => {
-            if (subjectScores[ans.subject]) {
-                subjectScores[ans.subject].total++;
-                if (ans.correct) subjectScores[ans.subject].correct++;
-            }
-        });
-
-        const zeroSubjects = Object.entries(subjectScores)
-            .filter(([_, scores]) => scores.total > 0 && scores.correct === 0)
-            .map(([name, _]) => name);
-
-        const warning = document.getElementById('elimWarning');
-        if (zeroSubjects.length > 0) {
-            warning.classList.remove('hidden');
-            document.getElementById('elimSubject').textContent = zeroSubjects.join(', ');
-        } else {
-            warning.classList.add('hidden');
-        }
-    }
-
-    function updateMiniStats() {
-        const correct = Object.values(state.answers).filter(a => a.correct).length;
-        const wrong = Object.values(state.answers).filter(a => !a.correct).length;
-        const blank = state.quantity - Object.keys(state.answers).length;
-
-        document.getElementById('miniCorrect').textContent = correct;
-        document.getElementById('miniWrong').textContent = wrong;
-        document.getElementById('miniBlank').textContent = blank;
-
-        // Update subject stats
-        const config = careerConfig[state.career];
-        if (!config) return;
-
-        const subjectStats = {};
-        config.disciplines.forEach(d => subjectStats[d.name] = { correct: 0, total: 0 });
-
-        Object.values(state.answers).forEach(ans => {
-            if (subjectStats[ans.subject]) {
-                subjectStats[ans.subject].total++;
-                if (ans.correct) subjectStats[ans.subject].correct++;
-            }
-        });
-
-        const miniSubjectStats = document.getElementById('miniSubjectStats');
-        miniSubjectStats.innerHTML = Object.entries(subjectStats).map(([name, stats]) => {
-            const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-            const color = pct >= 70 ? 'text-green-400' : pct >= 50 ? 'text-amber-400' : 'text-red-400';
+    }).join('');
+    const weakSubjects = Object.entries(subjectStats).filter(([_, s]) => s.total > 0 && (s.correct / s.total) < 0.6).map(([name, _]) => name);
+    document.getElementById('studyRecommendations').innerHTML = weakSubjects.length > 0 ? weakSubjects.map(s => `
+        <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+            <div class="flex items-center gap-2 mb-2"><span class="text-xl">⚠️</span><span class="font-bold text-red-400">${s}</span></div>
+            <p class="text-sm text-slate-300">Seu desempenho está abaixo de 60%. Recomendamos revisar os artigos fundamentais e fazer mais questões desta disciplina.</p>
+        </div>
+    `).join('') : '<div class="p-4 rounded-xl bg-green-500/10 border border-green-500/30"><p class="text-green-400">🎉 Parabéns! Você está bem em todas as disciplinas.</p></div>';
+    const wrongQs = Object.entries(state.answers).filter(([_, a]) => !a.correct);
+    if (wrongQs.length === 0) {
+        document.getElementById('wrongQuestionsList').innerHTML = '<p class="text-green-400 text-center py-4">🎉 Parabéns! Você não errou nenhuma questão!</p>';
+    } else {
+        document.getElementById('wrongQuestionsList').innerHTML = wrongQs.map(([idx, ans]) => {
+            const q = state.questions[parseInt(idx)];
+            const correctOpt = q.options.find(o => o.correct);
             return `
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 truncate" style="max-width: 70%">${name}</span>
-                    <span class="font-mono ${color}">${stats.correct}/${stats.total}</span>
+                <div class="p-4 rounded-xl bg-slate-800/30 border border-red-500/20">
+                    <div class="flex items-center gap-2 mb-2"><span class="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Q${q.number}</span><span class="text-xs text-slate-400">${q.subject}</span></div>
+                    <p class="text-sm text-slate-300 mb-2">${q.text}</p>
+                    <p class="text-xs text-green-400">✓ Gabarito: ${correctOpt ? correctOpt.label : 'C'}</p>
+                    <p class="text-xs text-slate-500 mt-1">${q.commentary.explanation.substring(0, 150)}...</p>
                 </div>
             `;
         }).join('');
     }
+    switchPage('page-result');
+}
 
-    // ===== FINISH SIMULATION =====
-    function finishSimulation() {
-        clearInterval(state.timer);
+function newSimulation() {
+    state.career = null;
+    state.questions = [];
+    state.answers = {};
+    state.doubts = {};
+    state.currentQuestion = 0;
+    if (state.timer) clearInterval(state.timer);
+    document.querySelectorAll('.career-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('bancaInfoBox').classList.add('hidden');
+    document.getElementById('disciplineFilterBox').classList.add('hidden');
+    switchPage('page-config');
+}
 
-        const config = careerConfig[state.career];
-        const correct = Object.values(state.answers).filter(a => a.correct).length;
-        const wrong = Object.values(state.answers).filter(a => !a.correct).length;
-        const blank = state.quantity - Object.keys(state.answers).length;
-        const score = Math.round((correct / state.quantity) * 100);
-
-        // Calculate grade with weights
-        let totalWeight = 0;
-        let earnedWeight = 0;
-
-        const subjectScores = {};
-        config.disciplines.forEach(d => subjectScores[d.name] = { correct: 0, total: 0, weight: d.weight });
-
-        Object.values(state.answers).forEach(ans => {
-            if (subjectScores[ans.subject]) {
-                subjectScores[ans.subject].total++;
-                if (ans.correct) subjectScores[ans.subject].correct++;
-            }
-        });
-
-        Object.values(subjectScores).forEach(s => {
-            totalWeight += s.total * s.weight;
-            earnedWeight += s.correct * s.weight;
-        });
-
-        const grade = totalWeight > 0 ? Math.round((earnedWeight / totalWeight) * 100) : 0;
-
-        // Check elimination
-        const zeroSubjects = Object.entries(subjectScores)
-            .filter(([_, s]) => s.total > 0 && s.correct === 0)
-            .map(([name, _]) => name);
-
-        const eliminated = zeroSubjects.length > 0;
-
-        // Update results
-        document.getElementById('finalScore').textContent = `${score}%`;
-        document.getElementById('finalCorrect').textContent = correct;
-        document.getElementById('finalWrong').textContent = wrong;
-        document.getElementById('finalBlank').textContent = blank;
-        document.getElementById('finalGrade').textContent = `${grade} pts`;
-
-        // Update circle
-        const circle = document.getElementById('scoreCircle');
-        const circumference = 553;
-        const offset = circumference - (score / 100) * circumference;
-        circle.style.strokeDashoffset = offset;
-        circle.style.stroke = score >= 70 ? '#10B981' : score >= 50 ? '#F59E0B' : '#EF4444';
-
-        // Approval status
-        const approvalStatus = document.getElementById('approvalStatus');
-        const approvalDetail = document.getElementById('approvalDetail');
-
-        if (eliminated) {
-            approvalStatus.textContent = 'ELIMINADO';
-            approvalStatus.className = 'text-lg font-bold text-red-400';
-            approvalDetail.textContent = `Zerou em: ${zeroSubjects.join(', ')}`;
-            document.getElementById('eliminationAlert').classList.remove('hidden');
-            document.getElementById('eliminatedSubjects').textContent = zeroSubjects.join(', ');
-        } else if (grade >= config.cutoff) {
-            approvalStatus.textContent = 'APROVADO!';
-            approvalStatus.className = 'text-lg font-bold text-green-400';
-            approvalDetail.textContent = `Nota acima da média de corte (${config.cutoff} pts)`;
-            document.getElementById('eliminationAlert').classList.add('hidden');
-            createConfetti();
-        } else {
-            approvalStatus.textContent = 'NÃO APROVADO';
-            approvalStatus.className = 'text-lg font-bold text-amber-400';
-            approvalDetail.textContent = `Faltaram ${config.cutoff - grade} pontos para aprovação`;
-            document.getElementById('eliminationAlert').classList.add('hidden');
-        }
-
-        document.getElementById('yourAverage').textContent = `${grade} pts`;
-        document.getElementById('yourBar').style.width = `${Math.min(grade, 100)}%`;
-        document.getElementById('cutoffScore').textContent = `${config.cutoff} pts`;
-        document.getElementById('cutoffBar').style.width = `${Math.min(config.cutoff, 100)}%`;
-        document.getElementById('cutoffSource').textContent = `Fonte: ${config.cutoffSource}`;
-
-        // Subject analysis
-        const subjectAnalysis = document.getElementById('subjectAnalysis');
-        subjectAnalysis.innerHTML = Object.entries(subjectScores).map(([name, s]) => {
-            const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
-            const isZero = s.total > 0 && s.correct === 0;
-            const barColor = isZero ? 'bg-red-500' : pct >= 70 ? 'bg-green-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500';
-            const textColor = isZero ? 'text-red-400' : pct >= 70 ? 'text-green-400' : pct >= 50 ? 'text-amber-400' : 'text-red-400';
-
-            return `
-                <div class="p-4 rounded-xl bg-slate-800/30 border ${isZero ? 'border-red-500/30' : 'border-slate-700/50'}">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm font-medium text-white">${name}</span>
-                            ${isZero ? '<span class="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-bold">ELIMINATÓRIA</span>' : ''}
-                        </div>
-                        <span class="font-mono font-bold ${textColor}">${s.correct}/${s.total} (${pct}%)</span>
-                    </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2">
-                        <div class="${barColor} h-2 rounded-full transition-all" style="width: ${pct}%"></div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        // Wrong questions
-        const wrongQuestionsList = document.getElementById('wrongQuestionsList');
-        const wrongQs = Object.entries(state.answers).filter(([_, a]) => !a.correct);
-
-        if (wrongQs.length === 0) {
-            wrongQuestionsList.innerHTML = '<p class="text-green-400 text-center py-4">🎉 Parabéns! Você não errou nenhuma questão!</p>';
-        } else {
-            wrongQuestionsList.innerHTML = wrongQs.map(([idx, ans]) => {
-                const q = state.questions[parseInt(idx)];
-                const correctOpt = q.options.find(o => o.correct);
-                return `
-                    <div class="p-4 rounded-xl bg-slate-800/30 border border-red-500/20">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Q${q.number}</span>
-                            <span class="text-xs text-slate-400">${q.subject}</span>
-                        </div>
-                        <p class="text-sm text-slate-300 mb-2">${q.text}</p>
-                        <p class="text-xs text-green-400">✓ Gabarito: ${correctOpt ? correctOpt.label : 'C'}</p>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Radar chart
-        setTimeout(() => {
-            const ctx = document.getElementById('radarChart');
-            if (ctx && typeof Chart !== 'undefined') {
-                new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: Object.keys(subjectScores).map(n => n.substring(0, 15)),
-                        datasets: [{
-                            label: 'Seu Desempenho',
-                            data: Object.values(subjectScores).map(s => s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0),
-                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                            borderColor: '#3B82F6',
-                            pointBackgroundColor: '#3B82F6'
-                        }, {
-                            label: 'Média de Aprovação',
-                            data: Object.values(subjectScores).map(() => 70),
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            borderColor: '#10B981',
-                            borderDash: [5, 5],
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            r: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: { color: '#64748b', backdropColor: 'transparent' },
-                                grid: { color: '#1e293b' },
-                                pointLabels: { color: '#94a3b8', font: { size: 10 } }
-                            }
-                        },
-                        plugins: {
-                            legend: { labels: { color: '#94a3b8' } }
-                        }
-                    }
-                });
-            }
-        }, 100);
-
-        switchPage('page-result');
+function reviewErrors() {
+    selectMode('revisao');
+    if (state.history.filter(h => !h.correct).length === 0) {
+        showToast('Aviso', 'Você ainda não tem erros registrados!', 'warning');
+        return;
     }
+    startSimulation();
+}
 
-    function createConfetti() {
-        const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
-        for (let i = 0; i < 50; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti-piece';
-            confetti.style.left = Math.random() * 100 + 'vw';
-            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
-            confetti.style.setProperty('--ty', Math.random() * 300 + 200 + 'px');
-            confetti.style.setProperty('--rot', Math.random() * 720 + 'deg');
-            confetti.style.animationDelay = Math.random() * 0.5 + 's';
-            document.body.appendChild(confetti);
-            setTimeout(() => confetti.remove(), 1500);
+document.addEventListener('DOMContentLoaded', () => {
+    updateBankStats();
+    const historyStats = document.getElementById('historyStats');
+    if (state.history.length > 0) {
+        const total = state.history.length;
+        const correct = state.history.filter(h => h.correct).length;
+        const pct = Math.round((correct / total) * 100);
+        historyStats.innerHTML = `
+            <div class="flex justify-between items-center p-2 rounded bg-slate-800/30"><span class="text-slate-400">Total respondidas</span><span class="font-mono text-white">${total}</span></div>
+            <div class="flex justify-between items-center p-2 rounded bg-slate-800/30"><span class="text-slate-400">Taxa de acerto</span><span class="font-mono ${pct >= 70 ? 'text-green-400' : 'text-amber-400'}">${pct}%</span></div>
+            <div class="w-full bg-slate-800 rounded-full h-2 mt-2"><div class="${pct >= 70 ? 'bg-green-500' : 'bg-amber-500'} h-2 rounded-full" style="width: ${pct}%"></div></div>
+        `;
+    }
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('page-sim').classList.contains('page-active')) {
+        if (e.key >= '1' && e.key <= '5') {
+            const num = parseInt(e.key) - 1;
+            const q = state.questions[state.currentQuestion];
+            const maxOpts = q.banca === 'CEBRASPE' ? 2 : 5;
+            if (num < maxOpts && !state.isAnswered) selectOption(num, q.banca === 'CEBRASPE' ? 'cebraspe' : 'fcc');
+        } else if (e.key === 'Enter' && !state.isAnswered) {
+            confirmAnswer();
+        } else if (e.key === 'ArrowLeft') {
+            previousQuestion();
+        } else if (e.key === 'ArrowRight') {
+            if (state.isAnswered) loadQuestion(state.currentQuestion + 1);
+            else skipQuestion();
+        } else if (e.key === 'd' || e.key === 'D') {
+            markDoubt();
         }
     }
-
-    // ===== FOCUS MODE =====
-    let focusTimer = null;
-    let focusTime = 25 * 60;
-
-    function toggleFocusMode() {
-        const overlay = document.getElementById('focusOverlay');
-        const isHidden = overlay.classList.contains('hidden');
-
-        if (isHidden) {
-            overlay.classList.remove('hidden');
-            focusTime = 25 * 60;
-            updateFocusTimer();
-            focusTimer = setInterval(updateFocusTimer, 1000);
-        } else {
-            overlay.classList.add('hidden');
-            clearInterval(focusTimer);
-        }
-    }
-
-    function updateFocusTimer() {
-        focusTime--;
-        const mins = Math.floor(focusTime / 60).toString().padStart(2, '0');
-        const secs = (focusTime % 60).toString().padStart(2, '0');
-        document.getElementById('focusTimer').textContent = `${mins}:${secs}`;
-
-        if (focusTime <= 0) {
-            clearInterval(focusTimer);
-            showToast('Foco Concluído', 'Você completou 25 minutos de estudo!', 'success');
-            toggleFocusMode();
-        }
-    }
-
-    // ===== NEW SIMULATION =====
-    function newSimulation() {
-        state.career = null;
-        state.questions = [];
-        state.answers = {};
-        state.doubts = {};
-        state.currentQuestion = 0;
-        if (state.timer) clearInterval(state.timer);
-
-        document.querySelectorAll('.career-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('careerInfo').classList.add('hidden');
-        document.getElementById('bancaDisplay').textContent = 'Selecione uma carreira';
-        document.getElementById('bancaStyle').textContent = '--';
-        document.getElementById('formatDisplay').textContent = '--';
-        document.getElementById('disciplinesList').innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Selecione uma carreira para ver a distribuição real de questões</p>';
-
-        switchPage('page-config');
-    }
-
-    function reviewErrors() {
-        showToast('Revisão', 'Funcionalidade de revisão de erros será implementada em breve!', 'info');
-    }
-
-    // ===== KEYBOARD NAVIGATION =====
-    document.addEventListener('keydown', (e) => {
-        if (document.getElementById('page-sim').classList.contains('page-active')) {
-            if (e.key >= '1' && e.key <= '5') {
-                const num = parseInt(e.key) - 1;
-                const config = careerConfig[state.career];
-                const maxOpts = config.bancaStyle === 'cebraspe' ? 2 : 5;
-                if (num < maxOpts && !state.isAnswered) {
-                    selectOption(num, config.bancaStyle);
-                }
-            } else if (e.key === 'Enter' && !state.isAnswered) {
-                confirmAnswer();
-            } else if (e.key === 'ArrowLeft') {
-                previousQuestion();
-            } else if (e.key === 'ArrowRight') {
-                if (state.isAnswered) {
-                    loadQuestion(state.currentQuestion + 1);
-                } else {
-                    skipQuestion();
-                }
-            } else if (e.key === 'd' || e.key === 'D') {
-                markDoubt();
-            }
-        }
-    });
-
-    // ===== INIT =====
-    document.addEventListener('DOMContentLoaded', () => {
-        // Load streak from localStorage
-        const savedStreak = localStorage.getItem('delta_streak');
-        if (savedStreak) {
-            state.streak = parseInt(savedStreak);
-            document.getElementById('streakDisplay').textContent = state.streak + ' dias';
-        }
-
-        // Check daily streak
-        const lastStudy = localStorage.getItem('delta_lastStudy');
-        const today = new Date().toDateString();
-        if (lastStudy === today) {
-            // Already studied today
-        } else if (lastStudy === new Date(Date.now() - 86400000).toDateString()) {
-            // Studied yesterday, increment streak
-            state.streak++;
-            localStorage.setItem('delta_streak', state.streak);
-            localStorage.setItem('delta_lastStudy', today);
-            document.getElementById('streakDisplay').textContent = state.streak + ' dias';
-        } else {
-            // Streak broken
-            state.streak = 0;
-            localStorage.setItem('delta_streak', 0);
-            localStorage.setItem('delta_lastStudy', today);
-        }
-    });
-    </script>
+});
+</script>
 </body>
 </html>
