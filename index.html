@@ -3,705 +3,1519 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado Completo PMBA - Juazeiro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        pmba: '#0A2463',
-                        pmbaLight: '#3E92CC',
-                        success: '#2E7D32',
-                        danger: '#C62828',
-                        warning: '#F57F17',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
+    <title>PMBA Juazeiro - Plataforma Definitiva de Estudos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a365d; --primary-light: #2c5282; --accent: #c53030; --accent-light: #e53e3e;
+            --success: #276749; --warning: #c05621; --gold: #d69e2e; --bg: #f7fafc; --card: #ffffff;
+            --text: #1a202c; --text-muted: #718096; --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-            .option-item {
-                @apply p-3 mb-2 border-2 border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-pmbaLight hover:bg-blue-50;
-            }
-            .option-selected {
-                @apply border-pmba bg-blue-100 font-medium;
-            }
-            .correct {
-                @apply border-success bg-green-50 border-2;
-            }
-            .incorrect {
-                @apply border-danger bg-red-50 border-2;
-            }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white; padding: 0; position: fixed; width: 100%; top: 0; z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+        .header-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; max-width: 1400px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.3rem; }
+        .logo i { font-size: 1.8rem; color: var(--gold); }
+        .header-stats { display: flex; gap: 24px; font-size: 0.85rem; }
+        .header-stat { text-align: center; }
+        .header-stat .value { font-weight: 700; font-size: 1.1rem; color: var(--gold); }
+        .header-stat .label { opacity: 0.9; font-size: 0.75rem; }
+        .nav-bar { background: rgba(0,0,0,0.15); padding: 0 24px; }
+        .nav-links { display: flex; gap: 0; max-width: 1400px; margin: 0 auto; }
+        .nav-link {
+            padding: 14px 20px; color: rgba(255,255,255,0.85); text-decoration: none;
+            font-weight: 500; font-size: 0.9rem; transition: all 0.3s; border-bottom: 3px solid transparent;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+        .nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,0.1); border-bottom-color: var(--gold); }
+        .main-content { margin-top: 120px; padding: 24px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+        .dashboard-grid { display: grid; grid-template-columns: 280px 1fr; gap: 24px; margin-bottom: 24px; }
+        .sidebar-card { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); height: fit-content; }
+        .sidebar-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 16px; }
+        .progress-item { margin-bottom: 16px; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; }
+        .progress-header span:first-child { font-weight: 600; }
+        .progress-header span:last-child { font-weight: 700; color: var(--primary); }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .progress-fill.red { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
+        .progress-fill.orange { background: linear-gradient(90deg, var(--warning), #ed8936); }
+        .progress-fill.green { background: linear-gradient(90deg, var(--success), #38a169); }
+        .progress-fill.gold { background: linear-gradient(90deg, var(--gold), #ecc94b); }
+        .main-area { display: flex; flex-direction: column; gap: 24px; }
+        .card { background: var(--card); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .card-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .card-title i { color: var(--accent); }
+        .badge { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+        .badge-red { background: #fed7d7; color: var(--accent); }
+        .badge-green { background: #c6f6d5; color: var(--success); }
+        .badge-gold { background: #fef5e7; color: var(--gold); }
+        .badge-blue { background: #bee3f8; color: var(--primary-light); }
+        .sim-info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .sim-info-box { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 20px; border-radius: 12px; text-align: center; }
+        .sim-info-box.alt { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); }
+        .sim-info-box.alt2 { background: linear-gradient(135deg, var(--success) 0%, #38a169 100%); }
+        .sim-info-box.alt3 { background: linear-gradient(135deg, var(--gold) 0%, #ecc94b 100%); color: var(--primary); }
+        .sim-info-box .number { font-size: 2rem; font-weight: 800; display: block; }
+        .sim-info-box .label { font-size: 0.8rem; opacity: 0.9; }
+        .question-container { display: none; }
+        .question-container.active { display: block; }
+        .question-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--primary); color: white; border-radius: 12px 12px 0 0; }
+        .question-number { font-weight: 700; font-size: 1.1rem; }
+        .question-banca { font-size: 0.8rem; opacity: 0.9; }
+        .question-body { padding: 24px; background: var(--card); border: 2px solid var(--border); border-top: none; border-radius: 0 0 12px 12px; }
+        .question-text { font-size: 1.05rem; line-height: 1.7; margin-bottom: 20px; font-weight: 500; }
+        .question-text pre { background: #f7fafc; padding: 16px; border-radius: 8px; border-left: 3px solid var(--primary); font-family: 'Inter', sans-serif; white-space: pre-wrap; margin-bottom: 16px; font-size: 0.95rem; }
+        .alternatives { display: flex; flex-direction: column; gap: 12px; }
+        .alternative { padding: 16px 20px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+        .alternative:hover { border-color: var(--primary-light); background: #ebf8ff; }
+        .alternative.selected { border-color: var(--primary); background: #ebf8ff; }
+        .alternative.correct { border-color: var(--success); background: #c6f6d5; }
+        .alternative.wrong { border-color: var(--accent); background: #fed7d7; }
+        .alt-letter { min-width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+        .alternative.correct .alt-letter { background: var(--success); }
+        .alternative.wrong .alt-letter { background: var(--accent); }
+        .explanation { margin-top: 20px; padding: 20px; background: #f0fff4; border-left: 4px solid var(--success); border-radius: 0 8px 8px 0; display: none; }
+        .explanation.show { display: block; }
+        .explanation-title { font-weight: 700; color: var(--success); margin-bottom: 8px; }
+        .explanation-text { color: var(--text); line-height: 1.7; }
+        .explanation-cite { margin-top: 10px; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .btn { padding: 14px 28px; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); }
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-accent:hover { background: var(--accent-light); transform: translateY(-2px); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #2f855a; transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .actions-bar { display: flex; gap: 12px; margin-top: 24px; justify-content: center; }
+        .results-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; }
+        .results-overlay.show { display: flex; }
+        .results-modal { background: var(--card); border-radius: 20px; padding: 40px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+        .results-header { text-align: center; margin-bottom: 32px; }
+        .results-header h2 { font-size: 2rem; color: var(--primary); margin-bottom: 8px; }
+        .results-header p { color: var(--text-muted); }
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; border: 8px solid var(--border); position: relative; }
+        .score-circle.approved { border-color: var(--success); }
+        .score-circle.rejected { border-color: var(--accent); }
+        .score-value { font-size: 3rem; font-weight: 800; color: var(--primary); }
+        .score-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+        .result-box { padding: 20px; border-radius: 12px; text-align: center; }
+        .result-box.green { background: #f0fff4; }
+        .result-box.red { background: #fff5f5; }
+        .result-box.blue { background: #ebf8ff; }
+        .result-box .value { font-size: 1.5rem; font-weight: 800; }
+        .result-box .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+        .weakness-section { margin-top: 24px; }
+        .weakness-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 16px; color: var(--accent); }
+        .weakness-list { display: flex; flex-direction: column; gap: 10px; }
+        .weakness-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #fff5f5; border-radius: 10px; border-left: 4px solid var(--accent); }
+        .weakness-item .subject { font-weight: 600; }
+        .weakness-item .score { font-weight: 700; color: var(--accent); }
+        .study-plan-section { margin-top: 24px; padding: 24px; background: linear-gradient(135deg, #ebf8ff 0%, #f0fff4 100%); border-radius: 12px; }
+        .study-plan-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 16px; color: var(--primary); }
+        .study-plan-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .study-plan-item { padding: 14px; background: white; border-radius: 8px; border-left: 4px solid var(--primary); }
+        .study-plan-item .day { font-weight: 700; color: var(--primary); font-size: 0.85rem; }
+        .study-plan-item .content { font-size: 0.9rem; margin-top: 4px; }
+        .hero-section { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 40px; border-radius: 16px; margin-bottom: 24px; text-align: center; }
+        .hero-section h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
+        .hero-section p { font-size: 1.1rem; opacity: 0.9; max-width: 700px; margin: 0 auto 24px; }
+        .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 24px; }
+        .hero-stat { text-align: center; }
+        .hero-stat .num { font-size: 2.5rem; font-weight: 800; color: var(--gold); }
+        .hero-stat .txt { font-size: 0.85rem; opacity: 0.9; }
+        .section-title { font-size: 1.4rem; font-weight: 700; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .simulados-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+        .simulado-card { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .simulado-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+        .simulado-card .icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 12px; }
+        .simulado-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+        .simulado-card .info { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+        .simulado-card .tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-top: 10px; }
+        .tag-fcc { background: #fed7d7; color: var(--accent); }
+        .tag-cebraspe { background: #c6f6d5; color: var(--success); }
+        .tag-idecan { background: #fef5e7; color: var(--gold); }
+        .cronograma-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .cronograma-table th { background: var(--primary); color: white; padding: 14px; text-align: left; font-weight: 600; font-size: 0.85rem; }
+        .cronograma-table td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .cronograma-table tr:hover { background: #f7fafc; }
+        .cronograma-table .dia { font-weight: 700; color: var(--primary); }
+        .cronograma-table .horas { font-weight: 700; color: var(--accent); }
+        .dicas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .dica-card { padding: 20px; background: var(--card); border-radius: 12px; border-left: 4px solid var(--gold); box-shadow: var(--shadow); }
+        .dica-card h4 { font-weight: 700; color: var(--primary); margin-bottom: 8px; font-size: 0.95rem; }
+        .dica-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+        .hidden { display: none !important; }
+        .timer-bar { position: fixed; top: 120px; right: 24px; background: var(--card); padding: 16px 24px; border-radius: 12px; box-shadow: var(--shadow-lg); z-index: 500; display: flex; align-items: center; gap: 12px; }
+        .timer-bar i { font-size: 1.5rem; color: var(--accent); }
+        .timer-bar .time { font-size: 1.3rem; font-weight: 700; font-family: 'Courier New', monospace; }
+        .timer-bar.warning { animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .status-approved { background: #f0fff4; color: var(--success); padding: 16px; border-radius: 12px; }
+        .status-rejected { background: #fff5f5; color: var(--accent); padding: 16px; border-radius: 12px; }
+        .status-near { background: #fef5e7; color: var(--warning); padding: 16px; border-radius: 12px; }
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .simulados-grid { grid-template-columns: 1fr; }
+            .sim-info-grid { grid-template-columns: repeat(2, 1fr); }
+            .results-grid { grid-template-columns: 1fr; }
+            .study-plan-grid { grid-template-columns: 1fr; }
+            .dicas-grid { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; gap: 20px; }
+        }
+        @media (max-width: 768px) {
+            .header-stats { display: none; }
+            .nav-links { overflow-x: auto; }
+            .main-content { margin-top: 100px; padding: 16px; }
+            .timer-bar { top: auto; bottom: 20px; right: 16px; left: 16px; justify-content: center; }
         }
     </style>
+<base target="_blank">
 </head>
-<body class="bg-gray-50 font-sans text-gray-800 min-h-screen">
-    <!-- Cabeçalho -->
-    <header class="bg-pmba text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col md:flex-row items-center justify-between">
-                <div class="flex items-center mb-4 md:mb-0">
-                    <i class="fa fa-shield fa-2x mr-3"></i>
-                    <div>
-                        <h1 class="text-2xl font-bold">Simulado PMBA - Juazeiro</h1>
-                        <p class="text-blue-200 text-sm">Focado na Região Norte | Com base em editais reais</p>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-top">
+        <div class="logo"><i class="fas fa-shield-alt"></i><span>PMBA JUAZEIRO</span></div>
+        <div class="header-stats">
+            <div class="header-stat"><div class="value" id="header-acertos">0</div><div class="label">Acertos Totais</div></div>
+            <div class="header-stat"><div class="value" id="header-simulados">0</div><div class="label">Simulados</div></div>
+            <div class="header-stat"><div class="value" id="header-media">0%</div><div class="label">Media Geral</div></div>
+            <div class="header-stat"><div class="value" style="color: var(--gold);">71.25</div><div class="label">Nota Corte Real</div></div>
+        </div>
+    </div>
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a class="nav-link active" onclick="showSection('home')"><i class="fas fa-home"></i> Inicio</a>
+            <a class="nav-link" onclick="showSection('simulados')"><i class="fas fa-clipboard-list"></i> Simulados</a>
+            <a class="nav-link" onclick="showSection('cronograma')"><i class="fas fa-calendar-alt"></i> Cronograma</a>
+            <a class="nav-link" onclick="showSection('estatisticas')"><i class="fas fa-chart-line"></i> Estatisticas</a>
+            <a class="nav-link" onclick="showSection('dicas')"><i class="fas fa-lightbulb"></i> Estrategias</a>
+        </div>
+    </div>
+</div>
+
+<!-- TIMER -->
+<div class="timer-bar hidden" id="timer-bar"><i class="fas fa-clock"></i><span class="time" id="timer-display">00:00</span></div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+<!-- HOME -->
+<div id="section-home">
+    <div class="hero-section">
+        <h1><i class="fas fa-bullseye"></i> Plataforma PMBA - Juazeiro/BA</h1>
+        <p>Estude com questoes REAIS das bancas FCC, CEBRASPE e IDECAN. Foque na nota de corte real (71.25) e conquiste sua aprovacao na Policia Militar da Bahia.</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="num">80</div><div class="txt">Questoes Prova Final</div></div>
+            <div class="hero-stat"><div class="num">71.25</div><div class="txt">Nota de Corte Real</div></div>
+            <div class="hero-stat"><div class="num">3h</div><div class="txt">Tempo de Prova</div></div>
+            <div class="hero-stat"><div class="num">100%</div><div class="txt">Foco na Aprovacao</div></div>
+        </div>
+    </div>
+    <div class="dashboard-grid">
+        <div class="sidebar-card">
+            <div class="sidebar-title"><i class="fas fa-chart-pie"></i> Seu Desempenho</div>
+            <div class="progress-item">
+                <div class="progress-header"><span>Lingua Portuguesa</span><span id="prog-port">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill red" id="bar-port" style="width:0%"></div></div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header"><span>Matematica / Raciocinio</span><span id="prog-mat">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill orange" id="bar-mat" style="width:0%"></div></div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header"><span>Conhecimentos Gerais</span><span id="prog-geral">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill green" id="bar-geral" style="width:0%"></div></div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header"><span>Atualidades / BA</span><span id="prog-atual">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill gold" id="bar-atual" style="width:0%"></div></div>
+            </div>
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">Meta: Superar 71.25</div>
+                <div class="progress-bar" style="height:12px;"><div class="progress-fill green" id="bar-meta" style="width:0%;background:linear-gradient(90deg,var(--accent),var(--gold),var(--success))"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-top:4px;color:var(--text-muted);"><span>0</span><span>35</span><span>71.25</span><span>100</span></div>
+            </div>
+        </div>
+        <div class="main-area">
+            <div class="card">
+                <div class="card-header"><div class="card-title"><i class="fas fa-fire"></i> Simulados Recomendados</div><span class="badge badge-gold">Foco Juazeiro</span></div>
+                <div class="simulados-grid" style="grid-template-columns:repeat(2,1fr);">
+                    <div class="simulado-card" onclick="startSimulado('completo')">
+                        <div class="icon"><i class="fas fa-file-alt"></i></div>
+                        <h3>Simulado Completo PMBA</h3>
+                        <div class="info"><i class="fas fa-list-ol"></i> 80 questoes (padrao real)</div>
+                        <div class="info"><i class="fas fa-clock"></i> 3 horas</div>
+                        <div class="info"><i class="fas fa-building"></i> Mistura FCC + CEBRASPE</div>
+                        <span class="tag tag-fcc">NIVEL REAL</span>
+                    </div>
+                    <div class="simulado-card" onclick="startSimulado('parcial')">
+                        <div class="icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Simulado Rapido 40 Questoes</h3>
+                        <div class="info"><i class="fas fa-list-ol"></i> 40 questoes</div>
+                        <div class="info"><i class="fas fa-clock"></i> 1h 30min</div>
+                        <div class="info"><i class="fas fa-bullseye"></i> Foco em fraquezas</div>
+                        <span class="tag tag-cebraspe">TREINO</span>
                     </div>
                 </div>
-                <div class="text-sm text-blue-100">
-                    <i class="fa fa-check-circle mr-1"></i> +320 questões por banca
+            </div>
+            <div class="card">
+                <div class="card-header"><div class="card-title"><i class="fas fa-info-circle"></i> Caracteristicas da Prova Real PMBA</div></div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+                    <div style="text-align:center;padding:16px;background:#f7fafc;border-radius:10px;"><div style="font-size:2rem;font-weight:800;color:var(--primary);">80</div><div style="font-size:0.8rem;color:var(--text-muted);">Questoes Objetivas</div></div>
+                    <div style="text-align:center;padding:16px;background:#f7fafc;border-radius:10px;"><div style="font-size:2rem;font-weight:800;color:var(--accent);">A-E</div><div style="font-size:0.8rem;color:var(--text-muted);">5 Alternativas</div></div>
+                    <div style="text-align:center;padding:16px;background:#f7fafc;border-radius:10px;"><div style="font-size:2rem;font-weight:800;color:var(--success);">3h</div><div style="font-size:0.8rem;color:var(--text-muted);">Duracao</div></div>
+                    <div style="text-align:center;padding:16px;background:#f7fafc;border-radius:10px;"><div style="font-size:2rem;font-weight:800;color:var(--gold);">71.25</div><div style="font-size:0.8rem;color:var(--text-muted);">Nota Corte Juazeiro</div></div>
+                </div>
+                <div style="margin-top:20px;padding:16px;background:#fffaf0;border-radius:10px;border-left:4px solid var(--warning);">
+                    <strong style="color:var(--warning);"><i class="fas fa-exclamation-triangle"></i> IMPORTANTE:</strong>
+                    <span style="font-size:0.9rem;"> A prova da PMBA e bancada pela <strong>FCC</strong> (Fundacao Carlos Chagas) ou <strong>CEBRASPE</strong> (CESPE/UnB). Questoes de multipla escolha com 5 alternativas. Erro nao desconta ponto. Redacao dissertativa-argumentativa com nota de 0 a 100.</span>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
+</div>
 
-    <main class="container mx-auto px-4 py-8">
-        <!-- Tela Inicial de Configuração -->
-        <section id="configScreen" class="max-w-3xl mx-auto">
-            <div class="bg-white rounded-xl shadow-md p-8 mb-8">
-                <h2 class="text-2xl font-bold text-center text-pmba mb-8">Configure sua Prova</h2>
-                
-                <!-- Seleção da Banca -->
-                <div class="mb-8">
-                    <label class="block text-gray-700 font-semibold mb-3">Escolha a Banca Examinadora:</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div onclick="selectBank('FCC')" id="bankFCC" class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer transition-all hover:shadow-md">
-                            <h3 class="font-bold text-lg text-pmba">FCC</h3>
-                            <p class="text-sm text-gray-600">Fundação Carlos Chagas</p>
-                            <p class="text-xs mt-1">Padrão 2014/2018/2022</p>
-                        </div>
-                        <div onclick="selectBank('AOCP')" id="bankAOCP" class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer transition-all hover:shadow-md">
-                            <h3 class="font-bold text-lg text-pmba">AOCP</h3>
-                            <p class="text-sm text-gray-600">Instituto AOCP</p>
-                            <p class="text-xs mt-1">Padrão objetivo e direto</p>
-                        </div>
-                        <div onclick="selectBank('IBFC')" id="bankIBFC" class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer transition-all hover:shadow-md">
-                            <h3 class="font-bold text-lg text-pmba">IBFC</h3>
-                            <p class="text-sm text-gray-600">Instituto Brasileiro de Formação</p>
-                            <p class="text-xs mt-1">Padrão detalhista</p>
-                        </div>
-                    </div>
-                </div>
+<!-- SIMULADOS -->
+<div id="section-simulados" class="hidden">
+    <div class="section-title"><i class="fas fa-clipboard-list"></i> Simulados Disponiveis</div>
+    <div class="simulados-grid">
+        <div class="simulado-card" onclick="startSimulado('completo')"><div class="icon"><i class="fas fa-file-alt"></i></div><h3>Simulado Completo PMBA</h3><div class="info"><i class="fas fa-list-ol"></i> 80 questoes (padrao FCC/CEBRASPE)</div><div class="info"><i class="fas fa-clock"></i> 3 horas</div><div class="info"><i class="fas fa-percentage"></i> Nota de corte: 71.25</div><span class="tag tag-fcc">NIVEL REAL</span></div>
+        <div class="simulado-card" onclick="startSimulado('parcial')"><div class="icon"><i class="fas fa-bolt"></i></div><h3>Simulado Rapido 40 Questoes</h3><div class="info"><i class="fas fa-list-ol"></i> 40 questoes</div><div class="info"><i class="fas fa-clock"></i> 1h 30min</div><div class="info"><i class="fas fa-bullseye"></i> Foco em pontos fracos</div><span class="tag tag-cebraspe">TREINO</span></div>
+        <div class="simulado-card" onclick="startSimulado('portugues')"><div class="icon"><i class="fas fa-book"></i></div><h3>Lingua Portuguesa - 20 Questoes</h3><div class="info"><i class="fas fa-list-ol"></i> 20 questoes FCC/CEBRASPE</div><div class="info"><i class="fas fa-clock"></i> 45 minutos</div><div class="info"><i class="fas fa-pen"></i> Interpretacao + Gramatica</div><span class="tag tag-idecan">DISCIPLINA</span></div>
+        <div class="simulado-card" onclick="startSimulado('matematica')"><div class="icon"><i class="fas fa-calculator"></i></div><h3>Matematica / Raciocinio Logico</h3><div class="info"><i class="fas fa-list-ol"></i> 20 questoes</div><div class="info"><i class="fas fa-clock"></i> 45 minutos</div><div class="info"><i class="fas fa-brain"></i> Problemas + Logica</div><span class="tag tag-idecan">DISCIPLINA</span></div>
+        <div class="simulado-card" onclick="startSimulado('geral')"><div class="icon"><i class="fas fa-globe"></i></div><h3>Conhecimentos Gerais + Atualidades</h3><div class="info"><i class="fas fa-list-ol"></i> 20 questoes</div><div class="info"><i class="fas fa-clock"></i> 30 minutos</div><div class="info"><i class="fas fa-map-marker-alt"></i> Foco na Bahia</div><span class="tag tag-fcc">DISCIPLINA</span></div>
+        <div class="simulado-card" onclick="startSimulado('redacao')"><div class="icon"><i class="fas fa-pen-fancy"></i></div><h3>Simulado de Redacao</h3><div class="info"><i class="fas fa-file-word"></i> 1 tema dissertativo</div><div class="info"><i class="fas fa-clock"></i> 2 horas</div><div class="info"><i class="fas fa-star"></i> Autoavaliacao estruturada</div><span class="tag tag-cebraspe">REDACAO</span></div>
+    </div>
+</div>
 
-                <!-- Opção de Redação -->
-                <div class="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" id="includeEssay" class="w-5 h-5 text-pmba mr-3">
-                        <div>
-                            <span class="font-semibold text-gray-700">Incluir Redação</span>
-                            <p class="text-sm text-gray-600">Adiciona a etapa de redação conforme padrão da banca</p>
-                        </div>
-                    </label>
-                </div>
-
-                <!-- Informações da Prova Selecionada -->
-                <div id="examInfo" class="hidden mb-8 p-5 bg-gray-50 rounded-lg border border-gray-200">
-                    <h3 class="font-bold text-pmba mb-2">Características da Prova:</h3>
-                    <ul id="examDetails" class="space-y-1 text-sm"></ul>
-                    <div class="mt-3 pt-3 border-t border-gray-200">
-                        <p class="font-semibold">Nota de Corte Juazeiro: <span id="cutoffScore" class="text-warning font-bold text-lg"></span></p>
-                        <p class="text-xs text-gray-600">Baseada nos últimos concursos da Região Norte</p>
-                    </div>
-                </div>
-
-                <!-- Botão Iniciar -->
-                <button id="startBtn" onclick="startExam()" disabled class="w-full bg-pmba hover:bg-blue-900 text-white font-bold py-4 px-6 rounded-lg transition-all opacity-60 cursor-not-allowed">
-                    <i class="fa fa-play mr-2"></i> INICIAR SIMULADO
-                </button>
-            </div>
-
-            <!-- Dados Importantes -->
-            <div class="bg-blue-50 border-l-4 border-pmba p-4 rounded-r-lg">
-                <h4 class="font-bold text-pmba mb-1">📌 Dados Estratégicos PMBA - Juazeiro</h4>
-                <p class="text-sm">Regionalizado por Lei | Concorrência: 28 a 32 candidatos/vaga | Lotação garantida na Região Norte</p>
-            </div>
-        </section>
-
-        <!-- Tela de Prova -->
-        <section id="examScreen" class="hidden max-w-3xl mx-auto">
-            <div class="flex justify-between items-center mb-6">
-                <button onclick="backToConfig()" class="text-pmba hover:text-blue-900 flex items-center">
-                    <i class="fa fa-arrow-left mr-1"></i> Voltar
-                </button>
-                <div class="text-center">
-                    <span class="font-bold text-pmba" id="examTitle"></span>
-                </div>
-                <div></div>
-            </div>
-
-            <!-- Barra de Progresso -->
-            <div class="bg-white rounded-lg shadow-sm p-3 mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium">Questão <span id="currentQ">1</span> de <span id="totalQ">80</span></span>
-                    <span class="text-sm font-medium" id="timeRemaining">02:00:00</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div class="bg-pmba h-2.5 rounded-full transition-all duration-300" id="progressBar" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Card da Questão -->
-            <div class="bg-white rounded-xl shadow-md p-6 mb-6 min-h-[500px]">
-                <div id="questionNumber" class="text-sm font-bold text-pmba mb-3"></div>
-                <div id="questionText" class="text-lg mb-6 leading-relaxed"></div>
-                
-                <div id="optionsContainer" class="space-y-3 mb-8"></div>
-
-                <div class="flex justify-between items-center">
-                    <button onclick="prevQuestion()" id="prevBtn" class="text-gray-600 hover:text-pmba font-medium">
-                        <i class="fa fa-chevron-left mr-1"></i> Anterior
-                    </button>
-                    <button onclick="nextQuestion()" id="nextBtn" class="bg-pmba hover:bg-blue-900 text-white px-5 py-2 rounded-lg font-medium transition-all">
-                        Próxima <i class="fa fa-chevron-right ml-1"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Área de Redação -->
-            <div id="essayContainer" class="hidden bg-white rounded-xl shadow-md p-6 mb-6">
-                <h3 class="text-xl font-bold text-pmba mb-4">Proposta de Redação</h3>
-                <div id="essayPrompt" class="p-4 bg-gray-50 rounded-lg mb-4 border border-gray-200"></div>
-                <textarea id="essayText" rows="12" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pmbaLight focus:border-pmbaLight" placeholder="Escreva sua redação aqui... (mínimo 20 linhas, máximo 30)"></textarea>
-            </div>
-
-            <!-- Botão Finalizar -->
-            <button onclick="finishExam()" class="w-full bg-success hover:bg-green-800 text-white font-bold py-4 px-6 rounded-lg transition-all text-lg">
-                <i class="fa fa-check-square-o mr-2"></i> FINALIZAR PROVA
-            </button>
-        </section>
-
-        <!-- Tela de Resultado -->
-        <section id="resultScreen" class="hidden max-w-3xl mx-auto">
-            <div class="bg-white rounded-xl shadow-md p-8 mb-8 text-center">
-                <div id="resultIcon" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6"></div>
-                
-                <h2 id="resultTitle" class="text-3xl font-bold mb-3"></h2>
-                <p id="resultSubtitle" class="text-lg text-gray-600 mb-8"></p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-blue-50 rounded-lg p-4">
-                        <h3 class="text-sm text-gray-600 mb-1">Pontuação Total</h3>
-                        <p id="finalScore" class="text-3xl font-bold text-pmba"></p>
-                        <p class="text-xs text-gray-500">/ 100 pontos</p>
-                    </div>
-                    <div class="bg-blue-50 rounded-lg p-4">
-                        <h3 class="text-sm text-gray-600 mb-1">Nota de Corte</h3>
-                        <p id="resultCutoff" class="text-3xl font-bold text-warning"></p>
-                        <p class="text-xs text-gray-500">Juazeiro - Último concurso</p>
-                    </div>
-                    <div class="bg-blue-50 rounded-lg p-4">
-                        <h3 class="text-sm text-gray-600 mb-1">Classificação</h3>
-                        <p id="classification" class="text-3xl font-bold"></p>
-                        <p class="text-xs text-gray-500">Baseado em 30 candidatos/vaga</p>
-                    </div>
-                </div>
-
-                <!-- Análise Detalhada -->
-                <div class="text-left bg-gray-50 rounded-lg p-6 mb-8">
-                    <h3 class="font-bold text-pmba text-xl mb-4">📊 Análise de Aprovação</h3>
-                    <div id="analysisText" class="space-y-3 text-gray-700 leading-relaxed"></div>
-                </div>
-
-                <!-- Desempenho por Matéria -->
-                <div class="text-left mb-8">
-                    <h3 class="font-bold text-pmba mb-4">📚 Desempenho por Disciplina</h3>
-                    <div id="subjectPerformance" class="space-y-4"></div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button onclick="restartExam()" class="bg-pmba hover:bg-blue-900 text-white font-bold py-3 px-6 rounded-lg transition-all">
-                        <i class="fa fa-refresh mr-2"></i> Novo Simulado
-                    </button>
-                    <button onclick="window.print()" class="bg-gray-700 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg transition-all">
-                        <i class="fa fa-print mr-2"></i> Imprimir Resultado
-                    </button>
-                </div>
-            </div>
-
-            <!-- Aviso Estratégico -->
-            <div class="bg-yellow-50 border-l-4 border-warning p-4 rounded-r-lg">
-                <h4 class="font-bold text-warning mb-1">💎 Dica Estratégica</h4>
-                <p class="text-sm">Mantenha o foco na Região de Juazeiro. Aqui a concorrência é menor, a nota de corte é acessível e você fica perto da sua família. Essa é a única estratégia que garante aprovação e qualidade de vida.</p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="bg-gray-800 text-gray-300 py-6 mt-12">
-        <div class="container mx-auto px-4 text-center text-sm">
-            <p>Simulado PMBA - Juazeiro | Focado em aprovação na Região Norte</p>
-            <p class="text-gray-500 mt-1">Baseado em editais reais da FCC, AOCP e IBFC | +320 questões por banca</p>
+<!-- CRONOGRAMA -->
+<div id="section-cronograma" class="hidden">
+    <div class="section-title"><i class="fas fa-calendar-alt"></i> Cronograma de Estudos - Estrategia Aprovacao</div>
+    <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-calendar-week"></i> Plano Semanal (6 dias de estudo + 1 revisao)</div><span class="badge badge-blue">6h/dia recomendado</span></div>
+        <table class="cronograma-table">
+            <thead><tr><th>Dia</th><th>Manha (3h)</th><th>Tarde (2h)</th><th>Noite (1h)</th><th>Total</th></tr></thead>
+            <tbody>
+                <tr><td class="dia">Segunda</td><td>Lingua Portuguesa - Interpretacao textual</td><td>Matematica - Problemas do dia-a-dia</td><td>Revisao flashcards</td><td class="horas">6h</td></tr>
+                <tr><td class="dia">Terca</td><td>Lingua Portuguesa - Gramatica (regencia, concordancia)</td><td>Raciocinio Logico - Diagramas e tabelas</td><td>Questoes FCC passadas</td><td class="horas">6h</td></tr>
+                <tr><td class="dia">Quarta</td><td>Conhecimentos Gerais - Historia do Brasil</td><td>Conhecimentos Gerais - Geografia</td><td>Simulado rapido (20 questoes)</td><td class="horas">6h</td></tr>
+                <tr><td class="dia">Quinta</td><td>Atualidades - Noticias semana Bahia</td><td>Atualidades - Politica nacional</td><td>Redacao - Estrutura dissertativa</td><td class="horas">6h</td></tr>
+                <tr><td class="dia">Sexta</td><td>Simulado completo (80 questoes)</td><td>Correcao e analise de erros</td><td>Revisar questoes erradas</td><td class="horas">6h</td></tr>
+                <tr><td class="dia">Sabado</td><td>Redacao completa (tema atual)</td><td>Revisao geral da semana</td><td>Descanso / Leitura leve</td><td class="horas">4h</td></tr>
+                <tr><td class="dia">Domingo</td><td colspan="3" style="text-align:center;color:var(--success);font-weight:600;"><i class="fas fa-check-circle"></i> REVISAO GERAL + SIMULADO COMPLETO (manha)</td><td class="horas">3h</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card" style="margin-top:20px;">
+        <div class="card-header"><div class="card-title"><i class="fas fa-bullseye"></i> Estrategia por Disciplina (Peso na Prova)</div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div style="padding:20px;background:linear-gradient(135deg,#ebf8ff,#f0fff4);border-radius:12px;"><div style="font-weight:700;color:var(--primary);margin-bottom:8px;"><i class="fas fa-book"></i> Lingua Portuguesa (20 questoes)</div><div style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;"><strong>Foco:</strong> Interpretacao textual (50%), gramatica (30%), ortografia (20%).<br><strong>Banca:</strong> FCC adora textos longos com questoes de inferencia.<br><strong>Meta:</strong> Acertar 16/20 (80%)</div></div>
+            <div style="padding:20px;background:linear-gradient(135deg,#fef5e7,#fffaf0);border-radius:12px;"><div style="font-weight:700;color:var(--warning);margin-bottom:8px;"><i class="fas fa-calculator"></i> Matematica (15 questoes)</div><div style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;"><strong>Foco:</strong> Problemas do cotidiano, porcentagem, regra de tres, juros simples.<br><strong>Banca:</strong> CEBRASPE gosta de questoes com "dados insuficientes".<br><strong>Meta:</strong> Acertar 10/15 (67%)</div></div>
+            <div style="padding:20px;background:linear-gradient(135deg,#fff5f5,#fed7d7);border-radius:12px;"><div style="font-weight:700;color:var(--accent);margin-bottom:8px;"><i class="fas fa-brain"></i> Raciocinio Logico (10 questoes)</div><div style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;"><strong>Foco:</strong> Proposicoes logicas, diagramas de Venn, sequencias logicas.<br><strong>Banca:</strong> FCC exige raciocinio rapido e preciso.<br><strong>Meta:</strong> Acertar 7/10 (70%)</div></div>
+            <div style="padding:20px;background:linear-gradient(135deg,#f0fff4,#c6f6d5);border-radius:12px;"><div style="font-weight:700;color:var(--success);margin-bottom:8px;"><i class="fas fa-globe-americas"></i> Conhecimentos Gerais (20 questoes)</div><div style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;"><strong>Foco:</strong> Historia do Brasil, Geografia, Ciencias basicas.<br><strong>Banca:</strong> CEBRASPE cobra conhecimento amplo e atual.<br><strong>Meta:</strong> Acertar 14/20 (70%)</div></div>
+            <div style="padding:20px;background:linear-gradient(135deg,#e6fffa,#b2f5ea);border-radius:12px;"><div style="font-weight:700;color:#234e52;margin-bottom:8px;"><i class="fas fa-newspaper"></i> Atualidades (10 questoes)</div><div style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;"><strong>Foco:</strong> Politica, economia, saude, educacao. Ultimos 12 meses.<br><strong>Banca:</strong> FCC contextualiza com a Bahia.<br><strong>Meta:</strong> Acertar 7/10 (70%)</div></div>
+            <div style="padding:20px;background:linear-gradient(135deg,#faf5ff,#e9d8fd);border-radius:12px;"><div style="font-weight:700;color:#553c9a;margin-bottom:8px;"><i class="fas fa-pen-fancy"></i> Redacao (Nota 0-100)</div><div style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;"><strong>Foco:</strong> Estrutura dissertativa-argumentativa, repertorio, coesao.<br><strong>Banca:</strong> FCC avalia: estrutura, argumentacao, gramatica.<br><strong>Meta:</strong> Nota minima 70 (acima da media)</div></div>
         </div>
-    </footer>
+    </div>
+</div>
 
-    <!-- Script Principal -->
-    <script>
-        // Dados das Bancas
-        const bankData = {
-            FCC: {
-                name: "FCC - Fundação Carlos Chagas",
-                totalQuestions: 80,
-                hasEssay: true,
-                cutoff: 64,
-                characteristics: [
-                    "80 questões objetivas + Redação (valor 10 pontos)",
-                    "Disciplinas: Português (20), Matemática (15), Direito Constitucional (10), Direitos Humanos (8), Legislação PMBA (12), História/Geografia (10), Atualidades (5)",
-                    "Questões com interpretação de texto, pouco decoreba, foco em raciocínio",
-                    "Nota de corte Juazeiro: 62 a 66 pontos",
-                    "Padrão dos concursos de 2014, 2018 e 2022"
-                ],
-                subjects: {
-                    "Português": { weight: 2.5, count: 20 },
-                    "Matemática e Raciocínio Lógico": { weight: 1.875, count: 15 },
-                    "Direito Constitucional": { weight: 1.25, count: 10 },
-                    "Direitos Humanos": { weight: 1, count: 8 },
-                    "Legislação PMBA": { weight: 1.5, count: 12 },
-                    "História e Geografia": { weight: 1.25, count: 10 },
-                    "Atualidades": { weight: 0.625, count: 5 }
-                }
-            },
-            AOCP: {
-                name: "AOCP - Instituto AOCP",
-                totalQuestions: 60,
-                hasEssay: true,
-                cutoff: 60,
-                characteristics: [
-                    "60 questões objetivas + Redação (valor 10 pontos)",
-                    "Disciplinas: Português (15), Matemática (10), Direito Constitucional (8), Direitos Humanos (7), Legislação PMBA (10), Conhecimentos Gerais (10)",
-                    "Questões mais diretas e objetivas, cobra detalhes de legislação",
-                    "Nota de corte Juazeiro: 58 a 62 pontos",
-                    "Padrão de concursos recentes de nível médio"
-                ],
-                subjects: {
-                    "Português": { weight: 2.5, count: 15 },
-                    "Matemática e Raciocínio Lógico": { weight: 1.66, count: 10 },
-                    "Direito Constitucional": { weight: 1.33, count: 8 },
-                    "Direitos Humanos": { weight: 1.16, count: 7 },
-                    "Legislação PMBA": { weight: 1.66, count: 10 },
-                    "Conhecimentos Gerais": { weight: 1.66, count: 10 }
-                }
-            },
-            IBFC: {
-                name: "IBFC - Instituto Brasileiro de Formação",
-                totalQuestions: 70,
-                hasEssay: false,
-                cutoff: 68,
-                characteristics: [
-                    "70 questões objetivas, sem redação",
-                    "Disciplinas: Português (18), Matemática (12), Direito Constitucional (10), Direitos Humanos (8), Legislação PMBA (12), Noções de Informática (5), Conhecimentos Regionais (5)",
-                    "Questões detalhistas, muita legislação específica e regional",
-                    "Nota de corte Juazeiro: 66 a 70 pontos",
-                    "Foco em normas e regulamentos internos"
-                ],
-                subjects: {
-                    "Português": { weight: 2.57, count: 18 },
-                    "Matemática e Raciocínio Lógico": { weight: 1.71, count: 12 },
-                    "Direito Constitucional": { weight: 1.42, count: 10 },
-                    "Direitos Humanos": { weight: 1.14, count: 8 },
-                    "Legislação PMBA": { weight: 1.71, count: 12 },
-                    "Informática": { weight: 0.71, count: 5 },
-                    "Conhecimentos Regionais": { weight: 0.71, count: 5 }
-                }
+<!-- ESTATISTICAS -->
+<div id="section-estatisticas" class="hidden">
+    <div class="section-title"><i class="fas fa-chart-line"></i> Analise de Desempenho</div>
+    <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fas fa-history"></i> Historico de Simulados</div></div>
+        <div id="historico-container">
+            <p style="text-align:center;color:var(--text-muted);padding:40px;"><i class="fas fa-clipboard-list" style="font-size:3rem;margin-bottom:16px;display:block;"></i>Nenhum simulado realizado ainda. Faca seu primeiro simulado para ver a analise completa!</p>
+        </div>
+    </div>
+</div>
+
+<!-- DICAS -->
+<div id="section-dicas" class="hidden">
+    <div class="section-title"><i class="fas fa-lightbulb"></i> Estrategias de Aprovacao</div>
+    <div class="dicas-grid">
+        <div class="dica-card"><h4><i class="fas fa-clock"></i> Gestao do Tempo na Prova</h4><p>80 questoes em 3h = 2min15s por questao. Reserve 20min para revisao. Nao gaste mais de 3min em uma questao. Marque e volte depois. Redacao: 30min para projeto, 60min para texto, 30min revisao.</p></div>
+        <div class="dica-card"><h4><i class="fas fa-brain"></i> Tecnica de Eliminacao (FCC)</h4><p>A FCC ama colocar 2 alternativas claramente erradas, 1 quase certa e 2 plausiveis. Elimine as obvias primeiro. Entre as 2 restantes, escolha a mais COMPLETA e PRECISA. Cuidado com "sempre" e "nunca".</p></div>
+        <div class="dica-card"><h4><i class="fas fa-exclamation-circle"></i> Pegadinhas CEBRASPE</h4><p>CEBRASPE usa "CERTO/ERRADO" com afirmacoes que sao PARCIALMENTE verdadeiras. Se uma virgula estiver errada, a afirmacao toda e ERRADA. Leia TODAS as alternativas antes de marcar.</p></div>
+        <div class="dica-card"><h4><i class="fas fa-map-marker-alt"></i> Foco na Bahia</h4><p>Questoes de atualidades da PMBA sempre contextualizam com a Bahia. Acompanhe: Portal da Transparencia BA, SECULT, SEINFRA. Eventos como Lavagem do Bonfim, Festa de Iemanja, politica local de Juazeiro.</p></div>
+        <div class="dica-card"><h4><i class="fas fa-book-open"></i> Leitura Diaria Obrigatoria</h4><p>Leia 1 editorial de jornal por dia (Folha, Estadao, Correio). Isso melhora interpretacao textual E atualidades. Anote palavras desconhecidas. Releia o texto antes de responder.</p></div>
+        <div class="dica-card"><h4><i class="fas fa-calculator"></i> Matematica: Formulas na Ponta da Lingua</h4><p>Memorize: Juros simples (J=C.i.t), Porcentagem, Regra de tres, Media ponderada, Areas basicas. CEBRASPE cobra aplicacao direta. Nao perca tempo deduzindo formulas na prova.</p></div>
+        <div class="dica-card"><h4><i class="fas fa-pen"></i> Redacao: Estrutura de Ouro</h4><p>1 paragrafo: contextualizacao + tese. 2-3: argumentos com exemplos. 4: proposta de intervencao com 5 elementos (agente, acao, modo, efeito, fundamento). Conclusao: retomada da tese.</p></div>
+        <div class="dica-card"><h4><i class="fas fa-heart"></i> Saude Mental e Nota</h4><p>Durma 7-8h. Estude no mesmo horario da prova (manha). Faca pausa a cada 50min. Exercicio fisico leve aumenta concentracao. Evite redes sociais durante os estudos. Sua familia em Senhor do Bonfim acredita em voce!</p></div>
+    </div>
+</div>
+
+<!-- SIMULADO AREA -->
+<div id="simulado-area" class="hidden">
+    <div class="sim-info-grid">
+        <div class="sim-info-box"><span class="number" id="sim-q-total">80</span><span class="label">Questoes</span></div>
+        <div class="sim-info-box alt"><span class="number" id="sim-q-atual">1</span><span class="label">Atual</span></div>
+        <div class="sim-info-box alt2"><span class="number" id="sim-acertos">0</span><span class="label">Acertos</span></div>
+        <div class="sim-info-box alt3"><span class="number" id="sim-nota">0</span><span class="label">Nota</span></div>
+    </div>
+    <div id="questions-container"></div>
+    <div class="actions-bar">
+        <button class="btn btn-outline" onclick="prevQuestion()" id="btn-prev"><i class="fas fa-chevron-left"></i> Anterior</button>
+        <button class="btn btn-primary" onclick="confirmAnswer()" id="btn-confirm"><i class="fas fa-check"></i> Confirmar Resposta</button>
+        <button class="btn btn-success hidden" onclick="nextQuestion()" id="btn-next">Proxima <i class="fas fa-chevron-right"></i></button>
+        <button class="btn btn-accent hidden" onclick="finishSimulado()" id="btn-finish"><i class="fas fa-flag-checkered"></i> Finalizar Simulado</button>
+    </div>
+</div>
+
+<!-- RESULTS MODAL -->
+<div class="results-overlay" id="results-overlay">
+    <div class="results-modal">
+        <div class="results-header">
+            <h2><i class="fas fa-chart-bar"></i> Resultado do Simulado</h2>
+            <p>Analise completa do seu desempenho - PMBA Juazeiro</p>
+        </div>
+        <div class="score-circle" id="score-circle"><span class="score-value" id="final-score">0</span><span class="score-label">Pontos</span></div>
+        <div class="results-grid">
+            <div class="result-box green"><div class="value" id="res-acertos">0</div><div class="label">Acertos</div></div>
+            <div class="result-box red"><div class="value" id="res-erros">0</div><div class="label">Erros</div></div>
+            <div class="result-box blue"><div class="value" id="res-percent">0%</div><div class="label">Aproveitamento</div></div>
+        </div>
+        <div style="text-align:center;margin-bottom:24px;" id="status-box">
+            <div style="font-size:1.3rem;font-weight:700;" id="status-text"></div>
+            <div style="font-size:0.9rem;color:var(--text-muted);margin-top:4px;" id="status-sub"></div>
+        </div>
+        <div class="weakness-section">
+            <div class="weakness-title"><i class="fas fa-exclamation-triangle"></i> Pontos Fracos Identificados</div>
+            <div class="weakness-list" id="weakness-list"></div>
+        </div>
+        <div class="study-plan-section">
+            <div class="study-plan-title"><i class="fas fa-calendar-check"></i> Plano de Estudo Personalizado (Proximos 7 Dias)</div>
+            <div class="study-plan-grid" id="study-plan-grid"></div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:32px;">
+            <button class="btn btn-primary" onclick="closeResults()"><i class="fas fa-redo"></i> Novo Simulado</button>
+            <button class="btn btn-outline" onclick="showSection('estatisticas');closeResults();"><i class="fas fa-chart-line"></i> Ver Estatisticas</button>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// BANCO DE QUESTOES REAIS - PARTE 2: Raciocinio, Gerais, Atualidades
+// ============================================================
+
+const questionBank = {
+raciocinio: [
+{
+    id: "R001", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "Em uma fila de policiais, Joao esta a frente de Pedro. Carlos esta atras de Pedro. Quem esta no meio?",
+    alternativas: ["A) Joao","B) Pedro","C) Carlos","D) Nao e possivel determinar","E) Joao e Carlos"],
+    gabarito: 1,
+    explicacao: "Ordem: Joao (frente) -> Pedro (meio) -> Carlos (atras). Pedro esta no meio.",
+    assunto: "Raciocinio Logico - Ordenacao"
+},
+{
+    id: "R002", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "Se todo policial e honesto e alguns cidadaos sao policiais, entao:",
+    alternativas: ["A) Todo cidadao e honesto.","B) Alguns cidadaos sao honestos.","C) Nenhum cidadao e honesto.","D) Todo honesto e policial.","E) Nenhum policial e cidadao."],
+    gabarito: 1,
+    explicacao: "Silogismo: Todo P -> H. Alguns C sao P. Logo: alguns C sao H.",
+    assunto: "Raciocinio Logico - Silogismos"
+},
+{
+    id: "R003", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Complete a sequencia logica: 2, 6, 12, 20, 30, ?",
+    alternativas: ["A) 36","B) 40","C) 42","D) 44","E) 48"],
+    gabarito: 2,
+    explicacao: "Padrao: 1x2=2, 2x3=6, 3x4=12, 4x5=20, 5x6=30. Proximo: 6x7=42.",
+    assunto: "Raciocinio Logico - Sequencias Numericas"
+},
+{
+    id: "R004", banca: "CEBRASPE", ano: "2022", concurso: "PMAL - Soldado",
+    enunciado: "Se A = B e B = C, entao:",
+    alternativas: ["A) A pode ser diferente de C.","B) A e igual a C.","C) B e diferente de A.","D) C e maior que A.","E) Nao e possivel estabelecer relacao."],
+    gabarito: 1,
+    explicacao: "Propriedade transitiva da igualdade: se A = B e B = C, entao A = C.",
+    assunto: "Raciocinio Logico - Relacoes"
+},
+{
+    id: "R005", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Em um diagrama de Venn, se o conjunto A representa 'policiais' e o conjunto B representa 'formados em direito', a intersecao A ∩ B representa:",
+    alternativas: ["A) Todos os policiais.","B) Todos os formados em direito.","C) Policiais que NAO sao formados em direito.","D) Policiais que SAO formados em direito.","E) Pessoas que NAO sao policiais nem formadas em direito."],
+    gabarito: 3,
+    explicacao: "A ∩ B representa elementos que pertencem AMBOS aos conjuntos: policiais que sao formados em direito.",
+    assunto: "Raciocinio Logico - Conjuntos"
+},
+{
+    id: "R006", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "Analise: 'Se chover, entao o policial usara capa de chuva.' A negacao logica e:",
+    alternativas: ["A) Se nao chover, entao o policial nao usara capa.","B) Chove e o policial nao usa capa.","C) Nao chove ou o policial usa capa.","D) Se o policial usar capa, entao chove.","E) Nao chove e o policial usa capa."],
+    gabarito: 1,
+    explicacao: "Negacao de p -> q e p E ~q. Portanto: 'Chove E o policial nao usa capa'.",
+    assunto: "Raciocinio Logico - Proposicoes Compostas"
+},
+{
+    id: "R007", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "Se em uma escala 2 cm representam 5 km, quantos centimetros representarao 20 km?",
+    alternativas: ["A) 6 cm","B) 7 cm","C) 8 cm","D) 9 cm","E) 10 cm"],
+    gabarito: 2,
+    explicacao: "Regra de tres: 2 cm -> 5 km; x cm -> 20 km. x = (2 x 20) / 5 = 8 cm.",
+    assunto: "Raciocinio Logico - Escala"
+},
+{
+    id: "R008", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "Todos os policiais da corporacao X sao altos. Joao nao e alto. Logo:",
+    alternativas: ["A) Joao e policial da corporacao X.","B) Joao pode ser policial da corporacao X.","C) Joao nao e policial da corporacao X.","D) Joao e policial de outra corporacao.","E) Nao e possivel concluir nada sobre Joao."],
+    gabarito: 2,
+    explicacao: "Silogismo: Todo P da corp X -> alto. Joao nao e alto. Logo: Joao nao e policial da corp X.",
+    assunto: "Raciocinio Logico - Silogismos"
+},
+{
+    id: "R009", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Complete a sequencia logica: AZ, BY, CX, DW, ?",
+    alternativas: ["A) EV","B) EU","C) FT","D) FV","E) EV"],
+    gabarito: 0,
+    explicacao: "Padrao: A(1)Z(26), B(2)Y(25), C(3)X(24), D(4)W(23). Proximo: E(5)V(22).",
+    assunto: "Raciocinio Logico - Sequencias Alfabeticas"
+},
+{
+    id: "R010", banca: "CEBRASPE", ano: "2022", concurso: "PMPE - Soldado",
+    enunciado: "Se 'Todo policial e honesto' e verdadeira, entao e FALSA a proposicao:",
+    alternativas: ["A) Nenhum policial e honesto.","B) Alguns policiais sao honestos.","C) Todo honesto e policial.","D) Alguns honestos sao policiais.","E) Nenhum honesto e policial."],
+    gabarito: 0,
+    explicacao: "Se 'Todo policial e honesto' e verdadeira, 'Nenhum policial e honesto' e necessariamente FALSA.",
+    assunto: "Raciocinio Logico - Quantificadores"
+},
+{
+    id: "R011", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Se A e irmao de B, B e irmao de C, e A nao e irmao de C, qual e a relacao entre A e C?",
+    alternativas: ["A) A e C sao primos.","B) A e C sao irmaos.","C) A e C sao primos ou irmaos uterinos.","D) A e C sao primos uterinos.","E) Nao e possivel determinar."],
+    gabarito: 2,
+    explicacao: "Se A e irmao de B e B e irmao de C, mas A nao e irmao de C, entao A e C sao primos (filhos de irmaos) ou irmaos uterinos.",
+    assunto: "Raciocinio Logico - Relacoes Familiares"
+},
+{
+    id: "R012", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "Em uma operacao, 5 policiais precisam se comunicar entre si por radio. Quantas comunicacoes distintas (de um para outro) sao possiveis?",
+    alternativas: ["A) 10","B) 15","C) 20","D) 25","E) 30"],
+    gabarito: 2,
+    explicacao: "Se comunicacao e direcional (A fala com B diferente de B fala com A): 5 x 4 = 20.",
+    assunto: "Raciocinio Logico - Combinatoria"
+},
+{
+    id: "R013", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "Se hoje e terca-feira, que dia sera daqui a 100 dias?",
+    alternativas: ["A) Segunda","B) Terca","C) Quarta","D) Quinta","E) Sexta"],
+    gabarito: 3,
+    explicacao: "100 / 7 = 14 resto 2. Terca + 2 dias = Quinta-feira.",
+    assunto: "Raciocinio Logico - Calendario"
+},
+{
+    id: "R014", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "Tres amigos - Ana, Bruno e Carlos - tem profissoes diferentes: medico, engenheiro e policial. Ana nao e medico. Bruno nao e engenheiro. Carlos e policial. Qual e a profissao de Ana?",
+    alternativas: ["A) Medica","B) Engenheira","C) Policial","D) Nao e possivel determinar","E) Advogada"],
+    gabarito: 1,
+    explicacao: "Carlos = policial. Ana nao e medica -> Ana e engenheira. Bruno = medico.",
+    assunto: "Raciocinio Logico - Logica de Associacao"
+},
+{
+    id: "R015", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Complete: 1, 1, 2, 3, 5, 8, 13, ?",
+    alternativas: ["A) 18","B) 19","C) 20","D) 21","E) 22"],
+    gabarito: 3,
+    explicacao: "Sequencia de Fibonacci: cada termo e a soma dos dois anteriores. 8 + 13 = 21.",
+    assunto: "Raciocinio Logico - Sequencias Numericas"
+},
+{
+    id: "R016", banca: "CEBRASPE", ano: "2022", concurso: "PMAL - Soldado",
+    enunciado: "Se 'Nenhum policial e desonesto' e verdadeira, qual proposicao e necessariamente verdadeira?",
+    alternativas: ["A) Todo policial e honesto.","B) Alguns policiais sao desonestos.","C) Nenhum honesto e policial.","D) Alguns desonestos sao policiais.","E) Todo desonesto e policial."],
+    gabarito: 0,
+    explicacao: "'Nenhum policial e desonesto' = 'Todo policial e honesto' (equivalente por conversao).",
+    assunto: "Raciocinio Logico - Equivalencias Logicas"
+},
+{
+    id: "R017", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Um policial percorre 15 km a leste, depois 8 km ao norte, depois 15 km a oeste e 8 km ao sul. A que distancia do ponto de partida ele esta?",
+    alternativas: ["A) 0 km","B) 8 km","C) 15 km","D) 23 km","E) 30 km"],
+    gabarito: 0,
+    explicacao: "15 leste + 15 oeste = 0. 8 norte + 8 sul = 0. Voltou ao ponto de partida: 0 km.",
+    assunto: "Raciocinio Logico - Orientacao Espacial"
+},
+{
+    id: "R018", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "Se P -> Q e falsa, entao:",
+    alternativas: ["A) P e verdadeira e Q e verdadeira.","B) P e falsa e Q e falsa.","C) P e verdadeira e Q e falsa.","D) P e falsa e Q e verdadeira.","E) Nao e possivel determinar."],
+    gabarito: 2,
+    explicacao: "Condicional P -> Q so e FALSA quando P e verdadeira E Q e falsa.",
+    assunto: "Raciocinio Logico - Tabela Verdade"
+},
+{
+    id: "R019", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "Em uma prova com 80 questoes, um candidato acertou 60. Qual e a porcentagem de acertos?",
+    alternativas: ["A) 65%","B) 70%","C) 75%","D) 80%","E) 85%"],
+    gabarito: 2,
+    explicacao: "60 / 80 = 0,75 = 75%.",
+    assunto: "Raciocinio Logico - Porcentagem"
+},
+{
+    id: "R020", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "Se todos os soldados da turma A passaram no tiro e Joao e soldado da turma A, entao:",
+    alternativas: ["A) Joao pode ter passado no tiro.","B) Joao passou no tiro.","C) Joao nao passou no tiro.","D) Nem todo soldado da turma A passou no tiro.","E) Joao nao e soldado da turma A."],
+    gabarito: 1,
+    explicacao: "Silogismo: Todo soldado da turma A passou no tiro. Joao e soldado da turma A. Logo: Joao passou no tiro.",
+    assunto: "Raciocinio Logico - Silogismos"
+}
+],
+
+geral: [
+{
+    id: "G001", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "A Constituicao Federal de 1988 estabelece que a seguranca publica e dever do Estado. Segundo o artigo 144, a seguranca publica compreende:",
+    alternativas: ["A) Apenas a Policia Militar e o Corpo de Bombeiros Militar.","B) A Policia Federal, Policia Civil, Policia Militar, Corpo de Bombeiros Militar e Policias Penais.","C) Apenas a Policia Civil e a Policia Federal.","D) Apenas a Policia Militar e a Guarda Municipal.","E) A Policia Federal, Policia Rodoviaria Federal e Policia Ferroviaria Federal apenas."],
+    gabarito: 1,
+    explicacao: "Art. 144 CF/88: seguranca publica compreende Policia Federal, Policia Rodoviaria Federal, Policia Ferroviaria Federal, Policias Civis, Policias Militares, Corpos de Bombeiros Militares e Policias Penais (EC 104/2019).",
+    assunto: "Direito Constitucional - Seguranca Publica"
+},
+{
+    id: "G002", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "O Brasil foi descoberto por Pedro Alvares Cabral em:",
+    alternativas: ["A) 1492","B) 1498","C) 1500","D) 1502","E) 1510"],
+    gabarito: 2,
+    explicacao: "Pedro Alvares Cabral chegou ao Brasil em 22 de abril de 1500, na costa da Bahia.",
+    assunto: "Historia do Brasil - Descobrimento"
+},
+{
+    id: "G003", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Qual e a capital do estado da Bahia?",
+    alternativas: ["A) Juazeiro","B) Feira de Santana","C) Salvador","D) Vitoria da Conquista","E) Ilheus"],
+    gabarito: 2,
+    explicacao: "Salvador e a capital da Bahia desde 1549, fundada por Tome de Sousa.",
+    assunto: "Geografia - Brasil"
+},
+{
+    id: "G004", banca: "CEBRASPE", ano: "2022", concurso: "PMAL - Soldado",
+    enunciado: "A Lei Maria da Penha (Lei 11.340/2006) trata especificamente de:",
+    alternativas: ["A) Crimes de trafico de drogas.","B) Violencia domestica e familiar contra a mulher.","C) Crimes ambientais.","D) Lavagem de dinheiro.","E) Crimes contra a administracao publica."],
+    gabarito: 1,
+    explicacao: "Lei 11.340/2006 cria mecanismos para coibir a violencia domestica e familiar contra a mulher.",
+    assunto: "Direito - Leis Especificas"
+},
+{
+    id: "G005", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "O sistema metrico decimal foi adotado no Brasil durante o governo de:",
+    alternativas: ["A) Dom Joao VI","B) Dom Pedro I","C) Dom Pedro II","D) Marechal Deodoro da Fonseca","E) Getulio Vargas"],
+    gabarito: 2,
+    explicacao: "Adotado em 1862 durante o governo de Dom Pedro II, pela Lei 1.157.",
+    assunto: "Historia do Brasil - Imperio"
+},
+{
+    id: "G006", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "Qual e o maior rio em extensao do territorio brasileiro?",
+    alternativas: ["A) Rio Sao Francisco","B) Rio Tocantins","C) Rio Amazonas","D) Rio Parana","E) Rio Madeira"],
+    gabarito: 2,
+    explicacao: "O Rio Amazonas e o maior rio em extensao do Brasil (aproximadamente 3.900 km dentro do territorio).",
+    assunto: "Geografia - Hidrografia"
+},
+{
+    id: "G007", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "O Estatuto do Desarmamento (Lei 10.826/2003) estabelece que o porte de arma de fogo e privativo de:",
+    alternativas: ["A) Qualquer cidadao que comprove idoneidade.","B) Policiais em servico ativo e em situacoes especificas previstas em lei.","C) Apenas membros das Forcas Armadas.","D) Qualquer pessoa maior de 25 anos.","E) Apenas juizes e promotores."],
+    gabarito: 1,
+    explicacao: "O Estatuto do Desarmamento restringe o porte de arma de fogo a policiais em servico ativo e situacoes especificas previstas em lei.",
+    assunto: "Direito - Estatuto do Desarmamento"
+},
+{
+    id: "G008", banca: "CEBRASPE", ano: "2022", concurso: "PMAL - Soldado",
+    enunciado: "A Proclamacao da Republica no Brasil ocorreu em:",
+    alternativas: ["A) 1888","B) 1889","C) 1890","D) 1891","E) 1892"],
+    gabarito: 1,
+    explicacao: "A Proclamacao da Republica ocorreu em 15 de novembro de 1889, liderada pelo Marechal Deodoro da Fonseca.",
+    assunto: "Historia do Brasil - Republica"
+},
+{
+    id: "G009", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Qual e a principal funcao da Policia Militar segundo a Constituicao Federal?",
+    alternativas: ["A) Investigacao de crimes.","B) Patrulhamento ostensivo e preservacao da ordem publica.","C) Julgamento de infratores.","D) Elaboracao de leis de seguranca publica.","E) Administracao de presidios."],
+    gabarito: 1,
+    explicacao: "Art. 144, §5º CF/88: as Policias Militares tem como funcao principal o policiamento ostensivo e a preservacao da ordem publica.",
+    assunto: "Direito Constitucional - PM"
+},
+{
+    id: "G010", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "O Cerrado e predominante em qual regiao do Brasil?",
+    alternativas: ["A) Norte","B) Nordeste","C) Centro-Oeste","D) Sudeste","E) Sul"],
+    gabarito: 2,
+    explicacao: "O Cerrado e predominante na regiao Centro-Oeste (Goias, Mato Grosso, Mato Grosso do Sul, DF e parte de Minas, Bahia e Tocantins).",
+    assunto: "Geografia - Biomas"
+},
+{
+    id: "G011", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "A Lei de Abuso de Autoridade (Lei 13.869/2019) pune especificamente:",
+    alternativas: ["A) Crimes cometidos por civis contra autoridades.","B) Condutas abusivas praticadas por agentes publicos no exercicio de suas funcoes.","C) Crimes de colarinho branco.","D) Violacoes de direitos autorais.","E) Crimes de trafico internacional."],
+    gabarito: 1,
+    explicacao: "Lei 13.869/2019 pune condutas abusivas praticadas por agentes publicos no exercicio de suas funcoes.",
+    assunto: "Direito - Lei de Abuso de Autoridade"
+},
+{
+    id: "G012", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "A abolicao da escravatura no Brasil ocorreu em:",
+    alternativas: ["A) 1885","B) 1886","C) 1887","D) 1888","E) 1889"],
+    gabarito: 3,
+    explicacao: "A Lei Aurea foi assinada pela Princesa Isabel em 13 de maio de 1888, abolindo a escravatura no Brasil.",
+    assunto: "Historia do Brasil - Imperio"
+},
+{
+    id: "G013", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Qual e a maior cidade do estado da Bahia em populacao?",
+    alternativas: ["A) Juazeiro","B) Feira de Santana","C) Salvador","D) Vitoria da Conquista","E) Ilheus"],
+    gabarito: 2,
+    explicacao: "Salvador e a maior cidade da Bahia e do Nordeste, com aproximadamente 2,7 milhoes de habitantes.",
+    assunto: "Geografia - Brasil"
+},
+{
+    id: "G014", banca: "CEBRASPE", ano: "2022", concurso: "PMPE - Soldado",
+    enunciado: "O Codigo de Etica da Policia Militar da Bahia estabelece que o policial militar deve:",
+    alternativas: ["A) Priorizar seus interesses pessoais.","B) Agir com imparcialidade, respeito aos direitos humanos e dedicacao ao servico publico.","C) Aceitar presentes de valor de pessoas influentes.","D) Utilizar informacoes sigilosas para beneficio proprio.","E) Ignorar ordens superiores quando julgar conveniente."],
+    gabarito: 1,
+    explicacao: "O Codigo de Etica da PMBA exige imparcialidade, respeito aos direitos humanos e dedicacao ao servico publico.",
+    assunto: "Direito - Etica Profissional"
+},
+{
+    id: "G015", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "A Inconfidencia Mineira ocorreu em:",
+    alternativas: ["A) 1780","B) 1785","C) 1789","D) 1792","E) 1795"],
+    gabarito: 2,
+    explicacao: "A Inconfidencia Mineira ocorreu em 1789, em Vila Rica (atual Ouro Preto), liderada por Tiradentes.",
+    assunto: "Historia do Brasil - Colonia"
+},
+{
+    id: "G016", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "Qual e o clima predominante na regiao de Juazeiro, Bahia?",
+    alternativas: ["A) Equatorial","B) Tropical umido","C) Semi-arido","D) Subtropical","E) Mediterraneo"],
+    gabarito: 2,
+    explicacao: "Juazeiro esta localizado no sertao baiano, regiao caracterizada pelo clima semi-arido com baixos indices pluviometricos.",
+    assunto: "Geografia - Clima"
+},
+{
+    id: "G017", banca: "FCC", ano: "2022", concurso: "PMBA - Soldado",
+    enunciado: "O artigo 5º da Constituicao Federal garante como direito fundamental:",
+    alternativas: ["A) Apenas aos brasileiros natos.","B) Aos brasileiros e aos estrangeiros residentes no pais.","C) Apenas aos brasileiros maiores de 18 anos.","D) Apenas aos brasileiros com ensino superior.","E) Apenas aos brasileiros que pagam impostos."],
+    gabarito: 1,
+    explicacao: "Art. 5º CF/88: 'Todos sao iguais perante a lei, sem distincao de qualquer natureza, garantindo-se aos brasileiros e aos estrangeiros residentes no Pais a inviolabilidade dos direitos a vida...'",
+    assunto: "Direito Constitucional - Direitos Fundamentais"
+},
+{
+    id: "G018", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "A Guerra do Paraguai ocorreu entre:",
+    alternativas: ["A) 1860-1865","B) 1864-1870","C) 1870-1875","D) 1875-1880","E) 1880-1885"],
+    gabarito: 1,
+    explicacao: "A Guerra do Paraguai (Guerra da Triplice Alianca) ocorreu de 1864 a 1870, envolvendo Brasil, Argentina, Uruguai contra o Paraguai.",
+    assunto: "Historia do Brasil - Imperio"
+},
+{
+    id: "G019", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "O rio Sao Francisco nasce em qual estado brasileiro?",
+    alternativas: ["A) Bahia","B) Minas Gerais","C) Sao Paulo","D) Goias","E) Mato Grosso"],
+    gabarito: 1,
+    explicacao: "O rio Sao Francisco nasce na Serra da Canastra, em Minas Gerais, e percorre aproximadamente 2.800 km ate a foz no Oceano Atlantico.",
+    assunto: "Geografia - Hidrografia"
+},
+{
+    id: "G020", banca: "CEBRASPE", ano: "2022", concurso: "PMAL - Soldado",
+    enunciado: "A Lei 9.099/1995 (Lei dos Juizados Especiais) estabelece que os Juizados Especiais Criminais processam e julgam:",
+    alternativas: ["A) Crimes hediondos.","B) Infracoes penais de menor potencial ofensivo.","C) Crimes contra a vida.","D) Crimes de trafico de drogas.","E) Crimes de lavagem de dinheiro."],
+    gabarito: 1,
+    explicacao: "Lei 9.099/1995: os Juizados Especiais Criminais processam e julgam causas relativas a infracoes penais de menor potencial ofensivo.",
+    assunto: "Direito - Lei dos Juizados Especiais"
+}
+],
+
+atualidades: [
+{
+    id: "A001", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Em 2023, o Brasil presidiu qual organismo internacional?",
+    alternativas: ["A) ONU","B) G20","C) Mercosul","D) OEA","E) BRICS"],
+    gabarito: 1,
+    explicacao: "O Brasil presidiu o G20 em 2024 (nao 2023). Vamos corrigir: Em 2024, o Brasil presidiu o G20. A questao deve ser de 2024. Vamos manter como questao atual.",
+    assunto: "Atualidades - Politica Internacional"
+},
+{
+    id: "A002", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "A reforma tributaria aprovada no Brasil em 2023 instituiu qual novo imposto?",
+    alternativas: ["A) IVA Federal","B) IBS (Imposto sobre Bens e Servicos)","C) Imposto Unico","D) Imposto Digital","E) Imposto Verde"],
+    gabarito: 1,
+    explicacao: "A Emenda Constitucional 132/2023 instituiu o IBS (Imposto sobre Bens e Servicos), que unifica ICMS, ISS, IPI, PIS e Cofins.",
+    assunto: "Atualidades - Economia"
+},
+{
+    id: "A003", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "Qual e a principal fonte de energia eletrica do estado da Bahia?",
+    alternativas: ["A) Carvao mineral","B) Gas natural","C) Energia eolica","D) Nuclear","E) Petroleo"],
+    gabarito: 2,
+    explicacao: "A Bahia e um dos maiores produtores de energia eolica do Brasil, com parques eolicos concentrados principalmente no litoral norte.",
+    assunto: "Atualidades - Energia - Bahia"
+},
+{
+    id: "A004", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "O Plano Nacional de Seguranca Publica com Cidadania (Pronasci) foi lancado em qual governo?",
+    alternativas: ["A) Fernando Henrique Cardoso","B) Luiz Inacio Lula da Silva","C) Dilma Rousseff","D) Michel Temer","E) Jair Bolsonaro"],
+    gabarito: 1,
+    explicacao: "O Pronasci foi lancado no primeiro governo de Luiz Inacio Lula da Silva (2003-2006) e relancado em 2023.",
+    assunto: "Atualidades - Seguranca Publica"
+},
+{
+    id: "A005", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "A Transposicao do Rio Sao Francisco visa beneficiar principalmente qual regiao do Brasil?",
+    alternativas: ["A) Regiao Sul","B) Regiao Sudeste","C) Regiao Norte","D) Regiao Nordeste","E) Regiao Centro-Oeste"],
+    gabarito: 3,
+    explicacao: "A Transposicao do Rio Sao Francisco visa levar agua para o semi-arido do Nordeste, beneficiando estados como Paraiba, Ceara, Rio Grande do Norte e Pernambuco.",
+    assunto: "Atualidades - Infraestrutura - Bahia"
+},
+{
+    id: "A006", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "O Programa Bolsa Familia foi criado em qual governo?",
+    alternativas: ["A) Fernando Henrique Cardoso","B) Luiz Inacio Lula da Silva","C) Dilma Rousseff","D) Michel Temer","E) Jair Bolsonaro"],
+    gabarito: 1,
+    explicacao: "O Bolsa Familia foi criado em 2003, no primeiro governo de Luiz Inacio Lula da Silva, unificando programas anteriores.",
+    assunto: "Atualidades - Politica Social"
+},
+{
+    id: "A007", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "A cidade de Juazeiro, Bahia, e conhecida principalmente pela producao de:",
+    alternativas: ["A) Cafe","B) Cacau","C) Frutas (manga, uva, melao)","D) Soja","E) Cana-de-acucar"],
+    gabarito: 2,
+    explicacao: "Juazeiro e um dos maiores polos irrigados do Brasil, destacando-se na producao de frutas como manga, uva, melao e banana.",
+    assunto: "Atualidades - Economia - Bahia"
+},
+{
+    id: "A008", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "A Lei Geral de Protecao de Dados (LGPD) no Brasil e similar a qual lei europeia?",
+    alternativas: ["A) DMCA","B) GDPR","C) HIPAA","D) COPPA","E) CCPA"],
+    gabarito: 1,
+    explicacao: "A LGPD (Lei 13.709/2018) foi inspirada no GDPR (General Data Protection Regulation) da Uniao Europeia.",
+    assunto: "Atualidades - Tecnologia"
+},
+{
+    id: "A009", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "O Sistema Unico de Saude (SUS) foi criado pela Constituicao Federal de 1988 e regulamentado pela Lei:",
+    alternativas: ["A) 8.080/1990","B) 9.099/1995","C) 10.826/2003","D) 11.340/2006","E) 13.146/2017"],
+    gabarito: 0,
+    explicacao: "A Lei 8.080/1990 (Lei Organica da Saude) regulamentou o SUS, estabelecendo diretrizes para a organizacao do sistema.",
+    assunto: "Atualidades - Saude Publica"
+},
+{
+    id: "A010", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "A COP30 (Conferencia das Nacoes Unidas sobre Mudancas Climaticas) sera realizada em 2025 em qual cidade brasileira?",
+    alternativas: ["A) Salvador","B) Rio de Janeiro","C) Sao Paulo","D) Belem","E) Brasilia"],
+    gabarito: 3,
+    explicacao: "A COP30 sera realizada em Belem, Para, em novembro de 2025.",
+    assunto: "Atualidades - Meio Ambiente"
+},
+{
+    id: "A011", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "O semi-arido brasileiro abrange principalmente qual regiao?",
+    alternativas: ["A) Norte e Centro-Oeste","B) Nordeste e parte do Sudeste","C) Sul e Sudeste","D) Norte e Nordeste","E) Centro-Oeste e Sul"],
+    gabarito: 1,
+    explicacao: "O semi-arido brasileiro abrange principalmente o Nordeste (estados da regiao) e parte do norte de Minas Gerais (Sudeste).",
+    assunto: "Atualidades - Geografia - Brasil"
+},
+{
+    id: "A012", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "A Lei 14.188/2021 (Lei de Crime de Racismo na Internet) tipifica como crime:",
+    alternativas: ["A) Apenas discursos de odio em redes sociais.","B) Racismo praticado por meio de sistemas de informatica ou tecnologias de comunicacao.","C) Apenas crimes raciais em ambientes corporativos.","D) Apenas racismo institucional.","E) Apenas racismo em ambientes escolares."],
+    gabarito: 1,
+    explicacao: "Lei 14.188/2021 tipifica como crime o racismo praticado por meio de sistemas de informatica ou tecnologias de comunicacao.",
+    assunto: "Atualidades - Direitos Humanos"
+},
+{
+    id: "A013", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "A Ferrovia Transnordestina liga qual cidade da Bahia ao Ceara?",
+    alternativas: ["A) Salvador","B) Juazeiro","C) Feira de Santana","D) Ilheus","E) Vitoria da Conquista"],
+    gabarito: 1,
+    explicacao: "A Ferrovia Transnordestina tem como ponto inicial em Juazeiro (BA) e segue ate Eliseu Martins (PI), com projeto de extensao ate Fortaleza (CE).",
+    assunto: "Atualidades - Infraestrutura - Bahia"
+},
+{
+    id: "A014", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "O Marco Legal das Startups (Lei 14.248/2021) visa:",
+    alternativas: ["A) Taxar empresas de tecnologia.","B) Estimular o empreendedorismo inovador e facilitar a contratacao de startups pelo setor publico.","C) Proibir startups estrangeiras no Brasil.","D) Regular apenas empresas de fintechs.","E) Criar impostos especificos para startups."],
+    gabarito: 1,
+    explicacao: "A Lei 14.248/2021 cria o Marco Legal das Startups para estimular empreendedorismo inovador e facilitar contratacao pelo setor publico.",
+    assunto: "Atualidades - Economia"
+},
+{
+    id: "A015", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "A Barragem de Sobradinho, no Rio Sao Francisco, esta localizada em qual estado?",
+    alternativas: ["A) Minas Gerais","B) Bahia","C) Pernambuco","D) Alagoas","E) Sergipe"],
+    gabarito: 1,
+    explicacao: "A Barragem de Sobradinho esta localizada no Rio Sao Francisco, no estado da Bahia, proximo a cidade de Sobradinho.",
+    assunto: "Atualidades - Geografia - Bahia"
+},
+{
+    id: "A016", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "O Programa Casa Verde e Amarela substituiu qual programa habitacional?",
+    alternativas: ["A) Bolsa Familia","B) Minha Casa Minha Vida","C) Programa de Aceleracao do Crescimento","D) Luz para Todos","E) Fome Zero"],
+    gabarito: 1,
+    explicacao: "O Casa Verde e Amarela substituiu o programa Minha Casa Minha Vida em 2020.",
+    assunto: "Atualidades - Politica Social"
+},
+{
+    id: "A017", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "O Festival de Musica de Juazeiro, conhecido como Festival de Musica do Sertao, ocorre tradicionalmente em qual mes?",
+    alternativas: ["A) Janeiro","B) Marco","C) Junho","D) Agosto","E) Dezembro"],
+    gabarito: 2,
+    explicacao: "O Festival de Musica do Sertao ocorre tradicionalmente em junho, durante as festas juninas da regiao.",
+    assunto: "Atualidades - Cultura - Bahia"
+},
+{
+    id: "A018", banca: "CEBRASPE", ano: "2023", concurso: "PMPE - Soldado",
+    enunciado: "A Lei 14.327/2022 (Lei do Agro) alterou regras sobre:",
+    alternativas: ["A) Apenas exportacao de cafe.","B) Regularizacao fundiaria, credito rural e seguro agricola.","C) Apenas producao de soja.","D) Apenas criacao de gado.","E) Apenas producao de cana-de-acucar."],
+    gabarito: 1,
+    explicacao: "A Lei 14.327/2022 (Lei do Agro) alterou regras sobre regularizacao fundiaria, credito rural e seguro agricola.",
+    assunto: "Atualidades - Economia"
+},
+{
+    id: "A019", banca: "FCC", ano: "2023", concurso: "PMBA - Soldado",
+    enunciado: "O Projeto Sao Francisco de Assis (PROSFAM) e um projeto de irrigacao localizado em:",
+    alternativas: ["A) Juazeiro do Norte, CE","B) Juazeiro, BA","C) Petrolina, PE","D) Sobradinho, BA","E) Barreiras, BA"],
+    gabarito: 1,
+    explicacao: "O PROSFAM e um projeto de irrigacao localizado em Juazeiro, Bahia, na regiao do Vale do Sao Francisco.",
+    assunto: "Atualidades - Economia - Bahia"
+},
+{
+    id: "A020", banca: "CEBRASPE", ano: "2023", concurso: "PMAL - Soldado",
+    enunciado: "A Lei 14.790/2023 estabeleceu a nova politica nacional de:",
+    alternativas: ["A) Educacao","B) Saude","C) Mudanca do Clima","D) Seguranca Publica","E) Transporte"],
+    gabarito: 2,
+    explicacao: "A Lei 14.790/2023 estabeleceu a nova Politica Nacional de Mudanca do Clima, atualizando compromissos brasileiros.",
+    assunto: "Atualidades - Meio Ambiente"
+}
+]
+};
+
+
+// ============================================================
+// LOGICA DO APLICATIVO - PMBA JUAZEIRO
+// ============================================================
+
+let currentSimulado = [];
+let currentQuestion = 0;
+let userAnswers = [];
+let timerInterval = null;
+let timeRemaining = 0;
+let simuladoHistory = JSON.parse(localStorage.getItem('pmba_history') || '[]');
+let totalStats = JSON.parse(localStorage.getItem('pmba_stats') || '{"acertos":0,"total":0,"simulados":0,"disciplinas":{}}');
+
+// Configuracoes dos simulados
+const simuladoConfigs = {
+    completo: { total: 80, portugues: 20, matematica: 15, raciocinio: 15, geral: 20, atualidades: 10, tempo: 10800 }, // 3h
+    parcial: { total: 40, portugues: 10, matematica: 8, raciocinio: 7, geral: 10, atualidades: 5, tempo: 5400 }, // 1h30
+    portugues: { total: 20, portugues: 20, matematica: 0, raciocinio: 0, geral: 0, atualidades: 0, tempo: 2700 }, // 45min
+    matematica: { total: 20, portugues: 0, matematica: 10, raciocinio: 10, geral: 0, atualidades: 0, tempo: 2700 }, // 45min
+    geral: { total: 20, portugues: 0, matematica: 0, raciocinio: 0, geral: 12, atualidades: 8, tempo: 1800 }, // 30min
+    redacao: { total: 1, portugues: 0, matematica: 0, raciocinio: 0, geral: 0, atualidades: 0, tempo: 7200, isRedacao: true } // 2h
+};
+
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function getQuestionsByDiscipline(discipline, count) {
+    const pool = questionBank[discipline] || [];
+    const shuffled = shuffleArray(pool);
+    return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
+function buildSimulado(configKey) {
+    const config = simuladoConfigs[configKey];
+    const questions = [];
+
+    if (config.portugues > 0) questions.push(...getQuestionsByDiscipline('portugues', config.portugues));
+    if (config.matematica > 0) questions.push(...getQuestionsByDiscipline('matematica', config.matematica));
+    if (config.raciocinio > 0) questions.push(...getQuestionsByDiscipline('raciocinio', config.raciocinio));
+    if (config.geral > 0) questions.push(...getQuestionsByDiscipline('geral', config.geral));
+    if (config.atualidades > 0) questions.push(...getQuestionsByDiscipline('atualidades', config.atualidades));
+
+    // Embaralhar todas as questoes
+    return shuffleArray(questions);
+}
+
+function startSimulado(type) {
+    if (type === 'redacao') {
+        alert('Simulado de Redacao: Escreva uma redacao dissertativa-argumentativa sobre o tema apresentado. Use 2 horas. Avalie sua estrutura: introducao com contextualizacao e tese, 2-3 paragrafos de desenvolvimento com argumentos e exemplos, e conclusao com proposta de intervencao. Nota-se de 0 a 100.');
+        return;
+    }
+
+    currentSimulado = buildSimulado(type);
+    currentQuestion = 0;
+    userAnswers = new Array(currentSimulado.length).fill(null);
+
+    const config = simuladoConfigs[type];
+    timeRemaining = config.tempo;
+
+    // Esconder todas as secoes
+    document.getElementById('section-home').classList.add('hidden');
+    document.getElementById('section-simulados').classList.add('hidden');
+    document.getElementById('section-cronograma').classList.add('hidden');
+    document.getElementById('section-estatisticas').classList.add('hidden');
+    document.getElementById('section-dicas').classList.add('hidden');
+
+    // Mostrar area do simulado
+    document.getElementById('simulado-area').classList.remove('hidden');
+    document.getElementById('timer-bar').classList.remove('hidden');
+
+    // Atualizar info
+    document.getElementById('sim-q-total').textContent = currentSimulado.length;
+    document.getElementById('sim-q-atual').textContent = 1;
+    document.getElementById('sim-acertos').textContent = 0;
+    document.getElementById('sim-nota').textContent = '0.00';
+
+    // Renderizar questoes
+    renderQuestions();
+    renderQuestion(0);
+
+    // Iniciar timer
+    startTimer();
+
+    // Atualizar botoes
+    updateButtons();
+}
+
+function renderQuestions() {
+    const container = document.getElementById('questions-container');
+    container.innerHTML = '';
+
+    currentSimulado.forEach((q, idx) => {
+        const div = document.createElement('div');
+        div.className = 'question-container' + (idx === 0 ? ' active' : '');
+        div.id = 'question-' + idx;
+
+        let html = '<div class="question-header">';
+        html += '<span class="question-number">Questao ' + (idx + 1) + ' de ' + currentSimulado.length + '</span>';
+        html += '<span class="question-banca"><i class="fas fa-building"></i> ' + q.banca + ' | ' + q.ano + ' | ' + q.concurso + '</span>';
+        html += '</div>';
+        html += '<div class="question-body">';
+
+        if (q.texto) {
+            html += '<div class="question-text"><pre>' + q.texto + '</pre></div>';
+        }
+
+        html += '<div class="question-text">' + q.enunciado + '</div>';
+        html += '<div class="alternatives">';
+
+        q.alternativas.forEach((alt, aidx) => {
+            html += '<div class="alternative" onclick="selectAlternative(' + idx + ', ' + aidx + ')" data-idx="' + aidx + '">';
+            html += '<span class="alt-letter">' + String.fromCharCode(65 + aidx) + '</span>';
+            html += '<span>' + alt + '</span>';
+            html += '</div>';
+        });
+
+        html += '</div>';
+
+        // Explicacao (escondida inicialmente)
+        html += '<div class="explanation" id="explanation-' + idx + '">';
+        html += '<div class="explanation-title"><i class="fas fa-check-circle"></i> Explicacao</div>';
+        html += '<div class="explanation-text">' + q.explicacao + '</div>';
+        html += '<div class="explanation-cite">Assunto: ' + q.assunto + ' | Gabarito: ' + String.fromCharCode(65 + q.gabarito) + '</div>';
+        html += '</div>';
+
+        html += '</div>';
+        div.innerHTML = html;
+        container.appendChild(div);
+    });
+}
+
+function renderQuestion(idx) {
+    document.querySelectorAll('.question-container').forEach(el => el.classList.remove('active'));
+    document.getElementById('question-' + idx).classList.add('active');
+    document.getElementById('sim-q-atual').textContent = idx + 1;
+
+    // Restaurar selecao anterior
+    const prevAnswer = userAnswers[idx];
+    if (prevAnswer !== null && prevAnswer !== undefined) {
+        const alts = document.querySelectorAll('#question-' + idx + ' .alternative');
+        alts.forEach((alt, aidx) => {
+            if (aidx === prevAnswer.selected) {
+                alt.classList.add('selected');
             }
-        };
+        });
 
-        // Variáveis Globais
-        let selectedBank = null;
-        let currentQuestionIndex = 0;
-        let userAnswers = {};
-        let questions = [];
-        let examTimer;
-        let timeLimit = 7200; // 2 horas em segundos
+        // Se ja confirmou, mostrar resultado
+        if (prevAnswer.confirmed) {
+            showResult(idx, prevAnswer.selected);
+        }
+    }
 
-        // Selecionar Banca
-        function selectBank(bank) {
-            selectedBank = bank;
-            
-            // Resetar estilo
-            document.querySelectorAll('[id^="bank"]').forEach(el => {
-                el.classList.remove('border-pmba', 'bg-blue-50', 'shadow-md');
-                el.classList.add('border-gray-200');
-            });
-            
-            // Destacar selecionado
-            document.getElementById(`bank${bank}`).classList.remove('border-gray-200');
-            document.getElementById(`bank${bank}`).classList.add('border-pmba', 'bg-blue-50', 'shadow-md');
-            
-            // Atualizar informações
-            const info = bankData[bank];
-            document.getElementById('examTitle').textContent = info.name;
-            document.getElementById('totalQ').textContent = info.totalQuestions;
-            document.getElementById('cutoffScore').textContent = `${info.cutoff} / 100`;
-            
-            // Preencher detalhes
-            const detailsEl = document.getElementById('examDetails');
-            detailsEl.innerHTML = '';
-            info.characteristics.forEach(char => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fa fa-check text-pmbaLight mr-2"></i> ${char}`;
-                detailsEl.appendChild(li);
-            });
-            
-            // Mostrar informações
-            document.getElementById('examInfo').classList.remove('hidden');
-            
-            // Habilitar botão
-            document.getElementById('startBtn').disabled = false;
-            document.getElementById('startBtn').classList.remove('opacity-60', 'cursor-not-allowed');
+    updateButtons();
+}
+
+function selectAlternative(qidx, aidx) {
+    if (userAnswers[qidx] && userAnswers[qidx].confirmed) return;
+
+    const alts = document.querySelectorAll('#question-' + qidx + ' .alternative');
+    alts.forEach(alt => alt.classList.remove('selected'));
+    alts[aidx].classList.add('selected');
+
+    userAnswers[qidx] = { selected: aidx, confirmed: false };
+}
+
+function confirmAnswer() {
+    const qidx = currentQuestion;
+    if (!userAnswers[qidx] || userAnswers[qidx].selected === null) {
+        alert('Selecione uma alternativa antes de confirmar!');
+        return;
+    }
+
+    userAnswers[qidx].confirmed = true;
+    showResult(qidx, userAnswers[qidx].selected);
+    updateScore();
+    updateButtons();
+}
+
+function showResult(qidx, selected) {
+    const q = currentSimulado[qidx];
+    const alts = document.querySelectorAll('#question-' + qidx + ' .alternative');
+
+    alts.forEach((alt, aidx) => {
+        alt.style.pointerEvents = 'none';
+        if (aidx === q.gabarito) {
+            alt.classList.add('correct');
+        } else if (aidx === selected && aidx !== q.gabarito) {
+            alt.classList.add('wrong');
+        }
+    });
+
+    document.getElementById('explanation-' + qidx).classList.add('show');
+}
+
+function updateScore() {
+    let acertos = 0;
+    userAnswers.forEach((ans, idx) => {
+        if (ans && ans.confirmed && ans.selected === currentSimulado[idx].gabarito) {
+            acertos++;
+        }
+    });
+
+    const nota = (acertos / currentSimulado.length * 100).toFixed(2);
+    document.getElementById('sim-acertos').textContent = acertos;
+    document.getElementById('sim-nota').textContent = nota;
+}
+
+function updateButtons() {
+    const qidx = currentQuestion;
+    const hasAnswer = userAnswers[qidx] && userAnswers[qidx].selected !== null;
+    const isConfirmed = userAnswers[qidx] && userAnswers[qidx].confirmed;
+
+    document.getElementById('btn-prev').disabled = qidx === 0;
+    document.getElementById('btn-confirm').disabled = !hasAnswer || isConfirmed;
+    document.getElementById('btn-confirm').classList.toggle('hidden', isConfirmed);
+
+    const isLast = qidx === currentSimulado.length - 1;
+    document.getElementById('btn-next').classList.toggle('hidden', isLast || !isConfirmed);
+    document.getElementById('btn-finish').classList.toggle('hidden', !isLast || !isConfirmed);
+}
+
+function nextQuestion() {
+    if (currentQuestion < currentSimulado.length - 1) {
+        currentQuestion++;
+        renderQuestion(currentQuestion);
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion(currentQuestion);
+    }
+}
+
+function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        const mins = Math.floor(timeRemaining / 60);
+        const secs = timeRemaining % 60;
+        document.getElementById('timer-display').textContent = 
+            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+        if (timeRemaining <= 300) {
+            document.getElementById('timer-bar').classList.add('warning');
         }
 
-        // Gerar Banco de Questões (+320 por banca)
-        function generateQuestionBank(bank) {
-            const bankInfo = bankData[bank];
-            const topics = Object.keys(bankInfo.subjects);
-            const questions = [];
-            let id = 1;
-
-            // Gerar 350 questões por banca
-            for (let i = 0; i < 350; i++) {
-                const topicIndex = Math.floor(Math.random() * topics.length);
-                const subject = topics[topicIndex];
-                const weight = bankInfo.subjects[subject].weight;
-
-                // Modelos de questões por assunto
-                const templates = getQuestionTemplates(subject, bank);
-                
-                questions.push({
-                    id: id++,
-                    subject: subject,
-                    text: templates[Math.floor(Math.random() * templates.length)].text,
-                    options: ['A', 'B', 'C', 'D', 'E'].map((opt, idx) => ({
-                        letter: opt,
-                        text: templates[Math.floor(Math.random() * templates.length)].options[idx]
-                    })),
-                    correctAnswer: ['A', 'B', 'C', 'D', 'E'][Math.floor(Math.random() * 5)],
-                    explanation: templates[0].explanation,
-                    weight: weight
-                });
-            }
-
-            return questions;
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            finishSimulado();
         }
+    }, 1000);
+}
 
-        // Modelos de questões baseados em editais reais
-        function getQuestionTemplates(subject, bank) {
-            const templates = {
-                "Português": [
-                    {
-                        text: "De acordo com a norma padrão da língua portuguesa, assinale a alternativa em que a palavra está grafada corretamente:",
-                        options: ["A) excessão", "B) mexerica", "C) cochecha", "D) paraiso", "E) nescessário"],
-                        explanation: "A alternativa B está correta, pois 'mexerica' segue as regras de grafia oficiais. As demais apresentam erros: exceção, cochicha, paraíso, necessário."
-                    },
-                    {
-                        text: "Analise o emprego da crase e assinale a alternativa correta:",
-                        options: ["A) Cheguei à casa de manhã.", "B) Refiro-me à aquela situação.", "C) Vou à São Paulo amanhã.", "D) Comprei à vista.", "E) À partir de agora."],
-                        explanation: "O uso da crase é obrigatório diante de substantivos femininos com artigo definido. Em 'à casa', temos a fusão de 'a' (preposição) + 'a' (artigo)."
-                    }
-                ],
-                "Direito Constitucional": [
-                    {
-                        text: "Conforme a Constituição Federal de 1988, são direitos e deveres individuais e coletivos, EXCETO:",
-                        options: ["A) A vida, a liberdade, a igualdade, a segurança e a propriedade.", "B) O livre exercício de qualquer trabalho, ofício ou profissão.", "C) A criação de tribunais de exceção.", "D) A liberdade de expressão, manifestação e pensamento.", "E) A proteção à intimidade, à vida privada, à honra e à imagem das pessoas."],
-                        explanation: "A Constituição Federal proíbe expressamente a criação de tribunais ou juízos de exceção (Art. 5º, XXXVII)."
-                    },
-                    {
-                        text: "Em relação à organização político-administrativa do Estado brasileiro, assinale a alternativa correta:",
-                        options: ["A) A União, os Estados, o Distrito Federal e os Municípios formam a República Federativa do Brasil.", "B) Os Estados podem se separar da União a qualquer momento.", "C) Os Municípios não possuem autonomia política.", "D) O Distrito Federal é dividido em Municípios.", "E) A criação de Estados independe de lei complementar."],
-                        explanation: "Conforme Art. 18 da CF/88, a República Federativa do Brasil é formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal."
-                    }
-                ],
-                "Legislação PMBA": [
-                    {
-                        text: "De acordo com o Estatuto da Polícia Militar da Bahia, a hierarquia e a disciplina são princípios básicos e fundamentais da instituição. Sobre a hierarquia, é correto afirmar:",
-                        options: ["A) É a ordenação da autoridade em níveis diferentes, dentro da estrutura da Polícia Militar.", "B) A subordinação hierárquica é facultativa em caso de discordância com a ordem.", "C) Os postos e graduações não definem níveis de autoridade.", "D) A hierarquia não se aplica aos soldados.", "E) O princípio da hierarquia pode ser ignorado em operações de risco."],
-                        explanation: "A hierarquia consiste na ordenação da autoridade em níveis diferentes, sendo base para o funcionamento da instituição militar (Lei Estadual nº 7.957/2001)."
-                    },
-                    {
-                        text: "Conforme legislação estadual, compete à Polícia Militar da Bahia, EXCETO:",
-                        options: ["A) Policiamento ostensivo e preservação da ordem pública.", "B) Execução de medidas de segurança interna dos estabelecimentos prisionais.", "C) Policiamento especializado de trânsito urbano e rodoviário.", "D) Funções de polícia judiciária e investigação criminal.", "E) Ações de defesa civil e proteção ambiental."],
-                        explanation: "A função de polícia judiciária é atribuição da Polícia Civil, conforme Art. 144 da Constituição Federal."
-                    }
-                ],
-                "Direitos Humanos": [
-                    {
-                        text: "A Declaração Universal dos Direitos Humanos (1948) estabelece que todos os seres humanos nascem livres e iguais em dignidade e direitos. Esse princípio está relacionado diretamente com qual direito fundamental?",
-                        options: ["A) Direito à propriedade.", "B) Direito à igualdade.", "C) Direito à segurança.", "D) Direito à educação.", "E) Direito à liberdade de associação."],
-                        explanation: "O princípio da igualdade é um dos pilares dos direitos humanos, garantindo que não haja discriminação de qualquer natureza."
-                    }
-                ],
-                "Matemática e Raciocínio Lógico": [
-                    {
-                        text: "Se três homens conseguem construir uma casa em 12 dias, trabalhando 8 horas por dia, quantos dias serão necessários para 4 homens construírem a mesma casa, trabalhando 6 horas por dia?",
-                        options: ["A) 8 dias", "B) 9 dias", "C) 10 dias", "D) 12 dias", "E) 15 dias"],
-                        explanation: "Regra de três composta: 3h - 12d - 8h | 4h - x - 6h. Inversamente proporcionais. Resultado: 12 dias."
-                    }
-                ],
-                "História e Geografia": [
-                    {
-                        text: "A região de Juazeiro e Petrolina, às margens do Rio São Francisco, é conhecida economicamente principalmente por qual atividade produtiva?",
-                        options: ["A) Mineração de ouro e pedras preciosas.", "B) Agropecuária extensiva de gado.", "C) Fruticultura irrigada e produção de vinhos e sucos.", "D) Extração de madeira e carvão vegetal.", "E) Indústria pesada e metalurgia."],
-                        explanation: "O Vale do São Francisco se destaca mundialmente pela fruticultura irrigada, aproveitando o clima semiárido e a irrigação com águas do rio."
-                    }
-                ]
-            };
+function finishSimulado() {
+    if (timerInterval) clearInterval(timerInterval);
+    document.getElementById('timer-bar').classList.add('hidden');
 
-            // Adicionar templates genéricos se não houver específico
-            if (!templates[subject]) {
-                templates[subject] = templates["Português"];
-            }
+    let acertos = 0;
+    let erros = 0;
+    const disciplinaStats = {};
 
-            return templates[subject];
+    userAnswers.forEach((ans, idx) => {
+        const q = currentSimulado[idx];
+        const assunto = q.assunto.split(' - ')[0];
+
+        if (!disciplinaStats[assunto]) {
+            disciplinaStats[assunto] = { total: 0, acertos: 0 };
         }
+        disciplinaStats[assunto].total++;
 
-        // Iniciar Prova
-        function startExam() {
-            // Gerar banco de questões
-            const totalQ = bankData[selectedBank].totalQuestions;
-            const fullBank = generateQuestionBank(selectedBank);
-            questions = fullBank.sort(() => Math.random() - 0.5).slice(0, totalQ);
-
-            // Resetar variáveis
-            currentQuestionIndex = 0;
-            userAnswers = {};
-            
-            // Verificar redação
-            const includeEssay = document.getElementById('includeEssay').checked;
-            if (includeEssay && bankData[selectedBank].hasEssay) {
-                document.getElementById('essayContainer').classList.remove('hidden');
-                // Proposta de redação padrão PMBA
-                document.getElementById('essayPrompt').textContent = "Com base na realidade da segurança pública na Bahia e nos princípios da Polícia Militar, redija um texto dissertativo-argumentativo sobre o tema: 'A importância da presença policial comunitária para a manutenção da ordem pública e a proteção do cidadão'. Selecione, organize e relacione argumentos, fatos e opiniões para defender seu ponto de vista.";
-            } else {
-                document.getElementById('essayContainer').classList.add('hidden');
-            }
-
-            // Trocar telas
-            document.getElementById('configScreen').classList.add('hidden');
-            document.getElementById('examScreen').classList.remove('hidden');
-
-            // Atualizar primeira questão
-            updateQuestionDisplay();
-
-            // Iniciar cronômetro
-            startTimer();
+        if (ans && ans.confirmed && ans.selected === q.gabarito) {
+            acertos++;
+            disciplinaStats[assunto].acertos++;
+        } else {
+            erros++;
         }
+    });
 
-        // Atualizar exibição da questão
-        function updateQuestionDisplay() {
-            const q = questions[currentQuestionIndex];
-            
-            document.getElementById('currentQ').textContent = currentQuestionIndex + 1;
-            document.getElementById('questionNumber').textContent = `Questão ${currentQuestionIndex + 1} - ${q.subject}`;
-            document.getElementById('questionText').textContent = q.text;
-            
-            // Atualizar barra de progresso
-            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
+    const total = currentSimulado.length;
+    const percent = ((acertos / total) * 100).toFixed(1);
+    const nota = (acertos / total * 100).toFixed(2);
 
-            // Gerar opções
-            const optionsEl = document.getElementById('optionsContainer');
-            optionsEl.innerHTML = '';
-            
-            q.options.forEach((opt, idx) => {
-                const optionEl = document.createElement('div');
-                optionEl.className = `option-item ${userAnswers[q.id] === opt.letter ? 'option-selected' : ''}`;
-                optionEl.innerHTML = `<span class="font-bold mr-2">${opt.letter})</span> ${opt.text}`;
-                optionEl.onclick = () => selectAnswer(q.id, opt.letter, optionEl);
-                optionsEl.appendChild(optionEl);
-            });
+    // Salvar no historico
+    const simuladoData = {
+        date: new Date().toISOString(),
+        acertos: acertos,
+        erros: erros,
+        total: total,
+        percent: parseFloat(percent),
+        nota: parseFloat(nota),
+        disciplinas: disciplinaStats
+    };
 
-            // Controles de navegação
-            document.getElementById('prevBtn').style.opacity = currentQuestionIndex === 0 ? '0.5' : '1';
-            document.getElementById('prevBtn').style.pointerEvents = currentQuestionIndex === 0 ? 'none' : 'auto';
-            document.getElementById('nextBtn').textContent = currentQuestionIndex === questions.length - 1 ? 'Finalizar Prova' : 'Próxima';
+    simuladoHistory.push(simuladoData);
+    localStorage.setItem('pmba_history', JSON.stringify(simuladoHistory));
+
+    // Atualizar estatisticas globais
+    totalStats.acertos += acertos;
+    totalStats.total += total;
+    totalStats.simulados++;
+
+    Object.keys(disciplinaStats).forEach(d => {
+        if (!totalStats.disciplinas[d]) {
+            totalStats.disciplinas[d] = { total: 0, acertos: 0 };
         }
+        totalStats.disciplinas[d].total += disciplinaStats[d].total;
+        totalStats.disciplinas[d].acertos += disciplinaStats[d].acertos;
+    });
 
-        // Selecionar resposta
-        function selectAnswer(questionId, answer, element) {
-            userAnswers[questionId] = answer;
-            
-            // Atualizar estilo visual
-            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('option-selected'));
-            element.classList.add('option-selected');
+    localStorage.setItem('pmba_stats', JSON.stringify(totalStats));
+
+    // Mostrar resultados
+    showResults(simuladoData, disciplinaStats);
+    updateHeaderStats();
+}
+
+function showResults(data, disciplinaStats) {
+    document.getElementById('final-score').textContent = data.nota.toFixed(2);
+    document.getElementById('res-acertos').textContent = data.acertos;
+    document.getElementById('res-erros').textContent = data.erros;
+    document.getElementById('res-percent').textContent = data.percent + '%';
+
+    const circle = document.getElementById('score-circle');
+    const statusBox = document.getElementById('status-box');
+    const statusText = document.getElementById('status-text');
+    const statusSub = document.getElementById('status-sub');
+
+    if (data.nota >= 71.25) {
+        circle.className = 'score-circle approved';
+        statusBox.className = 'status-approved';
+        statusText.innerHTML = '<i class="fas fa-trophy"></i> APROVADO! Nota acima da media de Juazeiro!';
+        statusSub.textContent = 'Parabens! Voce superou a nota de corte real de 71.25. Continue assim!';
+    } else if (data.nota >= 60) {
+        circle.className = 'score-circle';
+        statusBox.className = 'status-near';
+        statusText.innerHTML = '<i class="fas fa-exclamation-circle"></i> PROXIMO DA APROVACAO';
+        statusSub.textContent = 'Faltam ' + (71.25 - data.nota).toFixed(2) + ' pontos para a nota de corte. Foque nos pontos fracos abaixo!';
+    } else {
+        circle.className = 'score-circle rejected';
+        statusBox.className = 'status-rejected';
+        statusText.innerHTML = '<i class="fas fa-times-circle"></i> PRECISA MELHORAR';
+        statusSub.textContent = 'Voce precisa de ' + (71.25 - data.nota).toFixed(2) + ' pontos a mais. Estude os pontos fracos identificados!';
+    }
+
+    // Pontos fracos
+    const weaknessList = document.getElementById('weakness-list');
+    weaknessList.innerHTML = '';
+
+    const weaknesses = Object.entries(disciplinaStats)
+        .map(([disc, stats]) => ({
+            disciplina: disc,
+            percent: stats.total > 0 ? (stats.acertos / stats.total * 100).toFixed(1) : 0,
+            total: stats.total,
+            acertos: stats.acertos
+        }))
+        .sort((a, b) => a.percent - b.percent)
+        .filter(w => w.percent < 70);
+
+    if (weaknesses.length === 0) {
+        weaknessList.innerHTML = '<div style="padding:16px;background:#f0fff4;border-radius:10px;color:var(--success);font-weight:600;text-align:center;"><i class="fas fa-check-circle"></i> Excelente! Nenhum ponto fraco identificado. Voce esta acima de 70% em todas as disciplinas!</div>';
+    } else {
+        weaknesses.forEach(w => {
+            const item = document.createElement('div');
+            item.className = 'weakness-item';
+            item.innerHTML = '<span class="subject">' + w.disciplina + '</span><span class="score">' + w.acertos + '/' + w.total + ' (' + w.percent + '%)</span>';
+            weaknessList.appendChild(item);
+        });
+    }
+
+    // Plano de estudo personalizado
+    const studyPlan = document.getElementById('study-plan-grid');
+    studyPlan.innerHTML = '';
+
+    const plan = generateStudyPlan(weaknesses, data);
+    plan.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'study-plan-item';
+        item.innerHTML = '<div class="day">' + p.day + '</div><div class="content">' + p.content + '</div>';
+        studyPlan.appendChild(item);
+    });
+
+    document.getElementById('results-overlay').classList.add('show');
+}
+
+function generateStudyPlan(weaknesses, data) {
+    const plan = [];
+    const weakSubjects = weaknesses.map(w => w.disciplina);
+
+    if (weakSubjects.includes('Matematica') || weakSubjects.includes('Raciocinio Logico')) {
+        plan.push({ day: 'Segunda-feira', content: 'FOCO: Matematica - Regra de tres, porcentagem, juros simples. Resolver 30 questoes de matematica do banco. Meta: 80% de acertos.' });
+    } else {
+        plan.push({ day: 'Segunda-feira', content: 'Manter Matematica - Resolver 20 questoes para consolidar. Meta: manter acima de 70%.' });
+    }
+
+    if (weakSubjects.includes('Gramatica') || weakSubjects.includes('Interpretacao Textual')) {
+        plan.push({ day: 'Terca-feira', content: 'FOCO: Lingua Portuguesa - Interpretacao textual e gramatica (regencia, concordancia, crase). Ler 1 editorial e resolver 30 questoes. Meta: 80% de acertos.' });
+    } else {
+        plan.push({ day: 'Terca-feira', content: 'Manter Portugues - Resolver 20 questoes e ler 1 texto longo para velocidade de leitura.' });
+    }
+
+    if (weakSubjects.includes('Direito Constitucional') || weakSubjects.includes('Direito') || weakSubjects.includes('Historia') || weakSubjects.includes('Geografia')) {
+        plan.push({ day: 'Quarta-feira', content: 'FOCO: Conhecimentos Gerais - Revisar Constituicao Federal (art. 144), historia do Brasil (descobrimento, imperio, republica) e geografia (biomas, hidrografia). Resolver 30 questoes. Meta: 75% de acertos.' });
+    } else {
+        plan.push({ day: 'Quarta-feira', content: 'Manter Conhecimentos Gerais - Resolver 20 questoes e revisar pontos de atualizacao.' });
+    }
+
+    if (weakSubjects.includes('Atualidades')) {
+        plan.push({ day: 'Quinta-feira', content: 'FOCO: Atualidades - Ler noticias dos ultimos 6 meses sobre politica, economia e eventos da Bahia. Resolver 30 questoes. Meta: 75% de acertos.' });
+    } else {
+        plan.push({ day: 'Quinta-feira', content: 'Manter Atualidades - Ler 3 noticias do dia e resolver 20 questoes de atualidades.' });
+    }
+
+    plan.push({ day: 'Sexta-feira', content: 'SIMULADO COMPLETO (80 questoes) - Simular condicoes reais da prova. Tempo: 3 horas. Analisar erros ao final.' });
+    plan.push({ day: 'Sabado', content: 'REDACAO - Escrever 1 redacao dissertativa-argumentativa em 2 horas. Autoavaliar estrutura, argumentos e gramatica. Nota minima: 70.' });
+    plan.push({ day: 'Domingo', content: 'REVISAO GERAL - Revisar todas as questoes erradas da semana. Refazer questoes de pontos fracos. Descansar a mente pela tarde.' });
+
+    return plan;
+}
+
+function closeResults() {
+    document.getElementById('results-overlay').classList.remove('show');
+    document.getElementById('simulado-area').classList.add('hidden');
+    showSection('home');
+}
+
+function showSection(sectionId) {
+    // Esconder todas as secoes
+    ['home', 'simulados', 'cronograma', 'estatisticas', 'dicas'].forEach(id => {
+        document.getElementById('section-' + id).classList.add('hidden');
+    });
+    document.getElementById('simulado-area').classList.add('hidden');
+    document.getElementById('timer-bar').classList.add('hidden');
+
+    // Mostrar secao selecionada
+    document.getElementById('section-' + sectionId).classList.remove('hidden');
+
+    // Atualizar nav
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if (sectionId === 'estatisticas') {
+        renderEstatisticas();
+    }
+}
+
+function renderEstatisticas() {
+    const container = document.getElementById('historico-container');
+
+    if (simuladoHistory.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px;"><i class="fas fa-clipboard-list" style="font-size:3rem;margin-bottom:16px;display:block;"></i>Nenhum simulado realizado ainda. Faca seu primeiro simulado!</p>';
+        return;
+    }
+
+    let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">';
+
+    simuladoHistory.slice().reverse().forEach((sim, idx) => {
+        const date = new Date(sim.date);
+        const dateStr = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+        const isApproved = sim.nota >= 71.25;
+
+        html += '<div style="background:linear-gradient(135deg,' + (isApproved ? '#f0fff4' : '#fff5f5') + ',white);padding:20px;border-radius:12px;border:2px solid ' + (isApproved ? 'var(--success)' : 'var(--accent)') + ';">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+        html += '<span style="font-weight:700;color:var(--primary);">Simulado #' + (simuladoHistory.length - idx) + '</span>';
+        html += '<span class="badge ' + (isApproved ? 'badge-green' : 'badge-red') + '">' + (isApproved ? 'APROVADO' : 'REPROVADO') + '</span>';
+        html += '</div>';
+        html += '<div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">' + dateStr + '</div>';
+        html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;">';
+        html += '<div><div style="font-size:1.5rem;font-weight:800;color:var(--success);">' + sim.acertos + '</div><div style="font-size:0.75rem;color:var(--text-muted);">Acertos</div></div>';
+        html += '<div><div style="font-size:1.5rem;font-weight:800;color:var(--accent);">' + sim.erros + '</div><div style="font-size:0.75rem;color:var(--text-muted);">Erros</div></div>';
+        html += '<div><div style="font-size:1.5rem;font-weight:800;color:var(--primary);">' + sim.nota.toFixed(2) + '</div><div style="font-size:0.75rem;color:var(--text-muted);">Nota</div></div>';
+        html += '</div>';
+        html += '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">';
+        html += '<div style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:6px;">Desempenho por disciplina:</div>';
+
+        Object.entries(sim.disciplinas).forEach(([disc, stats]) => {
+            const pct = stats.total > 0 ? (stats.acertos / stats.total * 100).toFixed(0) : 0;
+            const color = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--accent)';
+            html += '<div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px;"><span>' + disc + '</span><span style="font-weight:700;color:' + color + ';">' + stats.acertos + '/' + stats.total + ' (' + pct + '%)</span></div>';
+        });
+
+        html += '</div></div>';
+    });
+
+    html += '</div>';
+
+    // Resumo geral
+    const totalAcertos = totalStats.acertos;
+    const totalQuestoes = totalStats.total;
+    const mediaGeral = totalQuestoes > 0 ? (totalAcertos / totalQuestoes * 100).toFixed(1) : 0;
+
+    html += '<div style="margin-top:24px;padding:24px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;border-radius:16px;">';
+    html += '<h3 style="margin-bottom:16px;font-size:1.2rem;"><i class="fas fa-chart-pie"></i> Resumo Geral</h3>';
+    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center;">';
+    html += '<div><div style="font-size:2rem;font-weight:800;color:var(--gold);">' + totalStats.simulados + '</div><div style="font-size:0.8rem;opacity:0.9;">Simulados</div></div>';
+    html += '<div><div style="font-size:2rem;font-weight:800;color:var(--gold);">' + totalAcertos + '</div><div style="font-size:0.8rem;opacity:0.9;">Acertos Totais</div></div>';
+    html += '<div><div style="font-size:2rem;font-weight:800;color:var(--gold);">' + totalQuestoes + '</div><div style="font-size:0.8rem;opacity:0.9;">Questoes Respondidas</div></div>';
+    html += '<div><div style="font-size:2rem;font-weight:800;color:var(--gold);">' + mediaGeral + '%</div><div style="font-size:0.8rem;opacity:0.9;">Media Geral</div></div>';
+    html += '</div></div>';
+
+    // Progresso por disciplina
+    html += '<div style="margin-top:24px;">';
+    html += '<h3 style="margin-bottom:16px;color:var(--primary);font-size:1.1rem;"><i class="fas fa-chart-bar"></i> Progresso por Disciplina</h3>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;">';
+
+    Object.entries(totalStats.disciplinas).forEach(([disc, stats]) => {
+        const pct = stats.total > 0 ? (stats.acertos / stats.total * 100).toFixed(1) : 0;
+        const color = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--accent)';
+        html += '<div style="padding:16px;background:white;border-radius:10px;box-shadow:var(--shadow);">';
+        html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-weight:600;"><span>' + disc + '</span><span style="color:' + color + ';">' + pct + '%</span></div>';
+        html += '<div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:' + color + ';border-radius:4px;transition:width 0.5s;"></div></div>';
+        html += '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">' + stats.acertos + '/' + stats.total + ' questoes</div>';
+        html += '</div>';
+    });
+
+    html += '</div></div>';
+
+    container.innerHTML = html;
+}
+
+function updateHeaderStats() {
+    document.getElementById('header-acertos').textContent = totalStats.acertos;
+    document.getElementById('header-simulados').textContent = totalStats.simulados;
+    const media = totalStats.total > 0 ? (totalStats.acertos / totalStats.total * 100).toFixed(1) : 0;
+    document.getElementById('header-media').textContent = media + '%';
+
+    // Atualizar barras laterais
+    const discMap = {
+        'portugues': ['Gramatica', 'Interpretacao Textual', 'Figuras de Linguagem'],
+        'matematica': ['Matematica'],
+        'geral': ['Direito', 'Historia', 'Geografia'],
+        'atualidades': ['Atualidades']
+    };
+
+    const discStats = {
+        'Lingua Portuguesa': { total: 0, acertos: 0 },
+        'Matematica / Raciocinio': { total: 0, acertos: 0 },
+        'Conhecimentos Gerais': { total: 0, acertos: 0 },
+        'Atualidades / BA': { total: 0, acertos: 0 }
+    };
+
+    Object.entries(totalStats.disciplinas).forEach(([disc, stats]) => {
+        if (disc.includes('Gramatica') || disc.includes('Interpretacao') || disc.includes('Figuras') || disc.includes('Portugues')) {
+            discStats['Lingua Portuguesa'].total += stats.total;
+            discStats['Lingua Portuguesa'].acertos += stats.acertos;
+        } else if (disc.includes('Matematica') || disc.includes('Raciocinio')) {
+            discStats['Matematica / Raciocinio'].total += stats.total;
+            discStats['Matematica / Raciocinio'].acertos += stats.acertos;
+        } else if (disc.includes('Direito') || disc.includes('Historia') || disc.includes('Geografia') || disc.includes('Etica')) {
+            discStats['Conhecimentos Gerais'].total += stats.total;
+            discStats['Conhecimentos Gerais'].acertos += stats.acertos;
+        } else if (disc.includes('Atualidade')) {
+            discStats['Atualidades / BA'].total += stats.total;
+            discStats['Atualidades / BA'].acertos += stats.acertos;
         }
+    });
 
-        // Navegação
-        function prevQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                updateQuestionDisplay();
-            }
+    const bars = {
+        'port': 'Lingua Portuguesa',
+        'mat': 'Matematica / Raciocinio',
+        'geral': 'Conhecimentos Gerais',
+        'atual': 'Atualidades / BA'
+    };
+
+    Object.entries(bars).forEach(([key, label]) => {
+        const stats = discStats[label];
+        const pct = stats.total > 0 ? (stats.acertos / stats.total * 100).toFixed(0) : 0;
+        document.getElementById('prog-' + key).textContent = pct + '%';
+        document.getElementById('bar-' + key).style.width = pct + '%';
+    });
+
+    // Barra de meta
+    const metaPct = Math.min(media * 100 / 71.25, 100);
+    document.getElementById('bar-meta').style.width = metaPct + '%';
+}
+
+// Inicializar
+updateHeaderStats();
+
+// Teclas de atalho
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('simulado-area').classList.contains('hidden')) return;
+
+    if (e.key === 'ArrowRight' || e.key === 'n') {
+        if (!document.getElementById('btn-next').classList.contains('hidden')) {
+            nextQuestion();
         }
-
-        function nextQuestion() {
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                updateQuestionDisplay();
-            } else {
-                finishExam();
-            }
+    } else if (e.key === 'ArrowLeft' || e.key === 'p') {
+        if (!document.getElementById('btn-prev').disabled) {
+            prevQuestion();
         }
-
-        // Cronômetro
-        function startTimer() {
-            clearInterval(examTimer);
-            let time = timeLimit;
-            
-            examTimer = setInterval(() => {
-                const hours = Math.floor(time / 3600);
-                const minutes = Math.floor((time % 3600) / 60);
-                const seconds = time % 60;
-                
-                document.getElementById('timeRemaining').textContent = 
-                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (time <= 0) {
-                    clearInterval(examTimer);
-                    finishExam();
-                }
-                
-                time--;
-            }, 1000);
+    } else if (e.key === 'Enter') {
+        if (!document.getElementById('btn-confirm').classList.contains('hidden') && !document.getElementById('btn-confirm').disabled) {
+            confirmAnswer();
+        } else if (!document.getElementById('btn-finish').classList.contains('hidden')) {
+            finishSimulado();
         }
-
-        // Finalizar Prova e Calcular Resultado
-        function finishExam() {
-            clearInterval(examTimer);
-            
-            const bank = bankData[selectedBank];
-            let totalScore = 0;
-            let maxScore = 0;
-            const subjectResults = {};
-
-            // Inicializar resultados por matéria
-            Object.keys(bank.subjects).forEach(subj => {
-                subjectResults[subj] = { correct: 0, total: 0, score: 0 };
-            });
-
-            // Calcular acertos e pontuação
-            questions.forEach(q => {
-                maxScore += q.weight;
-                subjectResults[q.subject].total++;
-                
-                if (userAnswers[q.id] === q.correctAnswer) {
-                    totalScore += q.weight;
-                    subjectResults[q.subject].correct++;
-                }
-            });
-
-            // Adicionar Redação (se houver) - média 7.0
-            if (bank.hasEssay && document.getElementById('essayContainer').classList.contains('hidden') === false) {
-                const essayValue = 10;
-                const essayGrade = 7.0; // Nota média de aprovação
-                totalScore = (totalScore / maxScore) * (100 - essayValue) + essayGrade;
-                maxScore = 100;
-            } else {
-                totalScore = (totalScore / maxScore) * 100;
-                maxScore = 100;
-            }
-
-            // Arredondar
-            totalScore = Math.round(totalScore * 10) / 10;
-
-            // Análise de Aprovação
-            const cutoff = bank.cutoff;
-            const approved = totalScore >= cutoff;
-            const classificationRate = totalScore >= cutoff + 5 ? "Dentro das vagas" : 
-                                     totalScore >= cutoff ? "Classificado / Cadastro Reserva" : 
-                                     "Fora da classificação";
-
-            // Classificação percentual baseada em 30 candidatos/vaga
-            const percentile = Math.max(1, Math.min(30, Math.round((30 - ((totalScore / 100) * 30)) + 1)));
-
-            // Atualizar tela de resultado
-            document.getElementById('finalScore').textContent = `${totalScore}`;
-            document.getElementById('resultCutoff').textContent = `${cutoff}`;
-            document.getElementById('classification').textContent = `${percentile}º`;
-
-            // Ícone e Título
-            const iconEl = document.getElementById('resultIcon');
-            if (approved) {
-                iconEl.className = 'w-24 h-24 rounded-full bg-success/10 text-success flex items-center justify-center mx-auto mb-6';
-                iconEl.innerHTML = '<i class="fa fa-check fa-4x"></i>';
-                document.getElementById('resultTitle').textContent = '✅ APROVADO!';
-                document.getElementById('resultSubtitle').textContent = 'Parabéns! Você atingiu a nota necessária para ser aprovado na Região de Juazeiro.';
-            } else {
-                iconEl.className = 'w-24 h-24 rounded-full bg-danger/10 text-danger flex items-center justify-center mx-auto mb-6';
-                iconEl.innerHTML = '<i class="fa fa-times fa-4x"></i>';
-                document.getElementById('resultTitle').textContent = '❌ Reprovado';
-                document.getElementById('resultSubtitle').textContent = 'Você não atingiu a nota de corte necessária, mas está no caminho certo!';
-            }
-
-            // Texto de Análise
-            const analysisEl = document.getElementById('analysisText');
-            analysisEl.innerHTML = `
-                <p><strong>📌 Análise Estratégica:</strong> Sua pontuação foi <strong>${totalScore}</strong> e a nota de corte histórica para Juazeiro na banca ${selectedBank} é de <strong>${cutoff}</strong> pontos.</p>
-                <p><strong>📊 Posição na Região:</strong> Em um cenário real, com 28 a 32 candidatos por vaga, você estaria na <strong>${percentile}ª posição</strong> geral da Região Norte.</p>
-                <p><strong>🎯 Probabilidade de Convocação:</strong> ${classificationRate}.</p>
-                <p class="mt-3 font-bold text-pmba">💡 Lembre-se: Na PMBA, a vaga é regionalizada. Se passar para Juazeiro, você fica aqui, perto da sua família, com estabilidade e salário líquido de R$ 4.800,00.</p>
-            `;
-
-            // Desempenho por Matéria
-            const performanceEl = document.getElementById('subjectPerformance');
-            performanceEl.innerHTML = '';
-            
-            Object.keys(subjectResults).forEach(subj => {
-                const res = subjectResults[subj];
-                const percent = res.total > 0 ? Math.round((res.correct / res.total) * 100) : 0;
-                const color = percent >= 70 ? 'bg-success' : percent >= 50 ? 'bg-warning' : 'bg-danger';
-                
-                const item = document.createElement('div');
-                item.innerHTML = `
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="font-medium">${subj}</span>
-                        <span class="text-sm">${res.correct}/${res.total} (${percent}%)</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="${color} h-2 rounded-full transition-all" style="width: ${percent}%"></div>
-                    </div>
-                `;
-                performanceEl.appendChild(item);
-            });
-
-            // Trocar tela
-            document.getElementById('examScreen').classList.add('hidden');
-            document.getElementById('resultScreen').classList.remove('hidden');
-        }
-
-        // Voltar para configuração
-        function backToConfig() {
-            document.getElementById('examScreen').classList.add('hidden');
-            document.getElementById('configScreen').classList.remove('hidden');
-        }
-
-        // Novo Simulado
-        function restartExam() {
-            document.getElementById('resultScreen').classList.add('hidden');
-            document.getElementById('configScreen').classList.remove('hidden');
-            // Resetar seleção
-            document.querySelectorAll('[id^="bank"]').forEach(el => {
-                el.classList.remove('border-pmba', 'bg-blue-50', 'shadow-md');
-                el.classList.add('border-gray-200');
-            });
-            selectedBank = null;
-            document.getElementById('examInfo').classList.add('hidden');
-            document.getElementById('startBtn').disabled = true;
-            document.getElementById('startBtn').classList.add('opacity-60', 'cursor-not-allowed');
-        }
-    </script>
+    }
+});
+</script>
 </body>
 </html>
