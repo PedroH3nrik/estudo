@@ -1,0 +1,214 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.cabecalho {
+    background-color: #0a3b71;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.metricas {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.metricas span:first-child {
+    opacity: 0.8;
+}
+
+.menu {
+    background-color: #0a3b71;
+    padding: 0 2rem 1rem;
+    display: flex;
+    gap: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+.menu a.ativo, .menu a:hover {
+    opacity: 1;
+    font-weight: bold;
+    border-bottom: 2px solid #ffb800;
+    padding-bottom: 0.3rem;
+}
+
+.destaque {
+    background: linear-gradient(135deg, #0a3b71 0%, #165094 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+}
+
+.destaque h2 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.destaque p {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.indicadores {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.indicadores div {
+    text-align: center;
+}
+
+.indicadores strong {
+    font-size: 2.2rem;
+    color: #ffb800;
+    display: block;
+}
+
+.conteudo {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+}
+
+.desempenho {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.desempenho h3 {
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+    color: #555;
+}
+
+.materia {
+    margin-bottom: 1rem;
+}
+
+.materia span {
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.barra {
+    width: 100%;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.nivel {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #34ce57);
+    width: 0%;
+    transition: width 0.5s;
+}
+
+.meta {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.simulados h3 {
+    margin-bottom: 1.2rem;
+    color: #555;
+}
+
+.cartao-simulado {
+    background: white;
+    padding: 1.8rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+
+.cartao-simulado:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    border-color: #0a3b71;
+}
+
+.cartao-simulado h4 {
+    color: #0a3b71;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.cartao-simulado p {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: #666;
+}
+
+.tag {
+    display: inline-block;
+    margin-top: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+tag.oficial {
+    background: #ffeeee;
+    color: #dc3545;
+}
+
+tag.treino {
+    background: #e6ffea;
+    color: #28a745;
+}
+
+.oculto {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .conteudo {
+        grid-template-columns: 1fr;
+    }
+    .metricas {
+        gap: 0.8rem;
+        font-size: 0.8rem;
+    }
+}
