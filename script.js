@@ -9,7 +9,7 @@ const CONFIG = {
 async function carregarSimulado(tipo) {
     let caminho;
     if (tipo === 'completo') caminho = 'questoes/simulados-completos.json';
-    if (tipo === 'rapido') caminho = 'questoes/simulado-rapido.json';
+    if (tipo === 'completo') caminho = './questoes/simulados-completos.json';
 
     try {
         const resposta = await fetch(caminho);

@@ -1,0 +1,34 @@
+{
+  "titulo": "Simulado Completo PMBA 2026",
+  "bancas": "FCC, IBFC e AOCP",
+  "tempo": "3 horas",
+  "totalQuestoes": 80,
+  "questoes": [
+    {
+      "materia": "Língua Portuguesa",
+      "enunciado": "De acordo com a norma-padrão da língua portuguesa, assinale a alternativa em que a concordância está correta:",
+      "alternativas": [
+        "Fazem anos que não visito minha cidade natal.",
+        "Houveram muitos problemas durante a operação.",
+        "Ainda existem dúvidas sobre o novo regulamento.",
+        "Precisa-se de voluntários para as atividades."
+      ],
+      "respostaIndice": 2,
+      "respostaLetra": "C",
+      "explicacao": "A alternativa C está correta. Nas demais, há erro de concordância: A - o correto é 'Faz anos'; B - o correto é 'Houve muitos problemas'; D - o correto é 'Precisam-se de voluntários'."
+    },
+    {
+      "materia": "Matemática",
+      "enunciado": "Um veículo percorre 240 km em 3 horas. Mantendo a mesma velocidade, quantos km percorrerá em 5 horas?",
+      "alternativas": [
+        "360 km",
+        "400 km",
+        "420 km",
+        "450 km"
+      ],
+      "respostaIndice": 1,
+      "respostaLetra": "B",
+      "explicacao": "Velocidade = 240 ÷ 3 = 80 km/h. Em 5h: 80 × 5 = 400 km."
+    }
+  ]
+}
